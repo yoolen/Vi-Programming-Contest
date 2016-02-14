@@ -1,2 +1,2 @@
-# BrainCASE
-Web-based educational platform for the administration and processing of exams, competitions, and homework.
+# NJIT High School Programming Competition Management System
+Web-based educational platform for the administration and processing of programs for coding competitions.
