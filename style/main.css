@@ -1,0 +1,106 @@
+body {
+    font-family: 'Ubuntu', sans-serif;  
+}
+header {
+    padding: 2vh;
+    width: 100%;                
+    min-height: 100px;
+    height: 15vh;
+    /*background-image: url(images/back.jpg);*/
+    background: linear-gradient(to bottom, rgba(178,3,12,1) 1%,rgba(143,2,34,1) 91%,rgba(109,0,25,1) 100%); 
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b2030c', endColorstr='#6d0019',GradientType=0 ); 
+    background-size: cover;
+}
+
+#userbox {
+    display: table-cell;
+    vertical-align: middle;
+    background-color: #f8f8f8;
+    height: 10vh;
+    width: 100%;
+    padding: 5px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-shadow: 3px 3px 5px black;
+}
+
+nav {
+    width: 100%;
+    min-height: 40px;
+    text-align: center;                
+}
+
+.navi {
+    margin: auto;
+    width: 100%;
+    height: 100%;
+}
+
+.navbar {
+    margin-bottom: 0;
+}
+
+.navbar-nav {
+    width: 100%;
+    text-align: center;
+
+}
+
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li {
+    background-color: #f8f8f8;
+    color: black;
+    transition: background-color .25s ease-in-out;
+}
+
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+    background-color: #cccccc;
+    color: white;
+    transition: background-color .25s ease-in-out;
+}
+
+#content { 
+    max-width: 900px;
+}
+
+.mainNav {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+footer {
+    padding: 4px;
+    min-height: 50px;
+    font-size: 10pt;
+    background: linear-gradient(to bottom, rgba(178,3,12,1) 1%,rgba(143,2,34,1) 91%,rgba(109,0,25,1) 100%); 
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b2030c', endColorstr='#6d0019',GradientType=0 ); 
+}
+
+.logo {
+    height: 10vh;
+}
+
+a {
+    color: inherit;
+    text-decoration: inherit;
+}
+a:hover {
+    color: inherit;
+    text-decoration: underline;
+}
+a:visited {
+    color: inherit;
+    text-decoration: inherit; 
+}
+
+/* Debug */
+header {
+    background-color: orange;
+}
+#content {
+    background-color: purple;
+}
+footer {
+    background-color: blue;
+    color: white;
+
+}
