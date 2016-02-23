@@ -1,17 +1,18 @@
 <?php
     include_once ('db-info.php');
 
-function getaffs(){
+function getaffs()
+{
     $conn = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
-    if ($conn->connect_error){
+    if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "select aff_PK, affname from cs491.affiliation";
+    $sql = "select aff_PK, affname from affiliation";
 
     $affiliates = array();
 
-    if($stmt = $conn->prepare($sql)) {
+    if ($stmt = $conn->prepare($sql)) {
         $stmt->execute();       // execute the query
         $stmt->store_result();  // store results to get properties
         $stmt->bind_result($affid, $affname);   // bind results to variables to use
@@ -25,59 +26,36 @@ function getaffs(){
     return $affiliates;
 }
 
-
-
-function createUser()
-{
+function verify($loginInfo){
     $conn = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
-
-    $usrname = $_POST['usr'];
-    $passwd = $_POST['pwd'];
-    $cred = $_POST['usrlvl'];
-    $fname = $_POST['fname'];
-    $lname = $_POST['lname'];
-    $aff = $_POST['aff'];
-    $dept = $_POST['dept'];
-    $date = date('Y-m-d');
-    if ($conn->connect_error) {
+    if($conn->connect_error){
         die("Connection failed: " . $conn->connect_error);
     }
+    $user = json_decode($loginInfo);
 
-    $conn->autocommit(false);
-    if (isset($usrname) and isset($passwd)) {
-        if ($usrname == '' or $passwd == '' or is_numeric($cred) == FALSE) {
-            echo "Bad Username/Password/Credentials";
+    // Query for username and select password hash from database
+    if ($stmt = $conn->prepare("SELECT user_PK, passhash, permissions FROM authentication WHERE username=?")) {
+        $stmt->bind_param("s", $user->{"username"});
+        $stmt->execute();
+        $stmt->bind_result($uid, $passhash, $permissions);
+        $stmt->fetch();
+        $stmt->close();
+    }
+
+    // Close connection
+    $conn->close();
+
+    // Check hashed password against stored password
+    // Return JSON file with permissions:
+    // 1 - student; 2 - professor; 3 - admin; -1 - not found; -2 - bad username/password; 0 - unused
+    if ($passhash != null) {
+        if (password_verify($user->{"passwd"}, $passhash)){
+            return json_encode(array("uid"=>"$uid", "perms" => "$permissions"));
         } else {
-            $passhash = password_hash($passwd, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO authentication (username, passhash, permissions) VALUES (?, ?, ?)";
-            if ($stmt = $conn->prepare($sql)) {
-                $stmt->bind_param("ssi", $usrname, $passhash, $cred);
-                $stmt->execute();
-                $userid = $stmt->insert_id;
-                $stmt->close();
-                $success = ($userid != 0) ? true : false;
-            }
-            $sql = "INSERT INTO userinfo (user_FPK, fname, lname, affiliation, dept_FK, joindate) VALUES (?, ?, ?, ?, ?, ?)";
-            if ($stmt = $conn->prepare($sql)) {
-                $stmt->bind_param("isssis", $userid, $fname, $lname, $aff, $dept, $date);
-                $stmt->execute();
-                $stmt->close();
-                $success = ($userid != 0) ? true : false;
-            }
-            if ($success == true) {
-                $conn->commit();
-                echo "Successful insert.";
-            } else {
-                echo "Not inserted.";
-            }
-
+            return json_encode(array("uid" => "$uid","perms" => -2));
         }
     } else {
-        echo "error";
+        return json_encode(array("uid" => "$uid","perms" => -1));
     }
-    $conn->close();
-    echo 'PHP finished';
-
 }
 ?>
-
