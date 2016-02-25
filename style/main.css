@@ -5,7 +5,7 @@ header {
     padding: 2vh;
     width: 100%;                
     min-height: 100px;
-    height: 15vh;
+    height: 16vh;
     /*background-image: url(images/back.jpg);*/
     background: linear-gradient(to bottom, rgba(178,3,12,1) 1%,rgba(143,2,34,1) 91%,rgba(109,0,25,1) 100%); 
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b2030c', endColorstr='#6d0019',GradientType=0 ); 
