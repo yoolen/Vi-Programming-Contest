@@ -24,7 +24,7 @@ require_once('theme/theme-auxiliary.php'); //Auxiliary Page Data
 require_once('theme/theme-header.php'); //Contains Display Header (Navigation, Log On Controls, etc.)
 require_once('theme/theme-warn.php'); //Contains any messages related to maintenance.
 if( isset($_SESSION['perms']) ) { //Are we logged In?
-  requre_once('front-page.php');  //If not, display front page.
+  require_once('front-page.php');  //If not, display front page.
 } else {
   require_once('theme/theme-content.php'); //Main Page Content
 }
