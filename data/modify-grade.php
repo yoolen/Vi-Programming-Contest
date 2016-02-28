@@ -3,7 +3,7 @@
  Matt Wolfman
  CS 491
  */
- class Grade{
+ class ModifyGrade{
 	protected static $db;
 
 	public function __construct(){
@@ -13,21 +13,12 @@
 		
     }
 	public static function getConnection() {
-<<<<<<< HEAD
-		//require_once($_SERVER['DOCUMENT_ROOT'] . '/data/db-info.php');
-
 		if (!self::$db) {
 			try {
-				$database = 'mysql:dbname=cs491;host=localhost;port=3306';
-				self::$db = new PDO($database, "cs490", "projprojproj");
-=======
-		require_once($_SERVER['DOCUMENT_ROOT'] . '/admin/dbtools/db-info.php');
-		
-		if (!self::$db) {
-			try {
-				$database = 'mysql:dbname=' . SCHEMA . ';host=' . SERVER . ';port=3306';
-				self::$db = new PDO($database, USERNAME, PASSWD);
->>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+				$database = 'mysql:dbname=cs491;host=initiateid.com;port=3306';
+				$username = 'cs490';
+				$pass = 'projprojproj';
+				self::$db = new PDO($database, $username, $pass);
 				self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			} catch(PDOException $e) {
 				die("Error: " . $e->getMessage());
