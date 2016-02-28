@@ -6,7 +6,6 @@
  * Time: 7:03 PM
  */
 require_once('question-functions.php');
-<<<<<<< HEAD
 require_once ($_SERVER['DOCUMENT_ROOT'].'/data/competition.php');
 require_once ($_SERVER['DOCUMENT_ROOT'].'/data/question.php');
 
@@ -24,17 +23,10 @@ if(isset($_POST['contestnum'], $_POST['seqnum'], $_POST['qtext'], $_POST['ans'],
         $question->insert_question_io($result,$_POST['input3'],$_POST['output3'],$_POST['notes3']);
     }
     $competition->add_question_to_contest($_POST['contestnum'],$result,$_POST['seqnum']);
-=======
-
-if(isset($_POST['qtext'])){
-    $result = add_question($_POST['qtext'], $_POST['answer']);
-    //var_dump($result);
->>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
 }
 ?>
 
 <html>
-<<<<<<< HEAD
 <table>
     <form action="create-question-page.php" method="POST">
         <tr>
@@ -156,13 +148,4 @@ if(isset($_POST['qtext'])){
 
 
 </table>
-=======
-<form action="create-question-page.php" method="POST">
-    <label>Question:</label>
-    <input type="text" name="qtext"><br/>
-    <label>Answer (optional):</label>
-    <input type="text" name="answer"><br/>
-    <input type="submit" name="submit" value="Add Question">
-</form>
->>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
 </html>
