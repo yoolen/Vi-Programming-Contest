@@ -5,10 +5,13 @@
  CS 491
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
  
 =======
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
  class Question{
 	protected static $db;
 
@@ -19,6 +22,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 		
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 	public static function get_connection_pdo()
 	{
 		if (!self::$db) {
@@ -28,6 +32,8 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 				self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			} catch (PDOException $e) {
 =======
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 	public static function get_connection_pdo() {
 		require_once($_SERVER['DOCUMENT_ROOT'] . '/data/db-info.php');
 
@@ -37,7 +43,10 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 				self::$db = new PDO($database, USERNAME, PASSWD);
 				self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			} catch(PDOException $e) {
+<<<<<<< HEAD
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 				die("Error: " . $e->getMessage());
 			}
 		}
@@ -46,9 +55,13 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 	
 	public static function get_connection_mysqli() {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		require_once($_SERVER['DOCUMENT_ROOT'] . '/data/db-info.php');
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+		require_once($_SERVER['DOCUMENT_ROOT'] . '/data/db-info.php');
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 		
 		if (!self::$db) {
 			self::$db = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
@@ -59,6 +72,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 		return self::$db;
 	}
 	
+<<<<<<< HEAD
 <<<<<<< HEAD
 	//Inserts the question to the question bank.
 	function insert_question($title, $qtext, $answer, $deleteable) {
@@ -93,6 +107,8 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 		$stmt = $conn->prepare("INSERT INTO questionio (question_FK, input, output, notes) VALUES (:question_FK, :input, :output, :notes);");
 		$stmt->bindParam(':question_FK', $q);
 =======
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 	function insert_question($qtext, $answer, $input, $output, $notes) {
 		$conn = self::get_connection_pdo();
 		
@@ -131,16 +147,23 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 		$conn = self::get_connection_pdo();
 		$stmt = $conn->prepare("INSERT INTO questionio (question_PK, input, output, notes) VALUES (:question_PK, :input, :output, :notes);");
 		$stmt->bindParam(':question_PK', $q);
+<<<<<<< HEAD
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 		$stmt->bindParam(':input', $i);
 		$stmt->bindParam(':output', $o);
 		$stmt->bindParam(':notes', $n);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		$q = $question_FK;
 =======
 		$q = $question_PK;
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+		$q = $question_PK;
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 		$i = $input;
 		$o = $output;
 		$n = $notes;
@@ -152,11 +175,16 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 		} else {
 			return false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}	
 =======
 		}
 		
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+		}
+		
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 	}
 	
 	function get_all_questions(){
@@ -166,17 +194,23 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 		if ($stmt = $conn->prepare($sql)) {
 			$stmt->execute();
 <<<<<<< HEAD
+<<<<<<< HEAD
 			$stmt->bind_result($qid, $title, $question, $answer, $deleteable);
 			$questions = array();
 			while($stmt->fetch()){
 				array_push($questions, array('qid'=>$qid, 'title'=>$title, 'question'=>$question, 'answer'=>$answer, 'deleteable'=>$deleteable));
 =======
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 			$stmt->bind_result($qid, $question, $answer);
 			$stmt->fetch();
 			$questions = array();
 			while($stmt->fetch()){
 				array_push($questions, array('qid'=>$qid,'question'=>$question,'answer'=>$answer));
+<<<<<<< HEAD
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 			}
 			$stmt->close();
 		} else {
@@ -185,6 +219,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 		$conn->close();
 		return $questions;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 
     function get_contest_questions($cid){
@@ -210,5 +245,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 	 }
 =======
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
  }
  ?>

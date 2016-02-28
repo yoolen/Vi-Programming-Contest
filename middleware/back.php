@@ -2,10 +2,14 @@
 	/* this function is a prototype for the backend. Feel
 		free to edit the date, start time and duration to test the timer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
 =======
 
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 require_once($_SERVER['DOCUMENT_ROOT'] .'/data/db-info.php');
 
 	function get_contest_sched($qid){
@@ -29,6 +33,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] .'/data/db-info.php');
 		return $sched;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 */
 function rDate($cID){
 		if($cID == 1)
@@ -48,4 +53,7 @@ function rDate($cID){
 =======
 
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 ?>

@@ -14,6 +14,7 @@
     }
 	public static function getConnection() {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		//require_once($_SERVER['DOCUMENT_ROOT'] . '/data/db-info.php');
 
 		if (!self::$db) {
@@ -21,13 +22,18 @@
 				$database = 'mysql:dbname=cs491;host=localhost;port=3306';
 				self::$db = new PDO($database, "cs490", "projprojproj");
 =======
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 		require_once($_SERVER['DOCUMENT_ROOT'] . '/admin/dbtools/db-info.php');
 		
 		if (!self::$db) {
 			try {
 				$database = 'mysql:dbname=' . SCHEMA . ';host=' . SERVER . ';port=3306';
 				self::$db = new PDO($database, USERNAME, PASSWD);
+<<<<<<< HEAD
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 				self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			} catch(PDOException $e) {
 				die("Error: " . $e->getMessage());

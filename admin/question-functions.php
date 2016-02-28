@@ -35,6 +35,7 @@ function add_question($qtext, $answer){
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function update_question($qtext, $answer){ // working on this
     $conn = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
     if ($conn->connect_error){
@@ -64,6 +65,8 @@ function update_question($qtext, $answer){ // working on this
 
 =======
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 function get_all_questions(){   // done
     $conn = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
     if ($conn->connect_error) {
@@ -75,9 +78,13 @@ function get_all_questions(){   // done
         $stmt->execute();
         $stmt->bind_result($qid, $question, $answer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         $stmt->fetch();
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+        $stmt->fetch();
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
         $questions = array();
         while($stmt->fetch()){
             array_push($questions, array('qid'=>$qid,'question'=>$question,'answer'=>$answer));
@@ -112,6 +119,7 @@ function get_question($qid){ // done
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function get_contest_questions($cid){ // done, refactored
     $conn = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
     if ($conn->connect_error){
@@ -138,12 +146,15 @@ function get_contest_questions($cid){ // done, refactored
 
 =======
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 function get_question_io($qid){ // done
     $conn = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
     if ($conn->connect_error){
         die("Connection failed: " . $conn->connect_error);
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     $sql = "SELECT qio_PK, input, output, notes FROM cs491.questionio WHERE question_FK=?";
     if($stmt = $conn->prepare($sql)){
@@ -153,6 +164,8 @@ function get_question_io($qid){ // done
         $stmt->fetch();
         $qdets = array('qioid'=>$qioid,'input'=>$input,'output'=>$output,'notes'=>$notes);
 =======
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
     $sql = "SELECT input, output, notes FROM cs491.questionio WHERE question_FK=?";
     if($stmt = $conn->prepare($sql)){
         $stmt->bind_param('i', $qid);
@@ -160,7 +173,10 @@ function get_question_io($qid){ // done
         $stmt->bind_result($input, $output, $notes);
         $stmt->fetch();
         $qdets = array('input'=>$input,'output'=>$output,'notes'=>$notes);
+<<<<<<< HEAD
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
         $stmt->close();
     } else {
         echo 'Error querying the database.';
@@ -169,6 +185,7 @@ function get_question_io($qid){ // done
     return $qdets;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 function add_question_to_contest($qid, $cid, $seqnum){
     $conn = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
@@ -196,4 +213,8 @@ function add_question_to_contest($qid, $cid, $seqnum){
 function update_question($qinfo){ // this function accepts an associated array of values and updates the table accordingly
     return 'hello';
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+function update_question($qinfo){ // this function accepts an associated array of values and updates the table accordingly
+    return 'hello';
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 }

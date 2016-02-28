@@ -9,12 +9,17 @@
 require_once($_SERVER['DOCUMENT_ROOT'] .'/data/db-info.php');
     $conn = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
 <<<<<<< HEAD
+<<<<<<< HEAD
 //    var_dump($_POST);
     $usr = strtolower($_POST['usr']);
 =======
     var_dump($_POST);
     $usr = $_POST['usr'];
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+    var_dump($_POST);
+    $usr = $_POST['usr'];
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
     $fname = $_POST['fname'];
     $lname = $_POST['lname'];
     $aff = $_POST['aff'];

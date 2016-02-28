@@ -2,26 +2,35 @@
 	include 'back.php'; // Backend functions
 	//date_default_timezone_set('America/New_York'); // The Eastern time
 <<<<<<< HEAD
+<<<<<<< HEAD
 	$type = $_POST['type'];
 	$cID = $_POST['contestID'];
 =======
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 	
 	/* This function returns a json object to the javascript section. It has the year, month, day, hour, minutes, seconds and a signal (1, 0, -1).
 	1 - The competition has not started yet.
 	0 - The competition has started (countdown timer in effect)
 	-1 - The competition has ended (can only view the summary) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	function dateDiff($cID){
 		$signal = 1; // Start with a signal of 1
 		
 		$compDate = rDate($cID);//get_contest_sched($cID); // Get the set date
 =======
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 	function dateDiff($contestID){
 		$signal = 1; // Start with a signal of 1
 		
 		$compDate = get_contest_sched($contestID); // Get the set date
+<<<<<<< HEAD
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 		
 		// Combine the date and time to a workable format for the DateTime object
 		$startDate = $compDate['starttime'];
@@ -62,6 +71,7 @@
 		return json_encode($diffTime); // Return the difference time object
 	}
 	
+<<<<<<< HEAD
 <<<<<<< HEAD
 	function check_in_diff($type, $cID){
 		$signal = 1; // Start with a signal of 1
@@ -112,12 +122,18 @@
 		1 - It is past the time that the difference was calculated from
 		0 - It is not past the time
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+	/* Function to check if the 'invert' value of the object is 1 or 0.
+		1 - It is past the time that the difference was calculated from
+		0 - It is not past the time
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 	*/
 	function checkInvert($obj){
 		if($obj->{'invert'} == 1)
 			return true;
 				else return false;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
 	if($type == 'check_in')
@@ -128,6 +144,10 @@
 	//echo $_POST['contestID'];
 	echo (dateDiff($_POST['contestID'])); // Return the difference time object
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+	//echo $_POST['contestID'];
+	echo (dateDiff($_POST['contestID'])); // Return the difference time object
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 	
 	
 	

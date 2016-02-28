@@ -3,13 +3,17 @@
     <?php
     require_once ('/dbtools/lists.php');
     require_once ('/dbtools/backend.php');
+<<<<<<< HEAD
     require_once ('user-functions.php');
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
     ?>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 </head>
 
 <body>
 
+<<<<<<< HEAD
 <?php
 /**
  * Created by PhpStorm.
@@ -32,6 +36,10 @@ if(isset(   $_POST['usr'], $_POST['fname'], $_POST['lname'], $_POST['aff'],$_POS
 
 <div id="logon">
     <form action="create-user-page.php" method="POST">
+=======
+<div id="logon">
+    <form action="create-user.php" method="POST">
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
         <label for="usr">Username:&nbsp;</label>
         <input type="text" name="usr" id="usr"><br/>
 
@@ -80,11 +88,19 @@ if(isset(   $_POST['usr'], $_POST['fname'], $_POST['lname'], $_POST['aff'],$_POS
         <label for="zip">Zip:&nbsp;</label>
         <input type="text" name="zip" id="zip"><br/>
 
+<<<<<<< HEAD
         <label for="passwd">Password:&nbsp;</label>
         <input type="password" name="passwd" id="passwd"><br/>
 
         <label for="ul">User Level:&nbsp;</label>
         <select name="cred" id="cred">
+=======
+        <label for="pwd">Password:&nbsp;</label>
+        <input type="password" name="pwd" id="pwd"><br/>
+
+        <label for="ul">User Level:&nbsp;</label>
+        <select name="ulevel" id="ulevel">
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
             <option value=""></option>
             <?php
                 foreach($userlevels as $userlevel):
@@ -107,7 +123,11 @@ if(isset(   $_POST['usr'], $_POST['fname'], $_POST['lname'], $_POST['aff'],$_POS
     function validate(){
         if ($('#usr').val() && $('#fname').val() && $('#lname').val() && $('#aff').val() && $('#email').val() &&
             $('#phone').val() && $('#street1').val() && $('#city').val() && $('#state').val() &&
+<<<<<<< HEAD
             $('#zip').val() && $('#passwd').val() && $('#cred').val()) {
+=======
+            $('#zip').val() && $('#pwd').val() && $('#ulevel').val()) {
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
             $("#submitbutton").prop("disabled", false);
         } else {
             $("#submitbutton").prop("disabled", true);

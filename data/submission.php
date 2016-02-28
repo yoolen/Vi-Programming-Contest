@@ -1,17 +1,23 @@
 <?php
 <<<<<<< HEAD
+<<<<<<< HEAD
   /*
  Matt Wolfman
  CS 491
  */
 require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 =======
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
  /*
  Matt Wolfman
  CS 491
  */
  
+<<<<<<< HEAD
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
  
  class Submission{
 	protected static $db;
@@ -23,6 +29,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 		
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 	public static function get_connection_pdo()
 	{
 		if (!self::$db) {
@@ -32,6 +39,8 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 				self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			} catch (PDOException $e) {
 =======
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 	public static function get_connection_pdo() {
 		require_once($_SERVER['DOCUMENT_ROOT'] . '/admin/dbtools/db-info.php');
 		
@@ -41,7 +50,10 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 				self::$db = new PDO($database, USERNAME, PASSWD);
 				self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			} catch(PDOException $e) {
+<<<<<<< HEAD
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 				die("Error: " . $e->getMessage());
 			}
 		}
@@ -73,9 +85,13 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 $t = new Submission();
 =======
 }
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+}
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0

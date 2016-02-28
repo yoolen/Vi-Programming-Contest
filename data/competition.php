@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
   /*
  Matt Wolfman
@@ -30,6 +31,8 @@ class Competition
 				self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			} catch (PDOException $e) {
 =======
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
  <?php
  /*
  Matt Wolfman
@@ -55,12 +58,16 @@ class Competition
 				self::$db = new PDO($database, USERNAME, PASSWD);
 				self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			} catch(PDOException $e) {
+<<<<<<< HEAD
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 				die("Error: " . $e->getMessage());
 			}
 		}
 		return self::$db;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	public static function get_connection_mysqli()
@@ -87,6 +94,8 @@ class Competition
 
 		$starttime = $date . " " . $hour . ":" . $minute . ":" . $seconds;
 =======
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 	
 	function insert_competition($hour, $minute, $duration, $creator_FK) {
 		$conn = self::get_connection_pdo();
@@ -99,11 +108,15 @@ class Competition
 		$stmt->bindParam(':creator_FK', $c);
 	
 		$starttime = $hour . ":" . $minute;
+<<<<<<< HEAD
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 		$s = $starttime;
 		$d = $duration;
 		$c = $creator_FK;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		$status = $stmt->execute();
 
@@ -113,11 +126,17 @@ class Competition
 		
 		if($status){
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+		$status = $stmt->execute();	
+		
+		if($status){
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 			return true;
 		} else {
 			return false;
 		}
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	//Insert a teams checkin to the checkin bank.
@@ -132,6 +151,8 @@ class Competition
 		$stmt->bindParam(':checkedin', $ch);
 
 =======
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 	
 	
 	function insert_checkin($contest_FK, $team_FK, $checkedin) {
@@ -144,11 +165,15 @@ class Competition
 		$stmt->bindParam(':team_FK', $t);
 		$stmt->bindParam(':checkedin', $ch);
 	
+<<<<<<< HEAD
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 		$co = $contest_FK;
 		$t = $team_FK;
 		$ch = $checkedin;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		$status = $stmt->execute();
 
@@ -158,11 +183,17 @@ class Competition
 		
 		if($status){
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+		$status = $stmt->execute();	
+		
+		if($status){
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 			return true;
 		} else {
 			return false;
 		}
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	//Returns all the competitions
 	function get_all_competitions()
@@ -174,6 +205,8 @@ class Competition
 		$status = $stmt->execute();
 		if ($status) {
 =======
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 	
 	function get_all_competitions(){
 		$conn = self::get_connection_pdo();
@@ -182,11 +215,15 @@ class Competition
 
 		$status = $stmt->execute();
 		if($status){
+<<<<<<< HEAD
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 			$stmt->bindColumn('contest_PK', $contest_PK);
 			$stmt->bindColumn('starttime', $starttime);
 			$stmt->bindColumn('duration', $duration);
 			$stmt->bindColumn('creator_FK', $creator_FK);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 			$competitions = array();
@@ -196,6 +233,8 @@ class Competition
 			}
 
 =======
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 			
 			$competitions = array();
 			
@@ -203,12 +242,16 @@ class Competition
 					array_push($competitions, array('contest_PK'=>$contest_PK, 'starttime'=>$starttime, 'duration'=>$duration, 'creator_FK'=>$creator_FK));
 			}
 			
+<<<<<<< HEAD
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
 			return $competitions;
 		} else {
 			return false;
 		}
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	function add_question_to_contest($cid, $qid, $seqnum)
@@ -264,3 +307,7 @@ class Competition
  }
  ?>
 >>>>>>> 6debfc5a8f50037a0747a830f3a06a1c6bab8adb
+=======
+ }
+ ?>
+>>>>>>> 6c9f1e765a211ce35fea541301543a51570207f0
