@@ -12,11 +12,7 @@
         <div id="userbox">
             <div  class="container-fluid text-center">
                 <?php
-<<<<<<< HEAD
-                if (isset($_SESSION['creds'])) {
-=======
                 if (isset($_SESSION['creds']) and $_SESSION['creds'] > 0) {
->>>>>>> database-admin
                     include_once '/page/user-box.php';
                 } else {
                     include_once("/login.php");
@@ -38,11 +34,7 @@
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="index.html">Home</a></li>
-<<<<<<< HEAD
-                <li><a href="#">Current Contests</a></li>
-=======
                 <li><a href="http://njit1.initiateid.com/contest/current_contest/front.php">Current Contests</a></li>
->>>>>>> database-admin
                 <li><a href="#">Results</a></li>
                 <li><a href="#">Account Settings</a></li>
                 <li class="pull-right"><a href="#">NJIT CCS</a></li>

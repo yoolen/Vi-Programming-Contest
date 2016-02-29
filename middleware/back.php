@@ -1,11 +1,7 @@
 <?php
 	/* this function is a prototype for the backend. Feel
 		free to edit the date, start time and duration to test the timer */
-<<<<<<< HEAD
-
-=======
 /*
->>>>>>> database-admin
 require_once($_SERVER['DOCUMENT_ROOT'] .'/data/db-info.php');
 
 	function get_contest_sched($qid){
@@ -28,9 +24,6 @@ require_once($_SERVER['DOCUMENT_ROOT'] .'/data/db-info.php');
 		$conn->close();
 		return $sched;
 	}
-<<<<<<< HEAD
-
-=======
 */
 function rDate($cID){
 		if($cID == 1)
@@ -47,5 +40,4 @@ function rDate($cID){
 		
 		return($arr);
 	}
->>>>>>> database-admin
 ?>

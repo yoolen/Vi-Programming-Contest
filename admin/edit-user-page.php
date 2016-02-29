@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-<?php
-/**
- * Created by PhpStorm.
- * User: yoole
- * Date: 2/25/2016
- * Time: 1:26 PM
- */
-=======
 <html>
 <head>
     <?php
@@ -125,4 +116,3 @@ if(isset(   $_POST['usr'], $_POST['fname'], $_POST['lname'], $_POST['aff'],$_POS
 </script>
 
 </body>
->>>>>>> database-admin

@@ -41,13 +41,8 @@ function verify($usrname, $passwd){
 }
 
 function create_user($userinfo){
-<<<<<<< HEAD
-/*  This function takes an associated array
- *
-=======
 /*  This function takes an associated array that must contain the following fields:
  *  usr, fname, lname, aff, email, phone, street1, street2, city, state, zip, and cred
->>>>>>> database-admin
  */
     $conn = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
     if ($conn->connect_error) {
@@ -82,8 +77,6 @@ function create_user($userinfo){
     $conn->close();
 }
 
-<<<<<<< HEAD
-=======
 function admin_modify_user($userinfo){
 /*  This function takes an associated array that must contain the following fields:
  *  usr, fname, lname, aff, email, phone, street1, street2, city, state, zip, and cred
@@ -125,5 +118,4 @@ function get_all_users(){
 
     $sql = "";
 }
->>>>>>> database-admin
 ?>
