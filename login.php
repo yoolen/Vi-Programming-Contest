@@ -1,92 +1,110 @@
 <?php
-if (!isset($_SESSION['perms'])) {
-    if (count(get_included_files()) === 1) {
-        echo <<<LOGIN
-        
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once ($_SERVER['DOCUMENT_ROOT'] . '\admin\user-functions.php');
+if (isset($_POST['username'], $_POST['password'])) {
+    $result = verify($_POST['username'], $_POST['password']);
+    $_SESSION['uid'] = $result['usrID'];
+    $_SESSION['creds'] = $result['usrlvl'];
+    if($_SESSION['creds'] > 0) {
+        header("Location: index.php");
+    }
+}
+
+$err = '';
+if (isset($_SESSION['creds']) and $_SESSION['creds'] < 0) {
+    $err = '<h3 class="err">Invalid Username or Password.</h3>';
+}
+if (isset($_SESSION['creds']) and $_SESSION['creds'] >= 0) {
+    $err = strval($_SESSION['creds']);
+}
+
+if (count(get_included_files()) === 3) {
+    echo <<<LOGIN
+
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8" />
-        <title>NJIT Login Service</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="robots" content="all" /><!-- tell visiting robots its OK to index this page -->  
-        <meta name="description" content="" /> 
-        <meta name="keywords" content="" />
+        <title>NJIT High School Programming Contest - Login</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
 
-        <link rel="stylesheet" type="text/css" href="https://www.njit.edu/corporate/uicomponents/styles/njit.css" /> 
-        <link rel="stylesheet" type="text/css" href="https://www.njit.edu/corporate/uicomponents/styles/print.css" media="print" />
+        <style>
+            body {
+                background: linear-gradient(to bottom,  rgba(214,214,214,1) 0%,rgba(183,183,183,1) 49%,rgba(201,201,201,1) 51%,rgba(229,229,229,1) 100%); /* W3C */
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d6d6d6', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                font-family: 'Ubuntu', sans-serif;
+            }
+            #main {
+                position: absolute;
+                width: 700px;
+                height: 550px;
+                z-index: 15;
+                top: 50%;
+                left: 50%;
+                margin: -275px 0 0 -350px;
+                background: white;
+                border-radius: 6px;
+                padding: 5px;
+                opacity: 0.5;
+                text-align: center;
+            }
+            .err {
+                color: red;
+            }
+            .main {
+                opacity: 1;
+            }
 
-        <link rel="stylesheet" href="/idp/css/styles.css" type="text/css" />
-
-        <!--[if lt IE 9]><script type="text/javascript" src="https://www.njit.edu/corporate/uicomponents/scripts/html5shim-1.6.2.min.js"></script><![endif]-->
-        <!--[if IE 7]><link rel="stylesheet" type="text/css" href="https://www.njit.edu/corporate/uicomponents/styles/ie/ie7.css" /><![endif]-->
-        <script type="text/javascript" src="https://use.typekit.com/khd0xmd.js"></script>
-        <script type="text/javascript">try {
-                Typekit.load();
-            } catch (e) {
-            }</script> 
-
+            a {
+                color: inherit;
+                text-decoration: inherit;
+            }
+            a:hover {
+                color: inherit;
+                text-decoration: underline;
+            }
+            a:visited {
+                color: inherit;
+                text-decoration: inherit;
+            }
+        </style>
     </head>
-    <body class="office office-homepage subpage fullwidth">
-        <div id="maincontainer">
-
-            <header class="container" id="header">
-                <h1><a href="http://www.njit.edu"><img src="https://www.njit.edu/corporate/uicomponents/images/logo.png" alt="New Jersey Institute of Technology" width="300" height="100" id="njitlogo"/>
-                        <img src="https://www.njit.edu/corporate/uicomponents/images/logoprint.png" alt="New Jersey Institute of Technology" width="300" height="100" id="printlogo"/></a></h1>
-
-
-            </header>
-
-            <header id="sectionheader">
-                <div id="titlebar">
-                    <h1 style="visibility: visible"><a href="#">NJIT Computer Programming Contest for High School Students Log In Service</a></h1>
-                    <h5 style="visibility: visible">Servicing the best High School Programming Platform Ever!</h5>
-                </div>
-            </header>
-
-            <div id="wrapper" style="height: 500px;">
-
-                <div id="content" class="container" style="height: 500px;">
-                    <section style="height: 500px; color: black; background-color: white; padding: 10px;">
-
-                        <h2>Please Login Below:</h2>
-                        <form action="login.php" method="POST">
-                            <label for="username">Username:&nbsp;</label>
-                            <input type="text" name="username" onfocus='darken(this)' onblur='lighten(this)'><br /><br />
-                            <label for="password">Password:&nbsp;</label> 
-                            <input type="password" name="password" onfocus='darken(this)' onblur='lighten(this)'><br /><br />
-                            <input class="submit" type="submit" value="Log In" style="">			
-                        </form> 
-
-                    </section>	
-                </div>
-                <footer id="footer">
-                    <div class="container">
-                        <div id="address"><a href="http://www.njit.edu">New Jersey Institute of Technology</a><br/>
-                            <span>University Heights</span> <span>Newark, New Jersey 07102</span>
-                        </div>
-                        <ul id="footer_links">
-                            <li><a href="http://www.njit.edu/about/key-contacts.php">Contact Us</a></li>
-                            <!--<li><a href="#">Link in the footer</a></li>-->
-                            <li><a href="http://www.njit.edu/about/visit/gettingtonjit.php">Maps &amp; Directions</a></li>
-                            <!--<li><a href="#">Footer link</a></li>-->
-                        </ul>
-                        <ul id="footer_social">
-                            <li><a href="https://www.facebook.com/pages/Newark-NJ/NJIT/7185471825" title="NJIT on Facebook"><img src="https://www.njit.edu/corporate/uicomponents/images/social/facebook.gif" width="16" height="16" alt="Facebook"/></a></li>
-                            <li><a href="https://twitter.com/njit" title="NJIT on Twitter"><img src="https://www.njit.edu/corporate/uicomponents/images/social/twitter.gif" width="16" height="16" alt="Twitter"/></a></li>
-                            <li><a href="https://youtube.com/njit" title="NJIT on YouTube"><img src="https://www.njit.edu/corporate/uicomponents/images/social/youtube.gif" width="16" height="16" alt="YouTube"/></a></li>
-                            <li><a href="https://www.flickr.com/photos/njit" title="NJIT on Flickr"><img src="https://www.njit.edu/corporate/uicomponents/images/social/flickr.gif" width="16" height="16" alt="Flickr"/></a></li>
-                        </ul>
-                    </div>
-                </footer>
+    <body>
+        <div id="main">
+            <div class="main">
+                <div class="sig"> <a href="index.php"><img src="images/logo.png" class="logo" style="max-height:90px;" alt=""/></a><br><br><br> </div>
+                <div class="loginBox">
+                <h2>Please Login Below:</h2>
+                <h4 style="color:red;">{$err}</h4>
+                <form action="login.php" method="POST">
+                    <label for="username">Username:&nbsp;</label>
+                    <input type="text" name="username" onfocus='darken(this)' onblur='lighten(this)'><br /><br />
+                    <label for="password">Password:&nbsp;</label>
+                    <input type="password" name="password" onfocus='darken(this)' onblur='lighten(this)'><br /><br />
+                    <input class="submit" type="submit" value="Log In" style="color:#000; background-color:#EEE; border-color:#000; border: solid 2px; border-radius:5px; padding:5px;">
+                </form>
             </div>
+                <br><br>
+            <footer>
+                Developed by NJIT CS Capstone 2016 Entrepreneurship Team
+                <br>U Chern, J Tacbianan, W Ciaurro, C Gayle & M Wolfman. <br><br>
+                <span style="font-size:10pt;">&copy; 2016 - <a href="http://www.njit.edu">New Jersey Institute of Technology</a> - <a href="http://ccs.njit.edu">College of Computing Sciences</a> - All Rights Reserved</span>
+            </footer>
+            </div>
+        </div>
     </body>
-
 </html>
 
+
 LOGIN;
-    } else {
-        echo <<<LOG
+} else {
+    echo <<<LOG
         <form action="login.php" method="POST">
             <label for="username">Username:&nbsp;</label>
             <input style="width: 120px;" type="text" name="username">
@@ -96,8 +114,6 @@ LOGIN;
         </form>
         <a href="login.php">If you don't like our damn login box. Click Here!</a>
 LOG;
-    }
-} else {
-    
 }
+
 ?>

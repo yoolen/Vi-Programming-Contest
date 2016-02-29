@@ -62,6 +62,14 @@ create table contest(
     foreign key(creator_FK) references usr(usr_PK)
 );
 
+create table contestview(
+	cv_PK			int					auto_increment primary key,
+    contest_FK		int					not null,
+    usr_FK			int					not null,
+    foreign key(contest_FK) references contest(contest_PK),
+    foreign key(usr_FK) references usr(usr_PK)
+);
+
 create table question(
 	question_PK		int					auto_increment primary key,
     qtext			longtext			not null,
