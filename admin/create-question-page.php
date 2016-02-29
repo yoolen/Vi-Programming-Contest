@@ -31,22 +31,6 @@ if(isset($_POST['contestnum'], $_POST['seqnum'], $_POST['qtext'], $_POST['ans'],
     <form action="create-question-page.php" method="POST">
         <tr>
             <td>
-            <label>Test Number:</label>
-            </td>
-            <td>
-            <select name = "contestnum" id="contestnum">
-                <option value = ""></option>
-                <?php
-                $comps = $competition->get_all_competitions();
-                foreach($comps as $comp):
-                    echo '<option value="'.$comp["contest_PK"].'">'.$comp["contest_PK"].'</option>';
-                endforeach;
-                ?>
-            </select><br/>
-            </td>
-        </tr>
-        <tr>
-            <td>
                 <label>Question #:</label>
             </td>
             <td>

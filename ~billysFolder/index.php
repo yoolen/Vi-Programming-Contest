@@ -1,0 +1,1 @@
+<a href="./allCompetitions.php">View All Competitions</a>

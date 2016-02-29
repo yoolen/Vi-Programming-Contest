@@ -12,14 +12,6 @@ class User
 
     protected static $db;
 
-    public function __construct()
-    {
-    }
-
-    private function __clone()
-    {
-    }
-
     private function get_connection_mysqli()
     {
         self::$db = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);

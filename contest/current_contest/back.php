@@ -16,7 +16,7 @@
 	}
 	
 	function checkin($cID, $teamID){
-		if($cID == 1 && $teamID == 12){
+		if($cID == 4 && $teamID == 12){
 			return true;
 		}
 		return false;

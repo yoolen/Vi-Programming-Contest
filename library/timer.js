@@ -14,7 +14,7 @@ function checkTime(compID, contestType){
 	var time = $.ajax({
 		url: "http://njit1.initiateid.com/middleware/time.php", // The url to the time.php
 		method: "POST",
-		data: {contestID: compID}
+		data: {contestID: compID, type: contestType}
 	});
 	
 	time.done(function(response){

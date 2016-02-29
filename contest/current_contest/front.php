@@ -21,6 +21,7 @@
 		
 		function start_checkin(){
 			show_contests(contest_array, user_ID);
+			checkButtons(user_ID);
 			setInterval(function() {
 			checkButtons(user_ID);
 			}, 1000);
