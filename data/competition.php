@@ -1,9 +1,18 @@
 <?php
+<<<<<<< HEAD
 /*
 Matt Wolfman
 CS 491
 */
 
+=======
+  /*
+ Matt Wolfman
+ Terry Chern
+ CS 491
+ */
+require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
+>>>>>>> database-admin
 
 class Competition
 {
@@ -21,12 +30,19 @@ class Competition
 
 	public static function get_connection_pdo()
 	{
+<<<<<<< HEAD
 		//require_once($_SERVER['DOCUMENT_ROOT'] . '/data/db-info.php');
 
 		if (!self::$db) {
 			try {
 				$database = 'mysql:dbname=cs491;host=localhost;port=3306';
 				self::$db = new PDO($database, "cs490", "projprojproj");
+=======
+		if (!self::$db) {
+			try {
+				$database = 'mysql:dbname='. SCHEMA .';host='. SERVER .';port=3306';
+				self::$db = new PDO($database, USERNAME, PASSWD);
+>>>>>>> database-admin
 				self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			} catch (PDOException $e) {
 				die("Error: " . $e->getMessage());
@@ -35,6 +51,7 @@ class Competition
 		return self::$db;
 	}
 
+<<<<<<< HEAD
 	public static function get_connection_mysqli()
 	{
 		require_once($_SERVER['DOCUMENT_ROOT'] . '/data/db-info.php');
@@ -44,15 +61,28 @@ class Competition
 			if (self::$db->connect_error) {
 				die("Connection failed: " . self::$db->connect_error);
 			}
+=======
+	private function get_connection_mysqli(){
+		self::$db = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
+		if (self::$db->connect_error) {
+			die("Connection failed: " . self::$db->connect_error);
+>>>>>>> database-admin
 		}
 		return self::$db;
 	}
 
+<<<<<<< HEAD
+=======
+	//Inserts the contest into the contest bank.
+>>>>>>> database-admin
 	function insert_competition($date, $hour, $minute, $seconds, $duration, $creator_FK)
 	{
 		$conn = self::get_connection_pdo();
 
+<<<<<<< HEAD
 		//Inserts the contest into the contest bank.
+=======
+>>>>>>> database-admin
 		$stmt = $conn->prepare("INSERT INTO contest (starttime, duration, creator_FK) VALUES (:starttime, :duration, :creator_FK);");
 
 		$stmt->bindParam(':starttime', $s);
@@ -73,12 +103,19 @@ class Competition
 		}
 	}
 
+<<<<<<< HEAD
 
+=======
+	//Insert a teams checkin to the checkin bank.
+>>>>>>> database-admin
 	function insert_checkin($contest_FK, $team_FK, $checkedin)
 	{
 		$conn = self::get_connection_pdo();
 
+<<<<<<< HEAD
 		//Inserts the contest into the contest bank.
+=======
+>>>>>>> database-admin
 		$stmt = $conn->prepare("INSERT INTO checkin (contest_FK, team_FK, checkedin) VALUES (:contest_FK, :team_FK, :checkedin);");
 
 		$stmt->bindParam(':contest_FK', $co);
@@ -97,7 +134,11 @@ class Competition
 			return false;
 		}
 	}
+<<<<<<< HEAD
 
+=======
+	//Returns all the competitions
+>>>>>>> database-admin
 	function get_all_competitions()
 	{
 		$conn = self::get_connection_pdo();
@@ -147,8 +188,32 @@ class Competition
 		$conn->close();
 	}
 	
+<<<<<<< HEAD
 	function update_competition_time($contest_PK, $hour, $minute){
 		$stmt = $conn->prepare("UPDATE memberlist SET
+=======
+	function update_competition_time($contest_PK, $date, $hour, $minute, $seconds){
+		$conn = self::get_connection_pdo();
+		
+		$stmt = $conn->prepare("UPDATE contest SET starttime = :starttime WHERE contest_PK = :contest_PK");
+		
+		$stmt->bindParam('contest_PK', $c);
+		$stmt->bindParam('starttime', $s);
+		
+		$c = $contest_PK;
+		
+		$starttime = $date . " " . $hour . ":" . $minute . ":" . $seconds;
+		echo $starttime;
+		$s = $starttime;
+		
+		$status = $stmt->execute();
+		
+		if ($status) {
+			return true;
+		} else {
+			return false;
+		}
+>>>>>>> database-admin
 	}
 
 }

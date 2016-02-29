@@ -41,8 +41,13 @@ function verify($usrname, $passwd){
 }
 
 function create_user($userinfo){
+<<<<<<< HEAD
 /*  This function takes an associated array
  *
+=======
+/*  This function takes an associated array that must contain the following fields:
+ *  usr, fname, lname, aff, email, phone, street1, street2, city, state, zip, and cred
+>>>>>>> database-admin
  */
     $conn = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
     if ($conn->connect_error) {
@@ -77,4 +82,48 @@ function create_user($userinfo){
     $conn->close();
 }
 
+<<<<<<< HEAD
+=======
+function admin_modify_user($userinfo){
+/*  This function takes an associated array that must contain the following fields:
+ *  usr, fname, lname, aff, email, phone, street1, street2, city, state, zip, and cred
+ *  The user's username may not be changed.
+ */
+    $conn = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+    $conn->autocommit(false);
+
+    $passhash = password_hash($userinfo['passwd'], PASSWORD_DEFAULT);
+
+    $sql = "UPDATE usr SET fname=?, lname=?, aff_FK=?, email=?, phone=?, street1=?, street2=?, city=?,
+            state=?, zip=?, passhash=?, creds=? WHERE usr = ?";
+
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("ssissssssssis",$userinfo['fname'],$userinfo['lname'],$userinfo['aff'],$userinfo['email'],
+            $userinfo['phone'],$userinfo['street1'],$userinfo['street2'],$userinfo['city'],$userinfo['state'],
+            $userinfo['zip'],$passhash,$userinfo['cred'],$userinfo['usr']);
+        $stmt->execute();
+        $stmt->close();
+        if($conn->commit()){
+            echo "User successfully added.";
+        } else {
+            echo "Submission failed.";
+        }
+    } else {
+        echo "Database error.";
+    }
+    $conn->close();
+}
+
+function get_all_users(){
+    $conn = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    $sql = "";
+}
+>>>>>>> database-admin
 ?>

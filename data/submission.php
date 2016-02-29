@@ -1,9 +1,17 @@
 <?php
+<<<<<<< HEAD
  /*
  Matt Wolfman
  CS 491
  */
  
+=======
+  /*
+ Matt Wolfman
+ CS 491
+ */
+require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
+>>>>>>> database-admin
  
  class Submission{
 	protected static $db;
@@ -14,6 +22,7 @@
 	private function __clone(){
 		
     }
+<<<<<<< HEAD
 	public static function get_connection_pdo() {
 		//require_once($_SERVER['DOCUMENT_ROOT'] . '/data/db-info.php');
 
@@ -23,6 +32,16 @@
 				self::$db = new PDO($database, "cs490", "projprojproj");
 				self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			} catch(PDOException $e) {
+=======
+	public static function get_connection_pdo()
+	{
+		if (!self::$db) {
+			try {
+				$database = 'mysql:dbname='. SCHEMA .';host='. SERVER .';port=3306';
+				self::$db = new PDO($database, USERNAME, PASSWD);
+				self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			} catch (PDOException $e) {
+>>>>>>> database-admin
 				die("Error: " . $e->getMessage());
 			}
 		}
@@ -45,7 +64,11 @@
 			$submissions = array();
 			
 			while ($row = $stmt->fetch(PDO::FETCH_BOUND)) {
+<<<<<<< HEAD
 					array_push($submissions, array('sub_PK'=>$sub_PK, 'question_FK'=>$question_FK, 'team_FK'=>$team_FK, 'submission'=>$submission, 'subtime'=>$subtime);
+=======
+					array_push($submissions, array('sub_PK'=>$sub_PK, 'question_FK'=>$question_FK, 'team_FK'=>$team_FK, 'submission'=>$submission, 'subtime'=>$subtime));
+>>>>>>> database-admin
 			}
 			
 			return $submissions;
@@ -53,4 +76,10 @@
 			return false;
 		}
 	}
+<<<<<<< HEAD
 }
+=======
+}
+
+$t = new Submission();
+>>>>>>> database-admin

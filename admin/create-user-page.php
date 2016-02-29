@@ -3,7 +3,11 @@
     <?php
     require_once ('/dbtools/lists.php');
     require_once ('/dbtools/backend.php');
+<<<<<<< HEAD
     require_once ('user-functions.php');
+=======
+    require_once ('user.php');
+>>>>>>> database-admin
     ?>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 </head>
@@ -25,8 +29,12 @@ if(isset(   $_POST['usr'], $_POST['fname'], $_POST['lname'], $_POST['aff'],$_POS
     $usrinfo = array('usr'=>strtolower($_POST['usr']),'fname'=>$_POST['fname'],'lname'=>$_POST['lname'],'aff'=>$_POST['aff'],
         'email'=>$_POST['email'],'phone'=>$_POST['phone'],'street1'=>$_POST['street1'],'street2'=>$_POST['street2'],'city'=>$_POST['city'],
         'state'=>$_POST['state'],'zip'=>$_POST['zip'],'passwd'=>$_POST['passwd'],'cred'=>$_POST['cred']);
+<<<<<<< HEAD
     var_dump($usrinfo);
     create_user($usrinfo);
+=======
+    User::create_user($usrinfo);
+>>>>>>> database-admin
 }
 ?>
 
