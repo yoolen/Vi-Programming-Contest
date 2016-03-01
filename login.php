@@ -107,10 +107,10 @@ LOGIN;
     echo <<<LOG
         <form action="login.php" method="POST">
             <label for="username">Username:&nbsp;</label>
-            <input style="width: 120px;" type="text" name="username">
-            <label for="password">Password:&nbsp;</label> 
+            <input style="width: 120px;" type="text" name="username"><br>
+            <label for="password">Password:&nbsp;</label>
             <input style="width: 120px;" type="password" name="password"> &nbsp;&nbsp;
-            <input class="submit" type="submit" value="Log In">			
+            <input class="submit" type="submit" value="Log In">
         </form>
         <a href="login.php">If you don't like our damn login box. Click Here!</a>
 LOG;

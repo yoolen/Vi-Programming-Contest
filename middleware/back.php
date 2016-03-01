@@ -28,12 +28,12 @@ require_once($_SERVER['DOCUMENT_ROOT'] .'/data/db-info.php');
 function rDate($cID){
 		if($cID == 1)
 			$arr = array(
-				"starttime" => "2016-2-29 13:10",
+				"starttime" => "2016-2-29 21:23",
 				"duration" => "02:30:00"
 			);
 		else if ($cID == 2)
 			$arr = array(
-				'starttime' => '03/28/2016 15:30',
+				'starttime' => '02/29/2016 21:40',
 				'duration' => '01:30:00'
 			);
 		

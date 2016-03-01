@@ -28,7 +28,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 		return self::$db;
 	}
 	
-	function get_all_sbumissions(){
+	public static function get_all_sbumissions(){
 		$conn = self::get_connection_pdo();
 		
 		$stmt = $conn->prepare("SELECT * from contest");
@@ -53,5 +53,4 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
 		}
 	}
 }
-
-$t = new Submission();
+?>

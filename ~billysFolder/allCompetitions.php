@@ -1,5 +1,5 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'].'\data\competition.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '\data\contest.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'\data\question.php');
 if( isset($_POST['competitionID']) == false )
 	;//header("Location: ./allCompetitions.php");

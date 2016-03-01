@@ -27,7 +27,7 @@
 		return self::$db;
 	}
 	
-	function updateGrade($contest_FK, $team_FK, $score) {
+	public static function updateGrade($contest_FK, $team_FK, $score) {
 		$conn = self::getConnection();
 		
 		//Modify grade

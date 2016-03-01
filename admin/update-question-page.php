@@ -6,7 +6,7 @@
  * Time: 7:03 PM
  */
 require_once('question-functions.php');
-require_once ($_SERVER['DOCUMENT_ROOT'].'/data/competition.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/data/contest.php');
 
 if(isset($_POST['qtext'])){
     $result = update_question($_POST['qtext'], $_POST['answer']);

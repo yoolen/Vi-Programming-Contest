@@ -1,5 +1,5 @@
 body {
-    font-family: 'Ubuntu', sans-serif;  
+    font-family: 'Ubuntu', sans-serif;
 }
 header {
     padding: 2vh;
@@ -7,8 +7,8 @@ header {
     min-height: 100px;
     height: 20vh;
     max-height: 150px;
-    background: linear-gradient(to bottom, rgba(178,3,12,1) 1%,rgba(143,2,34,1) 91%,rgba(109,0,25,1) 100%); 
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b2030c', endColorstr='#6d0019',GradientType=0 ); 
+    background: linear-gradient(to bottom, rgba(178,3,12,1) 1%,rgba(143,2,34,1) 91%,rgba(109,0,25,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b2030c', endColorstr='#6d0019',GradientType=0 );
     background-size: cover;
 }
 
@@ -39,7 +39,7 @@ header {
 nav {
     width: 100%;
     min-height: 40px;
-    text-align: center;                
+    text-align: center;
 }
 
 .navi {
@@ -70,7 +70,7 @@ nav {
     transition: background-color .25s ease-in-out;
 }
 
-#content { 
+#content {
     max-width: 900px;
 }
 
@@ -83,8 +83,8 @@ footer {
     padding: 4px;
     min-height: 50px;
     font-size: 10pt;
-    background: linear-gradient(to bottom, rgba(178,3,12,1) 1%,rgba(143,2,34,1) 91%,rgba(109,0,25,1) 100%); 
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b2030c', endColorstr='#6d0019',GradientType=0 ); 
+    background: linear-gradient(to bottom, rgba(178,3,12,1) 1%,rgba(143,2,34,1) 91%,rgba(109,0,25,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b2030c', endColorstr='#6d0019',GradientType=0 );
 }
 
 .logo {
@@ -101,7 +101,7 @@ a:hover {
 }
 a:visited {
     color: inherit;
-    text-decoration: inherit; 
+    text-decoration: inherit;
 }
 
 /* Debug */
@@ -109,7 +109,7 @@ header {
     background-color: orange;
 }
 #content {
-    background-color: purple;
+    background-color: rgb(214,214,214);
 }
 footer {
     background-color: blue;

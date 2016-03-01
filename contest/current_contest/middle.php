@@ -5,10 +5,10 @@
 	$cID = $_POST['contestID'];
 	$uID = $_POST['userID'];
 	
-	if($type === 'checked_in'){
+	if($type == 'checking_in'){
 		$checked = getcheckstatus();
 	}
-	else if ($type === 'checking_in'){
+	else if ($type == 'checked_in'){
 		$checked = checkin($cID, $uID);
 	}
 	

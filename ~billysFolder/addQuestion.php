@@ -1,5 +1,5 @@
 <?php
-	require_once ($_SERVER['DOCUMENT_ROOT'].'/data/competition.php');
+	require_once($_SERVER['DOCUMENT_ROOT'] . '/data/contest.php');
 	require_once ($_SERVER['DOCUMENT_ROOT'].'/data/question.php');
 	$competition = new Competition();
 	$question = new Question();

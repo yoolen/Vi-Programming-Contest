@@ -3,7 +3,7 @@
     <?php
     require_once ('/dbtools/lists.php');
     require_once ('/dbtools/backend.php');
-    require_once ('user.php');
+    require_once('user.php');
     ?>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 </head>

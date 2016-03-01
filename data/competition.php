@@ -43,7 +43,7 @@ class Competition
 	}
 
 	//Inserts the contest into the contest bank.
-	function insert_competition($date, $hour, $minute, $seconds, $duration, $creator_FK)
+	public static function insert_competition($date, $hour, $minute, $seconds, $duration, $creator_FK)
 	{
 		$conn = self::get_connection_pdo();
 
@@ -68,7 +68,7 @@ class Competition
 	}
 
 	//Insert a teams checkin to the checkin bank.
-	function insert_checkin($contest_FK, $team_FK, $checkedin)
+	public static function insert_checkin($contest_FK, $team_FK, $checkedin)
 	{
 		$conn = self::get_connection_pdo();
 
@@ -91,7 +91,7 @@ class Competition
 		}
 	}
 	//Returns all the competitions
-	function get_all_competitions()
+	public static function get_all_competitions()
 	{
 		$conn = self::get_connection_pdo();
 
@@ -116,13 +116,10 @@ class Competition
 		}
 	}
 
-	function add_question_to_contest($cid, $qid, $seqnum)
+	public static function add_question_to_contest($cid, $qid, $seqnum)
 	{
 		$conn = self::get_connection_mysqli();
 		$conn->autocommit(false);
-		echo $qid;
-		echo $cid;
-		echo $seqnum;
 		$sql = "INSERT INTO cs491.contestquestions(contest_FK, question_FK, sequencenum) VALUES (?,?,?)";
 		if ($stmt = $conn->prepare($sql)) {
 			$stmt->bind_param('iii', $cid, $qid, $seqnum);
@@ -140,7 +137,7 @@ class Competition
 		$conn->close();
 	}
 	
-	function update_competition_time($contest_PK, $date, $hour, $minute, $seconds){
+	public static function update_competition_time($contest_PK, $date, $hour, $minute, $seconds){
 		$conn = self::get_connection_pdo();
 		
 		$stmt = $conn->prepare("UPDATE contest SET starttime = :starttime WHERE contest_PK = :contest_PK");

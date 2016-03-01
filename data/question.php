@@ -152,28 +152,23 @@ class Question
         return $questions;
     }
 
-    public static function get_contest_questions($cid)
-    {
-        // this function accepts a contest id and returns an associated array of contest problems in the form:
-        // 'seqnum'=>$seqnum,'question'=>$question,'answer'=>$answer
+    public static function delete_question($qid){ // this function needs to check for deleteability
         $conn = self::get_connection_mysqli();
-
-        $sql = "SELECT qtext, answer, sequencenum FROM cs491.question INNER JOIN cs491.contestquestions ON cs491.question.question_PK=cs491.contestquestions.question_FK WHERE cs491.contestquestions.contest_FK=?";
+        $conn->autocommit(false);
+        $sql = "DELETE FROM question WHERE question_PK=?";
         if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param('i', $cid);
+            $stmt->bind_param('i', $qid);
             $stmt->execute();
-            $stmt->bind_result($qtext, $answer, $seqnum);
-            $questions = array();
-            while ($stmt->fetch()) {
-                array_push($questions, array('seqnum' => $seqnum, 'question' => $qtext, 'answer' => $answer));
-            }
             $stmt->close();
         } else {
             echo 'Error querying database.';
         }
+        if(!$conn->commit()){
+            print("Commit error.");
+            $conn->close();
+            exit();
+        }
         $conn->close();
-        return $questions;
     }
 }
-
 ?>
