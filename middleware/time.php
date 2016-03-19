@@ -1,17 +1,18 @@
 <?php
 	include 'back.php'; // Backend functions
-	//date_default_timezone_set('America/New_York'); // The Eastern time
+	date_default_timezone_set('America/New_York'); // The Eastern time
 	$type = $_POST['type'];
 	$cID = $_POST['contestID'];
+	$date = $_POST['dateObj'];
 	
 	/* This function returns a json object to the javascript section. It has the year, month, day, hour, minutes, seconds and a signal (1, 0, -1).
 	1 - The competition has not started yet.
 	0 - The competition has started (countdown timer in effect)
 	-1 - The competition has ended (can only view the summary) */
-	function dateDiff($cID){
+	function dateDiff($cID, $compDate){
 		$signal = 1; // Start with a signal of 1
 		
-		$compDate = rDate($cID);//get_contest_sched($cID); // Get the set date
+		//$compDate = get_contest_sched($cID);//rDate($cID); // Get the set date
 		
 		// Combine the date and time to a workable format for the DateTime object
 		$startDate = $compDate['starttime'];
@@ -52,10 +53,10 @@
 		return json_encode($diffTime); // Return the difference time object
 	}
 	
-	function check_in_diff($type, $cID){
+	function check_in_diff($cID, $compDate){
 		$signal = 1; // Start with a signal of 1
 		
-		$compDate = rDate($cID); // Get the set date
+		//$compDate = get_contest_sched($cID);//rDate($cID); // Get the set date
 		
 		// Combine the date and time to a workable format for the DateTime object
 		$startDate = $compDate['starttime'];
@@ -103,11 +104,20 @@
 				else return false;
 	}
 	
+	function filter_past_contests($contest_info){
+		$cID = $contest_info['cid'];
+		$date = array('starttime' => $contest_info['starttime'], 'duration' => $contest_info['duration']);
+		
+		$time_array = json_decode(check_in_diff($cID, $date), true);
+		
+		if($time_array['signal'] == -1)
+			return true;
+		else
+			return false;
+	}
+	
 	if($type == 'check_in')
-		echo check_in_diff($type, $cID);
-	else
-		echo dateDiff($cID); // Return the difference time object
-	
-	
-	
+		echo check_in_diff($cID, $date);
+	else if($type == 'pre' || $type == 'post' || $type == 'on-time')
+		echo dateDiff($cID, $date); // Return the difference time object
 ?>

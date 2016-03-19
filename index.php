@@ -30,6 +30,5 @@ if( isset($_SESSION['perms']) ) { //Are we logged In?
 }
 require_once('theme/theme-footer.php'); //Contains Display Footer
 ?>
-<html><body>
 </body>
 </html>

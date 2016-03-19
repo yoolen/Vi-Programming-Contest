@@ -1,16 +1,15 @@
 <?php
-if( isset($_POST['competitionID']) == false )
-	header("Location: ./allCompetitions.php");
-echo 'Editing Competition '.$_POST['competitionID'];
+if( isset($_POST['contestID']) == false )
+	header("Location: ./allContests.php");
 ?>
 <html>
 <head>
 </head>
 <body>
-<br>
-Add New Question
+<h1>New Question</h1>
+<h2><?php echo 'Contest '.$_POST['contestID'];?></h2>
 <table> <form action="addQuestion.php" method="POST">
-		<input type="hidden" name="competitionID" value=<?php echo '"'.$_POST['competitionID'].'"'; ?>>
+		<input type="hidden" name="contestID" value=<?php echo '"'.$_POST['contestID'].'"'; ?>>
         <tr>
             <td>
                 <label>Question Title:</label>
@@ -36,73 +35,12 @@ Add New Question
             </td>
         </tr>
         <tr>
-           <td>
-                <label>Input 1:</label>
-           </td>
-           <td>
-                <textarea name="input1" id="input1" rows="4" cols="40"></textarea><br/>
-           </td>
-           <td>
-                <label>Output 1:</label>
-            </td>
-            <td>
-                <textarea name="output1" id="output1" rows="4" cols="40"></textarea><br/>
-            </td> 
-            <td>
-                <label>Notes 1(optional):</label>
-            </td>
-            <td>
-                <textarea name="notes1" id="notes1" rows="4" cols="40"></textarea><br/>
-            </td>
-            
-        </tr>
-        <tr>
-            
-            <td>
-                <label>Input 2:</label>
-            </td>
-            <td>
-                <textarea name="input2" id="input2" rows="4" cols="40"></textarea><br/>
-            </td>
-            <td>
-                <label>Output 2:</label>
-            </td>
-            <td>
-                <textarea name="output2" id="output2" rows="4" cols="40"></textarea><br/>
-            </td>
-            <td>
-                <label>Notes 2(optional):</label>
-            </td>
-            <td>
-                <textarea name="notes2" id="notes2" rows="4" cols="40"></textarea><br/>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Input 3:</label>
-            </td>
-            <td>
-                <textarea name="input3" id="input3" rows="4" cols="40"></textarea><br/>
-            </td>
-            <td>
-                <label>Output 3:</label>
-            </td>
-            <td>
-                <textarea name="output3" id="output3" rows="4" cols="40"></textarea><br/>
-            </td>
-            <td>
-                <label>Notes 3(optional):</label>
-            </td>
-            <td>
-                <textarea name="notes3" id="notes3" rows="4" cols="40"></textarea><br/>
-            </td>
-        </tr>
-        <tr>
             <td>
                 <input type="submit" name="create" value="Create Question">
 
             </td>
         </tr>
     </form></table>
-</body>
+<form method="post" action="contestQuestions.php"><input type="hidden" name="contestID" value=<?php echo '"'.$_POST['contestID'].'"'; ?>><input type="submit" value="Back to Contest Page"></form>
+	</body>
 </html>

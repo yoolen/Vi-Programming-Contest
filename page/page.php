@@ -5,6 +5,18 @@ class Page {
     return "NJIT Programming Contest for High School Students!";
   }
 
+  public function getPageImports() {
+      return "";
+  }
+
+  public function getInitialization() {
+      return "";
+  }
+
+  public function onLoad() {
+    return "";
+  }
+
   public function getPageContent() {
     return <<<ERR
 <h2>Page Could Not Be Found</h2>
@@ -25,4 +37,5 @@ class Home extends Page {
 ERR;
   }
 }
+
 ?>

@@ -16,14 +16,14 @@
 	}
 	
 	function checkin($cID, $teamID){
-		if($cID == 1 && $teamID == 12){
+		if($cID == 1 && $teamID == 1){
 			return 1;
 		}
 		return 0;
 	}
 	
 	function getcheckstatus(){
-		$checked = 1;
+		$checked = 0;
 		return $checked;
 	}
 	//echo json_encode($contest);

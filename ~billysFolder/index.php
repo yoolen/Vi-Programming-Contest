@@ -1,1 +1,1 @@
-<a href="./allCompetitions.php">View All Competitions</a>
+<a href="./allContests.php">View All Contests</a>

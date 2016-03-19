@@ -1,5 +1,11 @@
 <?php
-echo "Logged in as USER ID ".$_SESSION['uid'];
-echo "<br>Credentials: ".$_SESSION['creds'];
-echo "<br><a href='../logout.php'>Logout</a>";
+require_once ($_SERVER['DOCUMENT_ROOT'] . '\data\user.php');
+require_once ($_SERVER['DOCUMENT_ROOT'] . '\utility\front-utilities.php');
+$user = User::get_user($_SESSION['uid']);
+$affiliation = User::get_affiliation_name($_SESSION['uid']);
+echo "<div class='avatar'><img src='".get_gravatar($user['email'])."' src='".$user['fname'].' '.$user['lname']."' /></div>";
+echo "Welcome Back ".$user['fname'].' '.$user['lname']."!";
+echo "<br>Affiliation: ".$affiliation."";
+//echo "<br>Credentials: ".$_SESSION['creds'];
+echo "<br><a href='../_settings/'>Settings</a> | <a href='../logout.php'>Logout</a>";
 ?>

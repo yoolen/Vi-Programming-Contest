@@ -1,6 +1,12 @@
 <?php
+
+require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
+
 class DatabaseConnection{
-	public static function get_connection_pdo()
+	
+	protected static $db;
+	
+	public static function get_connection()
 	{
 		if (!self::$db) {
 			try {

@@ -1,9 +1,13 @@
 <?php
+
+//Session Start Check. This condition is used for the standalone login page.
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
 require_once ($_SERVER['DOCUMENT_ROOT'] . '\admin\user-functions.php');
+
+//Check for login post.
 if (isset($_POST['username'], $_POST['password'])) {
     $result = verify($_POST['username'], $_POST['password']);
     $_SESSION['uid'] = $result['usrID'];
@@ -13,12 +17,15 @@ if (isset($_POST['username'], $_POST['password'])) {
     }
 }
 
+//Place holder for login error messages.
 $err = '';
+
+
 if (isset($_SESSION['creds']) and $_SESSION['creds'] < 0) {
     $err = '<h3 class="err">Invalid Username or Password.</h3>';
 }
 if (isset($_SESSION['creds']) and $_SESSION['creds'] >= 0) {
-    $err = strval($_SESSION['creds']);
+    header("Location: index.php");
 }
 
 if (count(get_included_files()) === 3) {
@@ -31,49 +38,7 @@ if (count(get_included_files()) === 3) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
-
-        <style>
-            body {
-                background: linear-gradient(to bottom,  rgba(214,214,214,1) 0%,rgba(183,183,183,1) 49%,rgba(201,201,201,1) 51%,rgba(229,229,229,1) 100%); /* W3C */
-                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d6d6d6', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
-                background-repeat: no-repeat;
-                background-attachment: fixed;
-                font-family: 'Ubuntu', sans-serif;
-            }
-            #main {
-                position: absolute;
-                width: 700px;
-                height: 550px;
-                z-index: 15;
-                top: 50%;
-                left: 50%;
-                margin: -275px 0 0 -350px;
-                background: white;
-                border-radius: 6px;
-                padding: 5px;
-                opacity: 0.5;
-                text-align: center;
-            }
-            .err {
-                color: red;
-            }
-            .main {
-                opacity: 1;
-            }
-
-            a {
-                color: inherit;
-                text-decoration: inherit;
-            }
-            a:hover {
-                color: inherit;
-                text-decoration: underline;
-            }
-            a:visited {
-                color: inherit;
-                text-decoration: inherit;
-            }
-        </style>
+        <link href='../style/login.css' rel='stylesheet' type='text/css'>
     </head>
     <body>
         <div id="main">
@@ -109,10 +74,10 @@ LOGIN;
             <label for="username">Username:&nbsp;</label>
             <input style="width: 120px;" type="text" name="username"><br>
             <label for="password">Password:&nbsp;</label>
-            <input style="width: 120px;" type="password" name="password"> &nbsp;&nbsp;
+            <input style="width: 120px;" type="password" name="password"> <br>
             <input class="submit" type="submit" value="Log In">
         </form>
-        <a href="login.php">If you don't like our damn login box. Click Here!</a>
+        <!--a href="login.php">Alternate Login</a-->
 LOG;
 }
 

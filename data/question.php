@@ -4,89 +4,33 @@ Matt Wolfman
 Terry Chern
 CS 491
 */
-require_once($_SERVER['DOCUMENT_ROOT'] . '\data\db-info.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '\data\database-connection.php');
 
-class Question
-{
-    protected static $db;
-
-    public function __construct()
-    {
-
-    }
-
-    private function __clone()
-    {
-
-    }
-
-    private function get_connection_pdo()
-    {
-        if (!self::$db) {
-            try {
-                $database = 'mysql:dbname=' . SCHEMA . ';host=' . SERVER . ';port=3306';
-                self::$db = new PDO($database, USERNAME, PASSWD);
-                self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            } catch (PDOException $e) {
-                die("Error: " . $e->getMessage());
-            }
-        }
-        return self::$db;
-    }
-
-    private function get_connection_mysqli(){
-        self::$db = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
-        if (self::$db->connect_error) {
-            die("Connection failed: " . self::$db->connect_error);
-        }
-        return self::$db;
-    }
-
+class Question{
     //Inserts the question to the question bank.
-    public static function insert_question($title, $qtext, $answer, $deleteable)
-    {
-        $conn = self::get_connection_pdo();
-        $conn->beginTransaction();
-        $stmt = $conn->prepare("INSERT INTO question (title, qtext, answer, deleteable) VALUES (:title, :qtext, :answer, :deleteable)");
-
-        $stmt->bindParam(':title', $t);
-        $stmt->bindParam(':qtext', $q);
-        $stmt->bindParam(':answer', $a);
-        $stmt->bindParam(':deleteable', $d);
-
-        $t = $title;
-        $q = $qtext;
-        $a = $answer;
-        $d = $deleteable;
-
-        $stmt->execute();
-        $qid = $conn->lastInsertId();
-        if (!$conn->commit()) {
-            print("Transaction commit failed!\n");
-            $conn = null;
-            exit();
-        }
-        $conn = null;
-        return $qid;
+    public static function insert_question($title, $qtext, $answer, $deleteable){
+        $conn = DatabaseConnection::get_connection();
+		$sql = "INSERT INTO question (title, qtext, answer, deleteable) VALUES (:title, :qtext, :answer, :deleteable)";
+        $stmt = $conn->prepare($sql);   
+		$stmt->bindParam(':title', $title);
+        $stmt->bindParam(':qtext', $qtext);
+        $stmt->bindParam(':answer', $answer);
+        $stmt->bindParam(':deleteable', $deleteable);
+        $status = $stmt->execute();
+		if($status){
+			$qid = $conn->lastInsertId();
+			return $qid;
+		} else {
+			return false;
+		}
     }
 
-    //Inserts the new question into the questionio
-    public static function insert_question_io($question_FK, $input, $output, $notes)
-    {
-        $conn = self::get_connection_pdo();
-        $stmt = $conn->prepare("INSERT INTO questionio (question_FK, input, output, notes) VALUES (:question_FK, :input, :output, :notes);");
-        $stmt->bindParam(':question_FK', $q);
-        $stmt->bindParam(':input', $i);
-        $stmt->bindParam(':output', $o);
-        $stmt->bindParam(':notes', $n);
-
-        $q = $question_FK;
-        $i = $input;
-        $o = $output;
-        $n = $notes;
-
+    public static function delete_question_io($qio_PK){
+        $conn = DatabaseConnection::get_connection();
+        $sql = "DELETE FROM questionio WHERE qio_PK=:qio_PK";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':qio_PK', $qio_PK);
         $status = $stmt->execute();
-
         if ($status) {
             return true;
         } else {
@@ -94,81 +38,191 @@ class Question
         }
     }
 
-    public static function modify_question($qid, $title, $qtext, $answer, $deleteable){
-        $conn = self::get_connection_mysqli();
-        $conn->autocommit(false);
-        $sql = "UPDATE cs491.question SET title=?, qtext=?, answer=?, deleteable=? WHERE question_PK=?";
-
-        if($stmt = $conn->prepare($sql)){
-            $stmt->bind_param('sssii',$title,$qtext,$answer,$deleteable,$qid);
-            $stmt->execute();
-            $stmt->close();
+    //Inserts the new question into the questionio
+    public static function insert_question_io($question_FK, $input, $output, $notes){
+        $conn = DatabaseConnection::get_connection();
+		$sql = "INSERT INTO questionio (question_FK, input, output, notes) VALUES (:question_FK, :input, :output, :notes)";
+        $stmt = $conn->prepare($sql);
+		$stmt->bindParam(':question_FK', $question_FK);
+        $stmt->bindParam(':input', $input);
+        $stmt->bindParam(':output', $output);
+        $stmt->bindParam(':notes', $notes);
+        $status = $stmt->execute();
+		if ($status) {
+            return true;
+        } else {
+            return false;
         }
-
-        if(!$conn->commit()){
-            print('Error committing.');
-            $conn->close();
-            exit();
-        }
-        $conn->close();
     }
 
-    public static function modify_questionio($qioid, $input, $output, $notes){
-        $conn = self::get_connection_mysqli();
-        $conn->autocommit(false);
-        $sql = "UPDATE cs491.questionio SET input=?, output=?, notes=? WHERE qio_PK=?";
+    public static function get_all_question_io($question_FK, $contest_FK){
+        $conn = DatabaseConnection::get_connection();
+        $sql = "SELECT qio_PK,questionio.question_FK,input,output,notes FROM questionio INNER JOIN contestquestions ON contestquestions.question_FK = questionio.question_FK WHERE contest_FK=:contest_FK";
+        $stmt = $conn->prepare($sql);
 
-        if($stmt = $conn->prepare($sql)){
-            $stmt->bind_param('sssi',$input,$output,$notes,$qioid);
-            $stmt->execute();
-            $stmt->close();
-        }
+        $stmt->bindParam(':contest_FK', $contest_FK);
 
-        if(!$conn->commit()){
-            print('Error committing.');
-            $conn->close();
-            exit();
+        $status = $stmt->execute();
+        if($status){
+            $stmt->bindColumn('qio_PK', $qio_PK);
+            $stmt->bindColumn('question_FK', $question_FK);
+            $stmt->bindColumn('input', $input);
+            $stmt->bindColumn('output', $output);
+            $stmt->bindColumn('notes', $notes);
+
+            $ios = array();
+			
+			while ($row = $stmt->fetch(PDO::FETCH_BOUND)) {
+				array_push($ios, array('qioid'=>$qio_PK, 'qid'=>$question_FK, 'input'=>$input, 'output'=>$output, 'notes'=>$notes));
+			}
+			return $ios;
+        } else {
+            return false;
         }
-        $conn->close();
     }
 
-    public static function get_all_questions()
-    {
-        $conn = self::get_connection_mysqli();
-        //$qid = $question = $answer = '';
-        $sql = "SELECT * FROM cs491.question";
-        if ($stmt = $conn->prepare($sql)) {
-            $stmt->execute();
-            $stmt->bind_result($qid, $title, $question, $answer, $deleteable);
+    public static function get_question_io($qio_PK){
+        $conn = DatabaseConnection::get_connection();
+        $sql = "SELECT question_FK,input,output,notes FROM questionio WHERE qio_PK=:qio_PK";
+        $stmt = $conn->prepare($sql);
+
+        $stmt->bindParam(':qio_PK', $qio_PK);
+
+        $status = $stmt->execute();
+        if($status){
+            $stmt->bindColumn('question_FK', $question_FK);
+            $stmt->bindColumn('input', $input);
+            $stmt->bindColumn('output', $output);
+            $stmt->bindColumn('notes', $notes);
+
+            $stmt->fetch(PDO::FETCH_BOUND);
+            return array('qioid'=>$qio_PK, 'qid'=>$question_FK, 'input'=>$input, 'output'=>$output, 'notes'=>$notes);
+        } else {
+            return false;
+        }
+    }
+
+	//Modify the question in the question bank 
+    public static function modify_question($question_PK, $title, $qtext, $answer, $deleteable){
+        $conn = DatabaseConnection::get_connection();
+        $sql = "UPDATE question SET title=:title, qtext=:qtext, answer=:answer, deleteable=:deleteable WHERE question_PK=:question_PK";
+		$stmt = $conn->prepare($sql);	
+		$stmt->bindParam(':question_PK', $question_PK);
+        $stmt->bindParam(':title', $title);
+        $stmt->bindParam(':qtext', $qtext);
+        $stmt->bindParam(':answer', $answer);
+        $stmt->bindParam(':deleteable', $deleteable);	
+        $status = $stmt->execute();
+		if ($status) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+	//Modify the question in the questionio bank 
+    public static function modify_question_io($qio_PK, $input, $output, $notes){
+        $conn = DatabaseConnection::get_connection();
+        $sql = "UPDATE questionio SET input=:input, output=:output, notes=:notes WHERE qio_PK=:qio_PK";
+		$stmt = $conn->prepare($sql);
+
+		$stmt->bindParam(':qio_PK', $qio_PK);
+        $stmt->bindParam(':input', $input);
+        $stmt->bindParam(':output', $output);
+        $stmt->bindParam(':notes', $notes);
+		$status = $stmt->execute();
+		if ($status) {
+            return true;
+        } else {
+            return false;
+        }  
+    }
+
+    public static function get_all_questions(){
+        $conn = DatabaseConnection::get_connection();
+        $sql = "SELECT * FROM question";
+        $stmt = $conn->prepare($sql);
+		
+        $status = $stmt->execute();
+		if($status){
+			$stmt->bindColumn('question_PK', $question_PK);
+			$stmt->bindColumn('title', $title);
+			$stmt->bindColumn('qtext', $qtext);
+			$stmt->bindColumn('answer', $answer);
+			$stmt->bindColumn('deleteable', $deleteable);
+			
+			$questions = array();
+			
+			while ($row = $stmt->fetch(PDO::FETCH_BOUND)) {
+				array_push($questions, array('qid'=>$question_PK, 'title'=>$title, 'qtext'=>$qtext, 'answer'=>$answer, 'deleteable'=>$deleteable));
+			}
+			return $questions;
+		} else {
+			return false;
+		}
+    }
+
+    public static function get_all_questions_no_ans(){
+        $conn = DatabaseConnection::get_connection();
+        $sql = "SELECT question_PK, title, qtext FROM question";
+        $stmt = $conn->prepare($sql);
+
+        $status = $stmt->execute();
+        if($status){
+            $stmt->bindColumn('question_PK', $question_PK);
+            $stmt->bindColumn('title', $title);
+            $stmt->bindColumn('qtext', $qtext);
+
             $questions = array();
-            while ($stmt->fetch()) {
-                array_push($questions, array('qid' => $qid, 'title' => $title, 'question' => $question, 'answer' => $answer, 'deleteable' => $deleteable));
-            }
-            $stmt->close();
-        } else {
-            echo 'Error querying database.';
-        }
-        $conn->close();
-        return $questions;
-    }
 
-    public static function delete_question($qid){ // this function needs to check for deleteability
-        $conn = self::get_connection_mysqli();
-        $conn->autocommit(false);
-        $sql = "DELETE FROM question WHERE question_PK=?";
-        if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param('i', $qid);
-            $stmt->execute();
-            $stmt->close();
+            while ($row = $stmt->fetch(PDO::FETCH_BOUND)) {
+                array_push($questions, array('qid'=>$question_PK, 'title'=>$title, 'qtext'=>$qtext));
+            }
+            return $questions;
         } else {
-            echo 'Error querying database.';
+            return false;
         }
-        if(!$conn->commit()){
-            print("Commit error.");
-            $conn->close();
-            exit();
-        }
-        $conn->close();
+    }
+	
+	public static function get_question($question_PK){
+        $conn = DatabaseConnection::get_connection();
+        $sql = "SELECT * FROM question WHERE question_PK = :question_PK";
+        $stmt = $conn->prepare($sql);
+		
+		$stmt->bindParam(':question_PK', $q);
+		
+		$q = $question_PK;
+		$status = $stmt->execute();
+        if($status){
+			$stmt->bindColumn('question_PK', $question_PK);
+			$stmt->bindColumn('title', $title);
+			$stmt->bindColumn('qtext', $qtext);
+			$stmt->bindColumn('answer', $answer);
+			$stmt->bindColumn('deleteable', $deleteable);
+			
+			$questions = array();
+			
+			while ($row = $stmt->fetch(PDO::FETCH_BOUND)) {
+				array_push($questions, array('qid'=>$question_PK, 'title'=>$title, 'qtext'=>$qtext, 'answer'=>$answer, 'deleteable'=>$deleteable));
+			}
+			return $questions[0];
+		} else {
+			return false;
+		}
+    }
+	
+	// this function needs to check for deleteability
+	//Is deleteability  = 0?
+    public static function delete_question($question_PK){ 
+        $conn = DatabaseConnection::get_connection();
+        $sql = "DELETE FROM question WHERE question_PK=:question_PK AND deleteable = 1";
+        $stmt = $conn->prepare($sql);	
+        $stmt->bindParam(':question_PK', $question_PK);
+        $status = $stmt->execute();
+		if ($status) {
+            return true;
+        } else {
+            return false;
+        } 
     }
 }
 ?>

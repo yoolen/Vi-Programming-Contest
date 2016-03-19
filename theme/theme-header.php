@@ -33,10 +33,23 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <?php include_once 'navigation.php' ?>
-                <li class="pull-right"><a href="#">NJIT CCS</a></li>
-                <li class="pull-right"><a href="#">Previous Competitions</a></li>
-                <li class="pull-right"><a href="#">About Contest</a></li>
+                <li class="<?php
+                if (!isset($_GET["page"]) or (strcmp($_GET["page"], "home") == 0 or empty($_GET['page']))) {
+                    echo "active";
+                }
+                ?>"><a href="../_home/">Home</a></li>
+                    <?php include_once '/page/navigation.php' ?>
+                <li class="pull-right"><a href="http://ccs.njit.edu">NJIT CCS</a></li>
+                <li class="pull-right<?php
+                if (isset($_GET["page"]) and strcmp($_GET["page"], "previous") == 0) {
+                    echo " active";
+                }
+                ?>"><a href="../_previous/">Previous Contests</a></li>
+                <li class="pull-right<?php
+                    if (isset($_GET["page"]) and strcmp($_GET["page"], "about") == 0) {
+                        echo " active";
+                    }
+                    ?>"><a href="../_about">About Contest</a></li>
             </ul>
         </div>
     </div>

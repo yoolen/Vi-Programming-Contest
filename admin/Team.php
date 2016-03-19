@@ -7,7 +7,7 @@
  */
 require_once($_SERVER['DOCUMENT_ROOT'] . '/data/db-info.php');
 
-class Team
+class Team1
 {
 
     protected static $db;

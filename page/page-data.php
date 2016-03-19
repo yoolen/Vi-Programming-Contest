@@ -1,22 +1,54 @@
 <?php
-function getAuxiliaryPageData() {
 
+require_once 'page.php';
+$page = null;
+
+function getPage() {
+    global $page;
+    if (is_null($page)) {
+        if (empty($_GET['page']) or strcmp($_GET["page"], "home") == 0) {
+            $page = new Home();
+            return;
+        }
+        switch ($_GET['page']) {
+            case "current":
+                require_once './page/current-contests.php';
+                $page = new Current_Contests();
+                return;
+            case "userManager":
+                require_once './page/user-manager.php';
+                $page = new User_Manager();
+                return;
+            default:
+                $page = new Page();
+        }
+        $page = new Page();
+    }
+}
+
+function onLoad() {
+  global $page;
+  getPage();
+  echo $page->onLoad();
+}
+
+function getPageImports() {
+    global $page;
+    getPage();
+    echo $page->getPageImports();
+    return;
+}
+
+function getAdditionalInitialization() {
+    global $page;
+    getPage();
+    echo $page->getInitialization();
 }
 
 function getPageContent() {
-  if (empty($_GET['page']) or strcmp($_GET["page"], "home") == 0) {
-          $page = new Home();
-          $page->getPageContent();
-          return;
-      }
-      switch ($_GET['page']) {
-        default:
-          $page = new Page();
-          $page->getPageContent();
-          return;
-      }
-    $page = new Page();
-    $page->getPageContent();
+    global $page;
+    getPage();
+    echo $page->getPageContent();
     return;
 }
 
@@ -24,17 +56,11 @@ function getWarnData() {
 
 }
 
-
 function getPageTitle() {
-    require_once 'page.php';
-    if (isset($_GET['page'])) {
-        switch ($_GET['page']) {
-          case 'Home':
-            $home = new Home();
-            $home = getPageTitle();
-            return;
-          }
-        }
-  return "NJIT Programming Contest for High School Students!";
+    global $page;
+    getPage();
+    echo $page->getPageTitle();
+    return;
 }
+
 ?>
