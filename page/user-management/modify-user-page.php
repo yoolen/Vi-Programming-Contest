@@ -1,45 +1,43 @@
-<html>
-<head>
-    <?php
-    require_once ('/dbtools/lists.php');
-    require_once ('/dbtools/backend.php');
-    require_once($_SERVER['DOCUMENT_ROOT'].'/data/user.php');
-    ?>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-</head>
-
-<body>
+<h3>Edit Existing User</h3>
+<?php
+require_once ($_SERVER['DOCUMENT_ROOT'].'/admin/dbtools/lists.php');
+require_once ($_SERVER['DOCUMENT_ROOT'].'/admin/dbtools/backend.php');
+require_once($_SERVER['DOCUMENT_ROOT'].'/data/user.php');
+$userinfo = USER::get_user($_GET['unit']);
+?>
+<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js'></script>
 
 <?php
-/**
- * Created by PhpStorm.
- * User: yoolen
- * Date: 2/24/2016
- * Time: 7:03 PM
- */
 
-//var_dump($_POST);
+/**
+// * Created by PhpStorm.
+// * User: yoolen
+// * Date: 2/24/2016
+// * Time: 7:03 PM
+// */
 
 if(isset(   $_POST['usr'], $_POST['fname'], $_POST['lname'], $_POST['aff'],$_POST['email'], $_POST['phone'],
-    $_POST['street1'], $_POST['city'], $_POST['state'], $_POST['zip'], $_POST['passwd'], $_POST['cred'])){
+    $_POST['street1'], $_POST['city'], $_POST['state'], $_POST['zip'], $_POST['creds'])){
     $usrinfo = array('usr'=>strtolower($_POST['usr']),'fname'=>$_POST['fname'],'lname'=>$_POST['lname'],'aff'=>$_POST['aff'],
         'email'=>$_POST['email'],'phone'=>$_POST['phone'],'street1'=>$_POST['street1'],'street2'=>$_POST['street2'],'city'=>$_POST['city'],
-        'state'=>$_POST['state'],'zip'=>$_POST['zip'],'passwd'=>$_POST['passwd'],'cred'=>$_POST['cred']);
-    //var_dump($usrinfo);
+        'state'=>$_POST['state'],'zip'=>$_POST['zip'],'creds'=>$_POST['creds']);
+    echo 'ready';
+    var_dump($_POST);
     User::admin_modify_user($usrinfo);
+} else {
+    echo 'not ready';
 }
 ?>
-
-<div id="logon">
-    <form action="modify-user-page.php" method="POST">
+<div id="userinfo">
+    <form action="_userManager_modify_<?php echo $_GET['unit']?>" method="POST">
         <label for="usr">Username:&nbsp;</label>
-        <input type="text" name="usr" id="usr" disabled><br/>
+        <input type="text" name="usr" id="usr" value="<?php echo $userinfo['usr']?>" readonly="readonly"><br/>
 
         <label for="fname">First Name:&nbsp;</label>
-        <input type="text" name="fname" id="fname"><br/>
+        <input type="text" name="fname" id="fname" value="<?php echo $userinfo['fname']?>"><br/>
 
         <label for="lname">Last Name:&nbsp;</label>
-        <input type="text" name="lname" id="lname"><br/>
+        <input type="text" name="lname" id="lname" value="<?php echo $userinfo['lname']?>"><br/>
 
         <label for="aff">Affiliation:&nbsp;</label>
         <select name = "aff" id="aff">
@@ -47,53 +45,67 @@ if(isset(   $_POST['usr'], $_POST['fname'], $_POST['lname'], $_POST['aff'],$_POS
             <?php
             $affils = getaffs();
             foreach($affils as $affil):
-                echo '<option value="'.$affil[0].'">'.$affil.'</option>';
+                if($affil[0] == $userinfo['aff']){
+                    echo '<option value="' . $affil[0] . '" selected="selected">' . $affil . '</option>';
+                } else {
+                    echo '<option value="' . $affil[0] . '">' . $affil . '</option>';
+                }
             endforeach;
             ?>
         </select><br/>
 
         <label for="email">Email:&nbsp;</label>
-        <input type="text" name="email" id="email"><br/>
+        <input type="text" name="email" id="email" value="<?php echo $userinfo['email']?>"><br/>
 
         <label for="phone">Phone:&nbsp;</label>
-        <input type="text" name="phone" id="phone"><br/>
+        <input type="text" name="phone" id="phone" value="<?php echo $userinfo['phone']?>"><br/>
 
         <label for="street1">Street 1:&nbsp;</label>
-        <input type="text" name="street1" id="street1"><br/>
+        <input type="text" name="street1" id="street1" value="<?php echo $userinfo['street1']?>"><br/>
 
         <label for="street2">Street 2:&nbsp;</label>
-        <input type="text" name="street2" id="street2"><br/>
+        <input type="text" name="street2" id="street2" value="<?php echo $userinfo['street2']?>"><br/>
 
         <label for="city">City:&nbsp;</label>
-        <input type="text" name="city" id="city"><br/>
+        <input type="text" name="city" id="city" value="<?php echo $userinfo['city']?>"><br/>
 
         <label for="state">State:&nbsp;</label>
         <select name="state" id="state">
             <option value=""></option>
             <?php
             foreach($states as $state):
-                echo '<option value="'.$state.'">'.$state.'</option>';
+                if ($state == $userinfo['state']){
+                    echo '<option value="' . $state . '" selected="selected">' . $state . '</option>';
+                } else {
+                    echo '<option value="' . $state . '">' . $state . '</option>';
+                }
             endforeach;
             ?>
+
         </select><br/>
 
         <label for="zip">Zip:&nbsp;</label>
-        <input type="text" name="zip" id="zip"><br/>
+        <input type="text" name="zip" id="zip" value="<?php echo $userinfo['zip']?>"><br/>
 
         <label for="passwd">Password:&nbsp;</label>
-        <input type="password" name="passwd" id="passwd"><br/>
+        <input type="password" name="passwd" id="passwd" value="**********" disabled><br/>
 
         <label for="ul">User Level:&nbsp;</label>
-        <select name="cred" id="cred">
+        <select name="creds" id="creds">
             <option value=""></option>
+
             <?php
             foreach($userlevels as $userlevel):
-                echo '<option value="'.$userlevel[0].'">'.$userlevel.'</option>';
-                echo $userlevel[0];
+                if ($userlevel[0] == $userinfo['creds']){
+                    echo '<option value="' . $userlevel[0] . '"selected="selected">' . $userlevel . '</option>';
+                }else {
+                    echo '<option value="' . $userlevel[0] . '">' . $userlevel . '</option>';
+                }
             endforeach;
             ?>
+
         </select><br/>
-        <input type="submit" value="Add User" id="submitbutton">
+        <input type="submit" value="Update" id="submitbutton">
     </form>
 </div>
 
@@ -107,12 +119,10 @@ if(isset(   $_POST['usr'], $_POST['fname'], $_POST['lname'], $_POST['aff'],$_POS
     function validate(){
         if ($('#usr').val() && $('#fname').val() && $('#lname').val() && $('#aff').val() && $('#email').val() &&
             $('#phone').val() && $('#street1').val() && $('#city').val() && $('#state').val() &&
-            $('#zip').val() && $('#passwd').val() && $('#cred').val()) {
+            $('#zip').val() && $('#creds').val()) {
             $("#submitbutton").prop("disabled", false);
         } else {
             $("#submitbutton").prop("disabled", true);
         }
     }
 </script>
-
-</body>

@@ -7,5 +7,5 @@ $states = Array("AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA",
     "VI","VT","WA","WI","WV","WY");
 
 // array with user levels
-$userlevels = Array("1 - Admin", "2 - Judge", "3 - Grader", "4 - Contestant");
+$userlevels = Array("1 - Admin", "2 - Judge", "3 - Grader", "4 - Contestant", "5 - Coach", "6 - Contact");
 ?>

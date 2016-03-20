@@ -88,12 +88,11 @@ class User
          *  The user's username may not be changed. The password much be changed in a separate operation.
          */
         $conn = DatabaseConnection::get_connection();
-        $sql = "UPDATE usr SET fname=:fname, lname=:lname, aff_FK=:aff_FK, email=:email, phone=:phone, street1=:street1, street2=:street2, city=:city, state=:state, zip=:zip, creds=:creds WHERE usrname = :usrname";
+        $sql = "UPDATE usr SET fname=:fname, lname=:lname, aff_FK=:aff_FK, email=:email, phone=:phone, street1=:street1, street2=:street2, city=:city, state=:state, zip=:zip, creds=:creds WHERE usrname=:usrname";
         $stmt = $conn->prepare($sql);
-		$stmt->bindParam(':usrname', $usrinfo['usr']);
-        $stmt->bindParam(':fname', $usrinfo['fname']);
+		$stmt->bindParam(':fname', $usrinfo['fname']);
 		$stmt->bindParam(':lname', $usrinfo['lname']);
-		$stmt->bindParam(':aff', $usrinfo['aff']);
+		$stmt->bindParam(':aff_FK', $usrinfo['aff']);
 		$stmt->bindParam(':email', $usrinfo['email']);
 		$stmt->bindParam(':phone', $usrinfo['phone']);
 		$stmt->bindParam(':street1', $usrinfo['street1']);
@@ -102,7 +101,8 @@ class User
 		$stmt->bindParam(':state', $usrinfo['state']);
 		$stmt->bindParam(':zip', $usrinfo['zip']);
 		$stmt->bindParam(':creds', $usrinfo['creds']);
-        $status = $stmt->execute();
+		$stmt->bindParam(':usrname', $usrinfo['usr']);
+		$status = $stmt->execute();
         if($status) {
             return true;
 		} else {
@@ -146,7 +146,6 @@ class User
 		$stmt = $conn->prepare($sql);
 		$stmt->bindParam(':usr_PK', $usr_PK);
 		$stmt->bindParam(':passhash', $passhash);
-		$stmt = $conn->prepare($sql);
         $status = $stmt->execute();
         if ($status) {
 			return true;
@@ -186,6 +185,24 @@ class User
 			return false;
 		}
     }
+
+	public static function get_user_PK($usrname)
+	{
+		// This function returns an associated array with all user information except password. This may be used to
+		// populate forms with information (written specifically with modify_user() in mind).
+		$conn = DatabaseConnection::get_connection();
+		$sql = "SELECT usr_PK FROM usr WHERE usrname=:usrname";
+		$stmt = $conn->prepare($sql);
+		$stmt->bindParam('usrname', $usrname);
+		$status = $stmt->execute();
+		if($status){
+			$stmt->bindColumn('usr_PK', $usr_PK);
+			$stmt->fetch(PDO::FETCH_BOUND);
+			return $usr_PK;
+		} else {
+			return false;
+		}
+	}
 
     public static function get_user_email($usr_PK)
     {

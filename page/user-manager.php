@@ -20,10 +20,18 @@ class User_Manager extends Page
         if (isset($_GET['sub'])) {
             //  if (strcmp($_GET['sub'], "create") == 0) {
             switch ($_GET['sub']) {
-                case 'create':
-                    include '/user-management/create-user-page.html';
+                case 'create':					
+                    require_once '/user-management/create-user-page.php';
+                    return '';
                 case 'modify':
-                    require '/user-management/modify-user-page.html';
+					if(isset($_GET['unit'])) {
+						require_once '/user-management/modify-user-page.php';
+						return '';
+					}
+                    require_once '/user-management/view-users-page.php';
+                    return '';
+                default:
+
             }
         }
         return
