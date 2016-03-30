@@ -19,6 +19,22 @@ function getPage() {
                 require_once './page/user-manager.php';
                 $page = new User_Manager();
                 return;
+            case "teamManager":
+                require_once './page/team-manager.php';
+                $page = new Team_Manager();
+                return;
+            case "results":
+                require_once './page/results.php';
+                $page = new Results();
+                return;
+            case "affManager":
+                require_once './page/affiliation.php';
+                $page = new Affiliation();
+                return;
+            case "contestManager":
+                require_once './page/contest-manager.php';
+                $page = new contestManager();
+                return;
             default:
                 $page = new Page();
         }

@@ -21,16 +21,11 @@ if(isset(   $_POST['usr'], $_POST['fname'], $_POST['lname'], $_POST['aff'],$_POS
     $usrinfo = array('usr'=>strtolower($_POST['usr']),'fname'=>$_POST['fname'],'lname'=>$_POST['lname'],'aff'=>$_POST['aff'],
         'email'=>$_POST['email'],'phone'=>$_POST['phone'],'street1'=>$_POST['street1'],'street2'=>$_POST['street2'],'city'=>$_POST['city'],
         'state'=>$_POST['state'],'zip'=>$_POST['zip'],'creds'=>$_POST['creds']);
-    //echo 'ready';
-    //var_dump($_POST);
-    if(User::admin_modify_user($usrinfo)){
-        echo 'Successfully updated!';
-    } else {
-        echo 'Error, not updated!';
-    }
-
+    echo 'ready';
+    var_dump($_POST);
+    User::admin_modify_user($usrinfo);
 } else {
-    //echo 'not ready';
+    echo 'not ready';
 }
 ?>
 <div id="userinfo">
@@ -51,9 +46,9 @@ if(isset(   $_POST['usr'], $_POST['fname'], $_POST['lname'], $_POST['aff'],$_POS
             $affils = getaffs();
             foreach($affils as $affil):
                 if(trim(explode('-', $affil)[0]) == $userinfo['aff']){
-                    echo '<option value="' . explode(' - ', $affil)[0] . '" selected="selected">' . explode(' - ', $affil)[1] . '</option>';
+                    echo '<option value="' . trim(explode('-', $affil)[0]) . '" selected="selected">' . $affil . '</option>';
                 } else {
-                    echo '<option value="' . explode(' - ', $affil)[0] . '">' . explode(' - ', $affil)[1] . '</option>';
+                    echo '<option value="' . trim(explode('-', $affil)[0]) . '">' . $affil . '</option>';
                 }
             endforeach;
             ?>

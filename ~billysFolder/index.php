@@ -1,1 +1,1 @@
-<a href="./allContests.php">View All Contests</a>
+<?php header("Location: ./allContests.php"); ?>

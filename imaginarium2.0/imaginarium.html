@@ -1,34 +1,5 @@
-<?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-if (!isset($_SESSION['creds']) or $_SESSION['creds'] <= 0) {
-    header("Location: login.php");
-}
+<!DOCTYPE html>
 
-if (isset($_POST['code'])) {
-    require_once "../compilation/classes.php";
-    require_once "../compilation/helper.php";
-    $code = $_POST['code'];
-    $lang = $_POST['language'];
-    $inputs = $_POST['inputs'];
-    $req = new Request($lang, $code, $inputs);
-    $request = json_encode($req);
-    $ch = curl_init('http://cs490.iidcct.com/comp/evaluate.php');
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        'Content-Type: application/json',
-        'Content-Length: ' . strlen($request))
-    );
-
-    $result = json_decode(curl_exec($ch));
-    curl_close($ch);
-    $outBox = $result->output;
-    //print_r($result);
-}
-?>
 <html>
     <head>
         <title>NJIT High School Programming Contest</title>
@@ -38,20 +9,14 @@ if (isset($_POST['code'])) {
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-        <script src="library/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="ace/ace.js" type="text/javascript" charset="utf-8"></script>
         <style>
             body {
                 width:100%;
                 height:100%;
                 margin: 0;
                 padding: 0;
-            }
-
-            h1, h2, h3, h4, h5, h6 {
-                font-family: 'Open Sans', sans-serif;
-            }
-            p, div {
-                font-family: 'Open Sans', sans-serif;
+                font-family: 'Open Sans', sans-serif !important;
             }
 
             .center {
@@ -64,27 +29,17 @@ if (isset($_POST['code'])) {
                 clear: both;
             }
             #hints {
-                font: inherit !important;
+                font-family: 'Open Sans', sans-serif;
                 background-color: lightgray;
                 float: right;
                 height:70vh;
                 width: 15%;
             }
-            #editor {
+            #editor{
                 width:85%;                
                 height:70vh;
                 float: left;
                 overflow-y: hidden;
-                font-style: normal;
-                font-variant: normal;
-                font-weight: normal;
-                font-stretch: normal;
-                font-size: 12px;
-                line-height: normal;
-                font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
-            }
-            #editor div {
-                font: inherit !important;
             }
 
             #dragbar{
@@ -129,16 +84,6 @@ if (isset($_POST['code'])) {
                 height: 8vh;
                 background-color: black;
             }
-            .userinfo {
-                position:absolute;
-                top:0;
-                right:0;
-                width: 16vw;
-                height: 8vh;
-                text-align: center;
-                font-size: 0.75vw;
-            }
-
             #inputs{
                 width:100%;
                 height: 100%;
@@ -149,7 +94,7 @@ if (isset($_POST['code'])) {
                 bottom: 5vh;
                 left: 0;
                 width: 35vw;
-                height: 12vh;
+                height: 8vh;
                 float: left;
             }
             #bottom-main {
@@ -157,7 +102,7 @@ if (isset($_POST['code'])) {
             }
             .outputbox {
                 width: 35vw;
-                height: 12vh;
+                height: 8vh;
                 position: absolute;
                 bottom: 5vh;
                 left: 37vw;
@@ -194,88 +139,87 @@ if (isset($_POST['code'])) {
                 display: table;
             }
         </style>
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     </head>
     <body>
-        <form action="imaginarium.php" id="form" method="POST">
-            <div class="userbox">
-                <div class="gravatar">
-                    <?php
-                    require_once ($_SERVER['DOCUMENT_ROOT'] . '\data\user.php');
-                    require_once ($_SERVER['DOCUMENT_ROOT'] . '\utility\front-utilities.php');
-                    $user = User::get_user($_SESSION['uid']);
-                    $affiliation = User::get_affiliation_name($_SESSION['uid']);
-                    echo "<div class='avatar'><img style='width: 4vw;' src='" . get_gravatar($user['email']) . "' src='" . $user['fname'] . ' ' . $user['lname'] . "' /></div>";
-                    ?>
-                </div>
-                <div class="userinfo">
-                    <?php
-                    echo 'Logged in As: ' . $user['fname'] . ' ' . $user['lname'] . ' <br>';
-                    echo 'Affiliation:  ' . $affiliation . ' <br>';
-                    echo '<a href="http://njit1.initiateid.com/">Click Here to Return to the Dashboard</a>';
-                    ?>
-                </div>
-            </div>
-            <div class="header" >
-                <div class="top">
-                    <div class="head">
-                        <a href="index.php"><img src="images/logo.png" style="height: 8vh;" alt=""/></a>
-                    </div>
-                </div>
-            </div>
-            <div class="center">
-                <div id="editor" class='editor'>/**
-* NJIT High School Programming Contest
-* Java - Code Imaginarium.
-*/
-public static void main(String[] args) {
-    System.out.println("Hello World!");
-}</div>
-                <div id="hints">
-                    <span id="position"></span>
-                    <div id="dragbar"></div>
-                    <h3>Welcome to the Code Imaginarium.</h3>
-                    <p>You are using the Java Code Imaginarium</p>
-                    <h3>Useful Java References</h3>
-                    -<a href="http://java.com/en/">Java.com</a><br>
-                    -<a href="https://docs.oracle.com/javase/8/docs/api/">Java 8 API Documentation</a><br>
-                    -<a href="http://introcs.cs.princeton.edu/java/11cheatsheet/">Quick Java Cheat Sheet</a><br>
-                </div>
-            </div>
-            <div class="bottom">
-                <ul class="nav nav-tabs">
-                    <li><a href="#">Files</a></li>
-                    <li class="active"><a href="#">Console</a></li>
-                    <li><a href="#">Question</a></li>
-                </ul>  
-                <div class='table'>
-                    <div id='bottom-main'>
-                        <div class="io">
-                            <div class="inputbox">
-                                <span class="iolabel">Inputs:</span> <br>
-                                <textarea name='inputs' id="inputs"></textarea>
-                            </div>
-                            <div class="outputbox">
-                                <span class="iolabel">Output:</span> <br>
-                                <textarea name='outputs' id="outputs" style="width:100%; height: 100%" ><?php
-                                    if (isset($outBox)) {
-                                        echo $outBox;
-                                    }
-                                    ?></textarea>
-                            </div>
-                        </div>
-                        <div class="controls">
-                            <input type='hidden' name="code" id="code" value="">
-                            <input type='hidden' name="language" value="java/output">
-                            <input onclick="submitForm()" type="button" value="Execute" class="bigbuttons btn-default" >
-                            <input onclick="clearEditor()" type="button" value="Clear" class="bigbuttons btn-default" >
 
+        <div class="userbox">
+            <div class="gravatar">
+                <?php
+                require_once ($_SERVER['DOCUMENT_ROOT'] . '\data\user.php');
+                require_once ($_SERVER['DOCUMENT_ROOT'] . '\utility\front-utilities.php');
+                $user = User::get_user($_SESSION['uid']);
+                $affiliation = User::get_affiliation_name($_SESSION['uid']);
+                echo "<div class='avatar'><img style='width: 60px;' src='" . get_gravatar($user['email']) . "' src='" . $user['fname'] . ' ' . $user['lname'] . "' /></div>";
+                ?>
+            </div>
+            <div class="userinfo">
+                <?php
+                echo 'Logged in As: ' . $user['fname'] . ' ' . $user['lname'] . ' <br>';
+                echo 'Affiliation:  ' . $affiliation . ' <br>';
+                echo '<a href="http://njit1.initiateid.com/">Click Here to Return to the Dashboard</a>';
+                ?>
+            </div>
+        </div>
+        <div class="header" >
+            <div class="top">
+                <div class="head">
+                    <a href="index.php"><img src="logo.png" style="height: 8vh;" alt=""/></a>
+                </div>
+            </div>
+        </div>
+        <div class="center">
+            <div id="editor" class='editor'>/**
+                * NJIT High School Programming Contest
+                * Java - Code Imaginarium.
+                */
+                public static void main(String[] args) {
+                System.out.println("Hello World!");
+                }</div>
+            <div id="hints">
+                <span id="position"></span>
+                <div id="dragbar"></div>
+                <h5>Welcome to the Code Imaginarium.</h5>
+                <p>You are using the Java Code Imaginarium</p>
+                <h2>Useful Java References</h2>
+                -<a href="http://java.com/en/">Java.com</a><br>
+                -<a href="https://docs.oracle.com/javase/8/docs/api/">Java 8 API Documentation</a><br>
+                -<a href="http://introcs.cs.princeton.edu/java/11cheatsheet/">Quick Java Cheat Sheet</a><br>
+            </div>
+        </div>
+        <div class="bottom">
+            <ul class="nav nav-tabs">
+                <li><a href="#">Files</a></li>
+                <li class="active"><a href="#">Console</a></li>
+                <li><a href="#">Question</a></li>
+            </ul>  
+            <div class='table'>
+                <div id='bottom-main'>
+                    <div class="io">
+                        <div class="inputbox">
+                            <span class="iolabel">Inputs:</span> <br>
+                            <textarea name='inputs' id="inputs"></textarea>
                         </div>
+                        <div class="outputbox">
+                            <span class="iolabel">Output:</span> <br>
+                            <textarea name='outputs' id="outputs" style="width:100%; height: 100%" ><?php
+                                if (isset($outBox)) {
+                                    echo $outBox;
+                                }
+                                ?></textarea>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <input type='hidden' name="code" id="code" value="">
+                        <input type='hidden' name="language" value="java/output">
+                        <input onclick="submitForm()" type="button" value="Execute" class="bigbuttons btn-default" >
+                        <input onclick="clearEditor()" type="button" value="Clear" class="bigbuttons btn-default" >
+
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
         <script type="text/javascript">
             var i = 0;
             var dragging = false;

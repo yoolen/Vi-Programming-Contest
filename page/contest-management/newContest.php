@@ -9,7 +9,7 @@ if(isset($_POST['name'], $_POST['month'],$_POST['day'],$_POST['year'], $_POST['d
 	if($r==0){
 	}
 	else{
-		header("Location: allContests.php");
+		header("Location: ../_contestManager");
 	}
 }
 ?>
@@ -18,7 +18,7 @@ if(isset($_POST['name'], $_POST['month'],$_POST['day'],$_POST['year'], $_POST['d
 </head>
 <body>
 <h1>New Contest</h1>
-<form method="POST" action="newContest.php">
+<form method="POST" action="../_contestManager_create">
 <table>
 <tr><td><b>Name</b></td><td><input type="text" name="name"></td></tr>
 <tr><td><b>Date</b></td><td><b>M</b><input type="text" name="month"></td><td><b>D</b><input type="text" name="day"></td><td><b>Y</b><input type="text" name="year"></td></tr>

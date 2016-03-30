@@ -6,9 +6,9 @@ if (!isset($_SESSION['creds']) or $_SESSION['creds'] <= 0) {
     header("Location: login.php");
 }
 
-require_once "compilation/classes.php";
-require_once "compilation/helper.php";
 if (isset($_POST['code'])) {
+    require_once $_SERVER['DOCUMENT_ROOT']."/compilation/classes.php";
+    require_once $_SERVER['DOCUMENT_ROOT']."/compilation/helper.php";
     $code = $_POST['code'];
     $lang = $_POST['language'];
     $inputs = $_POST['inputs'];
@@ -157,12 +157,12 @@ if (isset($_POST['code'])) {
                 </div>
                 <div class="center">
                     <div class="editor" id="editor">/**
-* NJIT High School Programming Contest
-* Java - Code Imaginarium.
-*/
-public static void main(String[] args) {
-    System.out.println("Hello World!");
-}
+                        * NJIT High School Programming Contest
+                        * Java - Code Imaginarium.
+                        */
+                        public static void main(String[] args) {
+                        System.out.println("Hello World!");
+                        }
                     </div>
                     <div class="hints">
                         <h3>Welcome to the Code Imaginarium.</h3>

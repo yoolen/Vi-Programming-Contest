@@ -13,7 +13,7 @@ $contest = Contest::get_all_contests();
 $x = 0;
 foreach ($contest as $key => $value) {
 	$x++;
-	echo '<tr><td><b>Contest '.$value['cid'].'</b></td><td><form method="post" action="contestQuestions.php" style="display:inline;"><input type="hidden" name="contestID" value="'.$value['cid'].'"><input type="submit" value="Edit Contest"></form></td></tr>';
+	echo '<tr><td><b>Contest '.$value['cid'].': '.$value['name'].'</b></td><td><form method="post" action="contestQuestions.php" style="display:inline;"><input type="hidden" name="contestID" value="'.$value['cid'].'"><input type="submit" value="Edit Contest"></form></td></tr>';
 }
 if ($x==0) echo "<tr><td>There are no contests!</td></tr>"
 ?>

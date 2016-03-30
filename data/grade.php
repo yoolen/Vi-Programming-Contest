@@ -44,7 +44,7 @@
 	}
 	public static function get_results($contest_FK){
 		$conn = DatabaseConnection::get_connection();
-		$sql = "SELECT * FROM teamscore WHERE contest_FK=:contest_FK ORDER BY score DESC";
+		$sql = "SELECT * FROM teamscore INNER JOIN team ON teamscore.team_FK = team.team_PK WHERE contest_FK=:contest_FK ORDER BY score DESC";
 		$stmt = $conn->prepare($sql);
 		$stmt->bindParam(':contest_FK', $contest_FK);	
 		$status = $stmt->execute();	
@@ -52,9 +52,10 @@
 			$stmt->bindColumn('contest_FK', $contest_FK);
 			$stmt->bindColumn('team_FK', $team_FK);
 			$stmt->bindColumn('score', $score);
+			$stmt->bindColumn('teamname', $teamname);
 			$results = array();
 			while($rows = $stmt->fetch(PDO::FETCH_BOUND)){
-				array_push($results, array('contest_FK'=>$contest_FK, 'team_FK'=>$team_FK, 'score'=>$score));
+				array_push($results, array('contest_FK'=>$contest_FK, 'team_FK'=>$team_FK, 'score'=>$score, 'teamname'=>$teamname));
 			}
 			return $results;
 		} else {

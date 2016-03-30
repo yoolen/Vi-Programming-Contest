@@ -2,7 +2,7 @@
 require_once($_SERVER['DOCUMENT_ROOT'].'\data\contest.php');
 
 if( isset($_POST['contestID']) == false )
-	header("Location: ./allContests.php");
+	header("Location: ../page/contest-management/allContests.php");
 if( isset($_POST['delete']) ){
 	Contest::remove_contest_question($_POST['contestID'], $_POST['qid']);
 }
@@ -49,22 +49,22 @@ $contest = Contest::get_contest($_POST['contestID']);
 	$x = 0;
 	foreach ($question as $q => $value) {
 		echo '<tr>
-			   	  <td><form method="post" action="contestQuestions.php" style="display:inline;"><input type="hidden" name="contestID" value="'.$_POST['contestID'].'"><input type="hidden" name="qid" value="'.$value['qid'].'">
+			   	  <td><form method="post" action="../_contestManager_modify" style="display:inline;"><input type="hidden" name="contestID" value="'.$_POST['contestID'].'"><input type="hidden" name="qid" value="'.$value['qid'].'">
 				      <input type="submit" value="&#x25B2;" name="up">
 			   	      <input type="submit" value="&#x25BC;" name="down"><input type="hidden" value="'.$x.'" name="pos"></form> 
 			   	      Question: '.$value['title'].'</td>
-				  <td><form method="post" action="editQuestion.php" style="display:inline;"><input type="hidden" name="contestID" value="'.$_POST['contestID'].'"><input type="hidden" name="qid" value="'.$value['qid'].'"><input type="submit" value="Edit" name="Edit"></form>
-				  <form method="post" action="questionTestCases.php" style="display:inline;"><input type="hidden" name="contestID" value="'.$_POST['contestID'].'"><input type="hidden" name="qid" value="'.$value['qid'].'"><input type="submit" value="Test Cases"></form>
-				  <form method="post" action="contestQuestions.php" style="display:inline;"><input type="hidden" name="contestID" value="'.$_POST['contestID'].'"><input type="hidden" name="qid" value="'.$value['qid'].'"><input type="submit" value="X" name="delete"></form></td></tr>';
+				  <td><form method="post" action="../_contestManager_modify_editQ" style="display:inline;"><input type="hidden" name="contestID" value="'.$_POST['contestID'].'"><input type="hidden" name="qid" value="'.$value['qid'].'"><input type="submit" value="Edit" name="Edit"></form>
+				  <form method="post" action="../_contestManager_modify_qtc" style="display:inline;"><input type="hidden" name="contestID" value="'.$_POST['contestID'].'"><input type="hidden" name="qid" value="'.$value['qid'].'"><input type="submit" value="Test Cases"></form>
+				  <form method="post" action="../_contestManager_modify" style="display:inline;"><input type="hidden" name="contestID" value="'.$_POST['contestID'].'"><input type="hidden" name="qid" value="'.$value['qid'].'"><input type="submit" value="X" name="delete"></form></td></tr>';
 				$x+=1;
 	}
 	if($x == 0) echo "<tr><td>There are no questions.</td></tr>";
 ?>
 </table>
 <br>
-<form method="post" action="newQuestion.php"><input type="hidden" name="contestID" value=<?php echo '"'.$_POST['contestID'].'"'; ?>><input type="submit" value="Add Question"></form>
+<form method="post" action="../_contestManager_modify_newQ"><input type="hidden" name="contestID" value=<?php echo '"'.$_POST['contestID'].'"'; ?>><input type="submit" value="Add Question"></form>
 
-<form method="post" action="contestQuestions.php">
+<form method="post" action="../_contestManager_modify">
 <table>
 <tr><td><b>Name</b></td><td><input type="text" name="name" value="<?php echo $contest["name"]; ?>"></td></tr>
 <tr><td><b>Date</b></td><td><b>M</b><input type="text" name="month" value="<?php echo $contest["month"]; ?>"></td><td><b>D</b><input type="text" name="day" value="<?php echo $contest["day"]; ?>"></td><td><b>Y</b><input type="text" name="year" value="<?php echo $contest["year"]; ?>"></td></tr>
@@ -75,7 +75,7 @@ $contest = Contest::get_contest($_POST['contestID']);
 <input type="submit" value="Update Contest">
 </form>
 
-<a href="./allContests.php">Back to Contest Dashboard</a>
+<a href="../_contestManager">Back to Contest Dashboard</a>
 
 </body>
 </html>

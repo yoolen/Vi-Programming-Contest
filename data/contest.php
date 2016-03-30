@@ -8,41 +8,47 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\data\database-connection.php');
 
 class Contest{
 	//Inserts the contest into the contest bank.
-	public static function insert_contest($date, $hour, $minute, $seconds, $duration, $creator_FK){
+	public static function insert_contest($date, $hours, $minutes, $seconds, $duration, $creator_FK, $name){
 		$conn = DatabaseConnection::get_connection();
-		$sql = "INSERT INTO contest (starttime, duration, creator_FK) VALUES (:starttime, :duration, :creator_FK)";
-		$stmt = $conn->prepare($sql);
-
-		$stmt->bindParam(':starttime', $s);
-		$stmt->bindParam(':duration', $duration);
-		$stmt->bindParam(':creator_FK', $creator_FK);
-
-		$starttime = $date . " " . $hour . ":" . $minute . ":" . $seconds;
-		$s = $starttime;
-
-		$status = $stmt->execute();
-		if ($status) {
-			return true;
-		} else {
-			return false;
-		}
+		$sql = "INSERT INTO contest (starttime, duration, creator_FK, name) VALUES (:starttime, :duration, :creator_FK, :name)";
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':starttime', $s);
+			$stmt->bindParam(':duration', $duration);
+			$stmt->bindParam(':creator_FK', $creator_FK);
+			$stmt->bindParam(':name', $name);
+			$starttime = $date . " " . $hours . ":" . $minutes . ":" . $seconds;
+			$s = $starttime;
+			try {
+                $stmt->execute();
+            } catch (PDOException $e){
+                echo $e->getMessage();
+                return false;
+            }
+            return true;
+        } else {
+            echo $stmt->errorCode();
+            return false;
+        }
 	}
 
 	//Insert a teams checkin to the checkin bank.
 	public static function insert_checkin($contest_FK, $team_FK){
 		$conn = DatabaseConnection::get_connection();
 		$sql = "INSERT INTO checkin (contest_FK, team_FK) VALUES (:contest_FK, :team_FK)";
-		$stmt = $conn->prepare($sql);
-
-		$stmt->bindParam(':contest_FK', $contest_FK);
-		$stmt->bindParam(':team_FK', $team_FK);
-
-		$status = $stmt->execute();
-		if ($status) {
-			return true;
-		} else {
-			return false;
-		}
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':contest_FK', $contest_FK);
+			$stmt->bindParam(':team_FK', $team_FK);
+			try {
+                $stmt->execute();
+            } catch (PDOException $e){
+                echo $e->getMessage();
+                return false;
+            }
+            return true;
+        } else {
+            echo $stmt->errorCode();
+            return false;
+        }
 	}
 
 	public static function get_checkin_status($contest_FK, $team_FK){
@@ -74,11 +80,16 @@ class Contest{
 			$stmt->bindColumn('starttime', $starttime);
 			$stmt->bindColumn('duration', $duration);
 			$stmt->bindColumn('creator_FK', $creator_FK);
+			$stmt->bindColumn('name', $name);
 
 			$contests = array();
 
 			while ($row = $stmt->fetch(PDO::FETCH_BOUND)) {
-				array_push($contests, array('cid' => $contest_PK, 'starttime' => $starttime, 'duration' => $duration, 'creator_FK' => $creator_FK));
+				$dateAndTime = explode(" ", $starttime);
+				$date = explode("-", $dateAndTime[0]);
+				$time = explode(":", $dateAndTime[1]);
+				$dur = explode(":", $duration);
+				array_push($contests, array('cid' => $contest_PK, 'month' => $date[1], 'day' => $date[2], 'year' => $date[0], 'hours' => $time[0], 'minutes' => $time[1], 'seconds' => $time[2], 'dhours' => $dur[0], 'dminutes' =>$dur[1], 'dseconds' => $dur[2], 'creator_FK' => $creator_FK, 'name' => $name));
 			}
 			return $contests;
 		} else {
@@ -86,21 +97,25 @@ class Contest{
 		}
 	}
 
+
 	public static function add_question_to_contest($contest_FK, $question_FK, $sequencenum){
 		$conn = DatabaseConnection::get_connection();
 		$sql = "INSERT INTO contestquestions(contest_FK, question_FK, sequencenum) VALUES (:contest_FK, :question_FK, :sequencenum)";
-		$stmt = $conn->prepare($sql);
-		
-		$stmt->bindParam(':contest_FK', $contest_FK);
-        $stmt->bindParam(':question_FK', $question_FK);
-        $stmt->bindParam(':sequencenum', $sequencenum);
-		
-		$status = $stmt->execute();
-		if ($status) {
-			return true;
-		} else {
-			return false;
-		}
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':contest_FK', $contest_FK);
+			$stmt->bindParam(':question_FK', $question_FK);
+			$stmt->bindParam(':sequencenum', $sequencenum);
+			try {
+                $stmt->execute();
+            } catch (PDOException $e){
+                echo $e->getMessage();
+                return false;
+            }
+            return true;
+        } else {
+            echo $stmt->errorCode();
+            return false;
+        }
 	}
 	
 	public static function update_contest_time($contest_PK, $date, $hour, $minute, $seconds){
@@ -268,10 +283,106 @@ class Contest{
 			$stmt->bindColumn('creator_FK', $creator_FK);
 			$stmt->bindColumn('name', $name);
 			$stmt->fetch(PDO::FETCH_BOUND);
-			$contests = array('starttime' => $starttime, 'duration' => $duration, 'creator_FK' => $creator_FK, 'name' => $name);
+			$dateAndTime = explode(" ", $starttime);
+			$date = explode("-", $dateAndTime[0]);
+			$time = explode(":", $dateAndTime[1]);
+			$dur = explode(":", $duration);
+			$contests = array('month' => $date[1], 'day' => $date[2], 'year' => $date[0], 'hours' => $time[0], 'minutes' => $time[1], 'seconds' => $time[2], 'dhours' => $dur[0], 'dminutes' =>$dur[1], 'dseconds' => $dur[2], 'creator_FK' => $creator_FK, 'name' => $name);
 			return $contests;
 		} else {
 			return false;
+		}
+	}
+	public static function get_contest_info($contest_PK){
+		$conn = DatabaseConnection::get_connection();
+		$sql = "SELECT * FROM contest WHERE contest_PK=:contest_PK";
+		$stmt = $conn->prepare($sql);
+		$stmt->bindParam(':contest_PK', $contest_PK);
+		$status = $stmt->execute();
+		if ($status) {
+			$stmt->bindColumn('starttime', $starttime);
+			$stmt->bindColumn('duration', $duration);
+			$stmt->bindColumn('contest_PK', $contest_PK);
+			$stmt->bindColumn('name', $name);
+			$stmt->fetch(PDO::FETCH_BOUND);
+			$contests = array('cid'=>$contest_PK, 'starttime'=> $starttime, 'duration'=>$duration, 'name'=>$name);
+			return $contests;
+		} else {
+			return false;
+		}
+	}
+	public static function update_contest($contest_PK, $date, $hours, $minutes, $seconds, $duration, $creator_FK, $name){
+		$conn = DatabaseConnection::get_connection();
+		$sql = "UPDATE contest SET starttime=:starttime, duration=:duration, creator_FK=:creator_FK, name=:name WHERE contest_PK = :contest_PK";
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':contest_PK', $contest_PK);
+			$stmt->bindParam(':starttime', $starttime);
+			$stmt->bindParam(':duration', $duration);
+			$stmt->bindParam(':creator_FK', $creator_FK);
+			$stmt->bindParam(':name', $name);
+			$starttime = $date . " " . $hours . ":" . $minutes . ":" . $seconds;
+			try {
+                $stmt->execute();
+            } catch (PDOException $e){
+                echo $e->getMessage();
+                return false;
+            }
+            return true;
+        } else {
+            echo $stmt->errorCode();
+            return false;
+        }
+	}
+	public static function get_contest_name($contest_PK){
+		$conn = DatabaseConnection::get_connection();
+		$sql = "SELECT name FROM contest WHERE contest_PK = :contest_PK";
+		$stmt = $conn->prepare($sql);
+		$stmt->bindParam(':contest_PK', $contest_PK);
+		$status = $stmt->execute();
+		if ($status) {
+			$stmt->bindColumn('name', $name);
+			$stmt->fetch(PDO::FETCH_BOUND);
+			return $name;
+		} else {
+			return false;
+		}
+	}
+	//Returns an array of contest_PK, starttime, and duration.
+	public static function get_contest_times(){
+		$conn = DatabaseConnection::get_connection();
+		$time = date("Y-m-d H:i:s");
+		$sql = "SELECT contest_PK, starttime, duration FROM contest";
+		$stmt = $conn->prepare($sql);
+		$stmt->bindParam(':time', $time);
+		$status = $stmt->execute();
+		if ($status) {
+			$stmt->bindColumn('contest_PK', $contest_PK);
+			$stmt->bindColumn('starttime', $starttime);
+			$stmt->bindColumn('duration', $duration);
+			$contests = array();
+			while ($row = $stmt->fetch(PDO::FETCH_BOUND)) {
+				array_push($contests, array('contest_PK'=>$contest_PK, 'starttime'=>$starttime, 'duration'=>$duration));
+			}
+			return $contests;
+		} else {
+			return false;
+		}
+	}
+	
+	public static function get_contest_sched($contest_PK) {
+		$conn = DatabaseConnection::get_connection();
+		$sql = "SELECT starttime, duration FROM cs491.contest WHERE contest_PK=:contest_PK";
+		$stmt = $conn->prepare($sql);
+		$stmt->bindParam(':contest_PK', $contest_PK);
+		$status = $stmt->execute();
+		if($status){
+			$stmt->bindColumn('starttime', $starttime);
+			$stmt->bindColumn('duration', $duration);
+			$stmt->fetch(PDO::FETCH_ASSOC);
+			$sched = array('starttime' => $starttime, 'duration' => $duration);
+			return $sched;
+		} else {
+			return false;;
 		}
 	}
 }

@@ -1,9 +1,14 @@
 <?php
-	include 'back.php'; // Backend functions
+	//include 'back.php'; // Backend functions
+	//require_once($_SERVER['DOCUMENT_ROOT'].'/data/contest.php');
+	
 	date_default_timezone_set('America/New_York'); // The Eastern time
-	$type = $_POST['type'];
-	$cID = $_POST['contestID'];
-	$date = $_POST['dateObj'];
+	if(isset($_POST['type']))
+		$type = $_POST['type'];
+	if(isset($_POST['contestID']))
+		$cID = $_POST['contestID'];
+	if(isset($_POST['dateObj']))
+		$date = $_POST['dateObj'];
 	
 	/* This function returns a json object to the javascript section. It has the year, month, day, hour, minutes, seconds and a signal (1, 0, -1).
 	1 - The competition has not started yet.
@@ -12,7 +17,7 @@
 	function dateDiff($cID, $compDate){
 		$signal = 1; // Start with a signal of 1
 		
-		//$compDate = get_contest_sched($cID);//rDate($cID); // Get the set date
+		//$compDate = Contest::get_contest_sched($cID);//rDate($cID); // Get the set date
 		
 		// Combine the date and time to a workable format for the DateTime object
 		$startDate = $compDate['starttime'];
@@ -56,7 +61,7 @@
 	function check_in_diff($cID, $compDate){
 		$signal = 1; // Start with a signal of 1
 		
-		//$compDate = get_contest_sched($cID);//rDate($cID); // Get the set date
+		//$compDate = Contest::get_contest_sched($cID);//rDate($cID); // Get the set date
 		
 		// Combine the date and time to a workable format for the DateTime object
 		$startDate = $compDate['starttime'];
@@ -109,8 +114,9 @@
 		$date = array('starttime' => $contest_info['starttime'], 'duration' => $contest_info['duration']);
 		
 		$time_array = json_decode(check_in_diff($cID, $date), true);
+		//print_r($time_array);
 		
-		if($time_array['signal'] == -1)
+		if($time_array['signal'] === -1)
 			return true;
 		else
 			return false;

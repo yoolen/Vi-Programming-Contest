@@ -17,6 +17,16 @@ function getNavigationLinks() {
             } else {
                 echo '<li ><a href="../_userManager/">User Manager</a></li>';
             }
+            if (isset($_GET["page"]) and strcmp($_GET["page"], "teamManager") == 0) {
+                echo '<li class="active"><a href="../_teamManager/">Team Manager</a></li>';
+            } else {
+                echo '<li ><a href="../_teamManager/">Team Manager</a></li>';
+            }
+            if (isset($_GET["page"]) and strcmp($_GET["page"], "affManager") == 0) {
+                echo '<li class="active"><a href="../_affManager/">Affiliation Manager</a></li>';
+            } else {
+                echo '<li ><a href="../_affManager/">Affiliation Manager</a></li>';
+            }
             echo '</ul>';
         case 2:
         case 3:

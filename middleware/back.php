@@ -4,7 +4,7 @@
   free to edit the date, start time and duration to test the timer */
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/data/db-info.php');
-/*
+
 function get_contest_sched($cid) {
     $conn = new mysqli(SERVER, USERNAME, PASSWD, SCHEMA);
     if ($conn->connect_error) {
@@ -25,14 +25,14 @@ function get_contest_sched($cid) {
     $conn->close();
     return $sched;
 }
-*/
-//var_dump(get_contest_sched(1));
 
+//var_dump(get_contest_sched(1));
+/*
 function get_contest_sched($cID) {
     if ($cID == 1)
         $arr = array(
-            "starttime" => "2016-3-18 13:19",
-            "duration" => "02:00:00"
+            "starttime" => "2016-3-29 14:34",
+            "duration" => "00:08:05"
         );
     else if ($cID == 2)
         $arr = array(
@@ -42,5 +42,5 @@ function get_contest_sched($cID) {
 
     return($arr);
 }
-
+*/
 ?>

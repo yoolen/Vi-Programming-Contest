@@ -204,6 +204,128 @@ class User
 		}
 	}
 
+	public static function get_user_by_creds($creds){
+	/*	Ulenn Terry Chern - 20 March 2016 - 6:55PM
+	 *	This function takes an integer input corresponding to a user level and returns an array of
+	 *  associated arrays containing users with that credential level and their information.
+	 */
+		$conn = DatabaseConnection::get_connection();
+		$sql = "SELECT * FROM usr WHERE creds=:creds";
+		$stmt = $conn->prepare($sql);
+		$stmt->bindParam(':creds', $creds);
+		$status = $stmt->execute();
+		if($status){
+			$stmt->bindColumn('usr_PK', $usr_PK);
+			$stmt->bindColumn('usrname', $usrname);
+			$stmt->bindColumn('fname', $fname);
+			$stmt->bindColumn('lname', $lname);
+			$stmt->bindColumn('joindate', $joindate);
+			$stmt->bindColumn('aff_FK', $aff_FK);
+			$stmt->bindColumn('email', $email);
+			$stmt->bindColumn('phone', $phone);
+			$stmt->bindColumn('street1', $street1);
+			$stmt->bindColumn('street2', $street2);
+			$stmt->bindColumn('city', $city);
+			$stmt->bindColumn('state', $state);
+			$stmt->bindColumn('zip', $zip);
+
+			$usrs = array();
+
+			while ($row = $stmt->fetch(PDO::FETCH_BOUND)) {
+				array_push($usrs, array('uid' => $usr_PK, 'usr' => $usrname, 'fname' => $fname, 'lname' => $lname, 'joindate' => $joindate, 'aff' => $aff_FK,
+				'email' => $email, 'phone' => $phone, 'street1' => $street1, 'street2' => $street2, 'city' => $city, 'state' => $state, 'zip' => $zip, 'creds' => $creds));
+			}
+			return $usrs;
+		} else {
+			return false;
+		}
+	}
+
+	public static function get_users_by_aff($aff_FK){
+		/*	Ulenn Terry Chern - 22 March 2016 - 5:52PM
+         *	This function takes an integer input corresponding to a user's affiliation and returns an array of
+         *  associated arrays containing users with that affiliation and their information.
+         */
+		$conn = DatabaseConnection::get_connection();
+		$sql = "SELECT * FROM usr WHERE aff_FK=:aff_FK";
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':aff_FK', $aff_FK);
+			try{
+				$stmt->execute();
+				$stmt->bindColumn('usr_PK', $usr_PK);
+				$stmt->bindColumn('usrname', $usrname);
+				$stmt->bindColumn('fname', $fname);
+				$stmt->bindColumn('lname', $lname);
+				$stmt->bindColumn('joindate', $joindate);
+				$stmt->bindColumn('email', $email);
+				$stmt->bindColumn('phone', $phone);
+				$stmt->bindColumn('street1', $street1);
+				$stmt->bindColumn('street2', $street2);
+				$stmt->bindColumn('city', $city);
+				$stmt->bindColumn('state', $state);
+				$stmt->bindColumn('zip', $zip);
+				$stmt->bindColumn('creds', $creds);
+
+				$usrs = array();
+
+				while ($row = $stmt->fetch(PDO::FETCH_BOUND)) {
+					array_push($usrs, array('uid' => $usr_PK, 'usr' => $usrname, 'fname' => $fname, 'lname' => $lname, 'joindate' => $joindate, 'aff' => $aff_FK,
+						'email' => $email, 'phone' => $phone, 'street1' => $street1, 'street2' => $street2, 'city' => $city, 'state' => $state, 'zip' => $zip, 'creds' => $creds));
+				}
+				return $usrs;
+			} catch (PDOException $e) {
+				echo $e->getMessage();
+				return false;
+			}
+		} else {
+			echo $stmt->errorCode();
+			return false;
+		}
+	}
+
+	public static function get_users_by_aff_creds($aff_FK, $creds){
+		/*	Ulenn Terry Chern - 22 March 2016 - 5:52PM
+         *	This function takes an integer input corresponding to a user's affiliation and returns an array of
+         *  associated arrays containing users with that affiliation and their information.
+         */
+		$conn = DatabaseConnection::get_connection();
+		$sql = "SELECT * FROM usr WHERE aff_FK=:aff_FK AND creds>=:creds";
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':aff_FK', $aff_FK);
+			$stmt->bindParam(':creds', $creds);
+			try{
+				$stmt->execute();
+				$stmt->bindColumn('usr_PK', $usr_PK);
+				$stmt->bindColumn('usrname', $usrname);
+				$stmt->bindColumn('fname', $fname);
+				$stmt->bindColumn('lname', $lname);
+				$stmt->bindColumn('joindate', $joindate);
+				$stmt->bindColumn('email', $email);
+				$stmt->bindColumn('phone', $phone);
+				$stmt->bindColumn('street1', $street1);
+				$stmt->bindColumn('street2', $street2);
+				$stmt->bindColumn('city', $city);
+				$stmt->bindColumn('state', $state);
+				$stmt->bindColumn('zip', $zip);
+				$stmt->bindColumn('creds', $creds);
+
+				$usrs = array();
+
+				while ($row = $stmt->fetch(PDO::FETCH_BOUND)) {
+					array_push($usrs, array('uid' => $usr_PK, 'usr' => $usrname, 'fname' => $fname, 'lname' => $lname, 'joindate' => $joindate, 'aff' => $aff_FK,
+						'email' => $email, 'phone' => $phone, 'street1' => $street1, 'street2' => $street2, 'city' => $city, 'state' => $state, 'zip' => $zip, 'creds' => $creds));
+				}
+				return $usrs;
+			} catch (PDOException $e) {
+				echo $e->getMessage();
+				return false;
+			}
+		} else {
+			echo $stmt->errorCode();
+			return false;
+		}
+	}
+
     public static function get_user_email($usr_PK)
     {
         // This function takes a user_PK as an int and returns their email as a string.
@@ -228,26 +350,37 @@ class User
 		$stmt->bindParam(':usr_FK', $usr_FK);
         $status = $stmt->execute();
 		if($status) {
-            $stmt->bindColumn('team', $team);
+            $stmt->bindColumn('team_FK', $team_FK);
             $stmt->fetch(PDO::FETCH_BOUND);
-            return $team;
+            return $team_FK;
         } else {
             return false;
         }
     }
-	
-		public static function get_affiliation_name($usr_PK){
+
+	public static function get_affiliation_name($usr_PK){
+		/*	Ulenn Terry Chern - 26 March 2016 - 7:28PM
+		 *	This function takes an integer representing the user's primary key and returns the string value of the
+		 * 	affiliate that the user belongs to; returns false and an error message if user does not exist or if
+		 *  there is a problem with the database.
+		 */
 		$conn = DatabaseConnection::get_connection();
 		$sql = "SELECT affname FROM affiliation INNER JOIN usr ON affiliation.aff_PK = usr.aff_FK WHERE usr_PK=:usr_PK";
-		$stmt = $conn->prepare($sql);
-		$stmt->bindParam(':usr_PK', $usr_PK);
-		$status = $stmt->execute();
-		if($status) {
-            $aff = $stmt->fetchColumn();
-            return $aff;
-        } else {
-            return false;
-        }
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':usr_PK', $usr_PK);
+			try {
+				$stmt->execute();
+				$aff = $stmt->fetchColumn();
+			} catch (PDOException $e){
+				echo $e->getMessage();
+				return false;
+			}
+			return $aff;
+		} else {
+			echo $stmt->errorCode();
+			return false;
+		}
 	}
+
 }
 ?>

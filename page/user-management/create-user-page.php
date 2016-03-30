@@ -22,7 +22,11 @@ if(isset(   $_POST['usr'], $_POST['fname'], $_POST['lname'], $_POST['aff'],$_POS
     $usrinfo = array('usr'=>strtolower($_POST['usr']),'fname'=>$_POST['fname'],'lname'=>$_POST['lname'],'aff'=>$_POST['aff'],
         'email'=>$_POST['email'],'phone'=>$_POST['phone'],'street1'=>$_POST['street1'],'street2'=>$_POST['street2'],'city'=>$_POST['city'],
         'state'=>$_POST['state'],'zip'=>$_POST['zip'],'passwd'=>$_POST['passwd'],'creds'=>$_POST['creds']);
-    User::create_user($usrinfo);
+    if(User::create_user($usrinfo)){
+        echo 'User successfully created!';
+    } else {
+        echo 'User creation failed!';
+    }
 }
 ?>
 
@@ -43,7 +47,7 @@ if(isset(   $_POST['usr'], $_POST['fname'], $_POST['lname'], $_POST['aff'],$_POS
             <?php
             $affils = getaffs();
             foreach($affils as $affil):
-                echo '<option value="'.$affil[0].'">'.$affil.'</option>';
+                echo '<option value="' . explode(' - ', $affil)[0] . '">' . explode(' - ', $affil)[1] . '</option>';
             endforeach;
             ?>
         </select><br/>

@@ -11,14 +11,6 @@ class Current_Contests extends Page {
     }
 
     public function getPageImports() {
-        /* $userID = $_SESSION['uid'];
-          $teamID = User::get_teamid($userID); */
-        //$teamID = User::get_teamid(2);
-		//require_once($_SERVER['DOCUMENT_ROOT'].'/data/contest.php');
-		//require_once ($_SERVER['DOCUMENT_ROOT'].'/data/user.php');
-        //$teamID = 1;
-        //$contests = json_encode(get_contests());
-        //$contests = json_encode(Contest::get_all_contests());
 		$userID = $_SESSION['uid'];
 		return <<<SCRIPT
 		<script src="http://njit1.initiateid.com/library/checkinTimer.js"></script>
