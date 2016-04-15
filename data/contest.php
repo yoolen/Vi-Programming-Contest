@@ -32,7 +32,7 @@ class Contest{
 	}
 
 	//Insert a teams checkin to the checkin bank.
-	public static function insert_checkin($contest_FK, $team_FK){
+	public static function set_checkin($contest_FK, $team_FK){
 		$conn = DatabaseConnection::get_connection();
 		$sql = "INSERT INTO checkin (contest_FK, team_FK) VALUES (:contest_FK, :team_FK)";
 		if($stmt = $conn->prepare($sql)){
@@ -41,13 +41,13 @@ class Contest{
 			try {
                 $stmt->execute();
             } catch (PDOException $e){
-                echo $e->getMessage();
-                return false;
+                //echo $e->getMessage();
+                return 0;
             }
-            return true;
+            return 1;
         } else {
-            echo $stmt->errorCode();
-            return false;
+            //echo $stmt->errorCode();
+            return 0;
         }
 	}
 

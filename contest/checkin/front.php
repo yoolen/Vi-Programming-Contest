@@ -4,39 +4,41 @@
 		<?php $contestID = 2; $teamID = 112?>
 	</head>
 	<script src="http://njit1.initiateid.com/library/jquery.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css"></script>
+	<script src="http://njit1.initiateid.com/library/vex-master/js/vex.combined.min.js"></script>
+	<script>vex.defaultOptions.className = 'vex-theme-os';</script>
+	<link rel="stylesheet" href="http://njit1.initiateid.com/library/vex-master/css/vex.css" />
+	<link rel="stylesheet" href="http://njit1.initiateid.com/library/vex-master/css/vex-theme-os.css" />
 	<body>
-		<div id="message">
-			<h1>Welcome to the contest <?php echo $contestID; ?>! </h1>
-			Please click the button to check-in!
+		<!--<p><a class="demo-confirm hs-brand-button">Destroy the planet</a></p>
+		<div class="demo-result-confirm hs-doc-callout hs-doc-callout-info" style="">
+		</div>-->
+		<div id="dialog" style="display:none;">
 		</div>
-		<button id="compButton" onclick="check_In_Valid()">Check In</button>
 	</body>
 	<script>
-		/* Function to validate the session variables. If they correspond to the
-			contest that is stored in the database, then they can successfully
-			participate in the contest. Otherwise, the admin has to rectify the
-			issue.
-		*/
-		function check_In_Valid(){
-			var cID = <?php echo $contestID; ?>;
-			var success = $.ajax({
-				// This should be the php to check credentials
-				url:"back.php",
-				method:"POST",
-				data: {contestID: cID, teamID: <?php echo $teamID;?>},
-			});
-			
-			success.done(function(response){
-				var parsed_Resp = JSON.parse(response);
-				
-				if(parsed_Resp['checked_in']){
-					alert("Check in successful! Click OK to continue to the contest page");
-					window.location = "http://njit1.initiateid.com/contest/pre_post/front.php?unit="+cID;
-				} else {
-					alert("Check in unsuccessful! Please see administrator");
+		/*$('.demo-confirm').click(function(){
+			vex.dialog.confirm({
+				message: 'Are you absolutely sure you want to destroy the alien planet?',
+				overlayClosesOnClick: false,
+				callback: function(value) {
+					$('.demo-result-confirm').show().html('<h4>Result</h4><p>' + (value ? 'Successfully destroyed the planet.' : 'Chicken.') + '</p>');
 				}
 			});
-		}
+		});*/
+		$('#dialog').html('some message');
+
+$('#dialog').dialog({
+    autoOpen: true,
+    show: "blind",
+    hide: "explode",
+    modal: true,
+    open: function(event, ui) {
+        setTimeout(function(){
+            $('#dialog').dialog('close');                
+        }, 3000);
+    }
+});
 	</script>
 	
 	

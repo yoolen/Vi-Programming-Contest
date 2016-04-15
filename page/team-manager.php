@@ -23,6 +23,13 @@ class Team_Manager extends Page {
                     }
                     require_once '/team-management/view-teams-page.php';
                     return '';
+                case 'editinfo':
+                    if (isset($_GET['unit'])){
+                        require_once '/team-management/modify-team-page.php';
+                        return '';
+                    }
+                    require_once '/team-management/view-teams-page.php';
+                    return '';
                 default:
 
             }

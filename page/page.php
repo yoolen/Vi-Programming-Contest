@@ -25,17 +25,5 @@ ERR;
   }
 }
 
-class Home extends Page {
-  public function getPageTitle() {
-    return "NJIT Programming Contest for High School Students!";
-  }
-
-  public function getPageContent() {
-    return <<<ERR
-<h2>Home</h2>
-<p>Home Text</p>
-ERR;
-  }
-}
 
 ?>

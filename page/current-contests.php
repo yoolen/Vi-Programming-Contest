@@ -1,9 +1,5 @@
 <?php
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/data/contest.php');
-require_once ($_SERVER['DOCUMENT_ROOT'] . '/data/user.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/contest/current_contest/back.php');
-
 class Current_Contests extends Page {
 
     public function getPageTitle() {

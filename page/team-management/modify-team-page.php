@@ -1,4 +1,4 @@
-<h3>Edit Existing User</h3>
+<h3>Edit Team</h3>
 <?php
 require_once ($_SERVER['DOCUMENT_ROOT'].'/admin/dbtools/lists.php');
 require_once ($_SERVER['DOCUMENT_ROOT'].'/admin/dbtools/backend.php');

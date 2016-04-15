@@ -2,10 +2,10 @@
 
 /**
  * File Backend Functions
- * 
+ *
  * @author Jan Chris Tacbianan
  * @author Matthew Wolfman
- * @version 1.0 
+ * @version 1.0
  */
 require_once($_SERVER['DOCUMENT_ROOT'] . '\data\database-connection.php');
 
@@ -44,7 +44,7 @@ class File_Functions {
      * Save File
      * @param int $fileId The file that is being updated
      * @param str $content The content of the file to be saved.
-     * @return A boolean value noting whether the operation was a success or failure.                                                                      
+     * @return A boolean value noting whether the operation was a success or failure.
      */
     public static function save_file($fileId, $content) {
         $conn = DatabaseConnection::get_connection();
@@ -70,7 +70,7 @@ class File_Functions {
      * @param int $fileId
      * @param str $fileName
      * @param str $fileExtension
-     * @return A boolean value noting whether the operation was a success or failure. 
+     * @return A boolean value noting whether the operation was a success or failure.
      */
     public static function rename_file($fileId, $name, $extension) {
         $conn = DatabaseConnection::get_connection();
@@ -94,7 +94,7 @@ class File_Functions {
 
     /**
      * Retrieve File
-     * 
+     *
      * @param type $fileId
      */
     public static function retrieve_file($fileId) {
@@ -114,9 +114,9 @@ class File_Functions {
 
     /**
      * Delete File
-     * 
+     *
      * @param type $fileId
-     * @return A boolean value noting whether the operation was a success or failure. 
+     * @return A boolean value noting whether the operation was a success or failure.
      */
     public static function delete_file($fileId) {
         $conn = DatabaseConnection::get_connection();
@@ -138,12 +138,12 @@ class File_Functions {
 
     /**
      * Create Folder
-     * 
+     *
      * @param int $owner The owner of the folder
      * @param bool $teamShare A boolean value denoting whether or not the folder is visible to the owner's team.
      * @param bool $contestRelated A boolean value denoting whether or not the folder is a contest entry
      * @param str $name The name of the folder.
-     * @return A boolean value noting whether the operation was a success or failure. 
+     * @return A boolean value noting whether the operation was a success or failure.
      */
     public static function create_folder($owner, $teamShare, $contestRelated, $name) {
         $conn = DatabaseConnection::get_connection();
@@ -168,9 +168,9 @@ class File_Functions {
 
     /**
      * Delete Folder
-     * 
+     *
      * @param type $folderId
-     * @return A boolean value noting whether the operation was a success or failure. 
+     * @return A boolean value noting whether the operation was a success or failure.
      */
     public static function delete_folder($folderId) {
         $conn = DatabaseConnection::get_connection();
@@ -192,7 +192,7 @@ class File_Functions {
 
     /**
      * Retrieve User Folders
-     * 
+     *
      * @param type $userId
      * @return An array containing all NON CONTEST RELATED folders pertaining to a particular user. Format should be an associative array of folder ids to folder names.
      */
@@ -220,7 +220,7 @@ class File_Functions {
 
     /**
      * Retrieve User Accessible Folders
-     * 
+     *
      * @param type $userId
      * @return An array containing all NON CONTEST RELATED folders pertaining to a particular user. <br>
      *          Must ALSO contain folders that teammates have denoted as team shared. <br>
@@ -269,10 +269,10 @@ class File_Functions {
 
     /**
      * Rename Folder
-     * 
+     *
      * @param type $folderId
      * @param type $folderName
-     * @return A boolean value noting whether the operation was a success or failure. 
+     * @return A boolean value noting whether the operation was a success or failure.
      */
     public static function rename_folder($folderId, $name) {
         $conn = DatabaseConnection::get_connection();
@@ -295,11 +295,11 @@ class File_Functions {
 
     /**
      * Toggle Share Folder
-     * 
+     *
      * Enables or disables team sharing of a folder.
-     * 
+     *
      * @param type $folderId
-     * @return A boolean value noting whether the operation was a success or failure. 
+     * @return A boolean value noting whether the operation was a success or failure.
      */
     public static function toggle_share_folder($folderId) {
         $conn = DatabaseConnection::get_connection();
@@ -318,6 +318,64 @@ class File_Functions {
             return false;
         }
     }
+    	    /**
+     *
+     * @param type $folderId
+     * @return An array containing fileId's and fileNames's of all files in specified folder.
+     */
+    public static function retrieve_folder_files($folder) {
+        $conn = DatabaseConnection::get_connection();
+		$sql = "SELECT fileId, name, extension FROM file WHERE folder=:folder";
+		$stmt = $conn->prepare($sql);
+        $stmt->bindParam(':folder', $folder);
+		$status = $stmt->execute();
+		if ($status) {
+			$stmt->bindColumn('fileId', $fileId);
+			$stmt->bindColumn('name', $name);
+      $stmt->bindColumn('extension', $ext);
+			$folders = array();
+			while ($row = $stmt->fetch(PDO::FETCH_BOUND)) {
+				array_push($folders, array('fileId' => $fileId, 'name' => $name, 'ext' => $ext));
+			}
+			return $folders;
+		} else {
+			return false;
+		}
+    }
+
+    /**
+     *
+     * @param type $fileId
+     * @return An int representing the folder that the fileId specified belongs to.
+     */
+    public static function get_folder_from_file($fileId) {
+        $conn = DatabaseConnection::get_connection();
+		$sql = "SELECT folder FROM file WHERE fileId=:fileId";
+		$stmt = $conn->prepare($sql);
+        $stmt->bindParam(':fileId', $fileId);
+		$status = $stmt->execute();
+		if ($status) {
+			$result = $stmt->fetch(PDO::FETCH_ASSOC);
+			return $result['folder'];
+		} else {
+			return false;
+		}
+    }
+	
+	public static function get_folder_data_from_fileId($fileId) {
+        $conn = DatabaseConnection::get_connection();
+		$sql = "SELECT * FROM folder WHERE folderId = (SELECT folder FROM file WHERE fileId=:fileId)";
+		$stmt = $conn->prepare($sql);
+        $stmt->bindParam(':fileId', $fileId);
+		$status = $stmt->execute();
+		if ($status) {
+			$result = $stmt->fetch(PDO::FETCH_ASSOC);
+			return $result;
+		} else {
+			return false;
+		}
+    }
+
 }
 
 ?>

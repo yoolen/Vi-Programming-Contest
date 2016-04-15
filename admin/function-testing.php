@@ -11,6 +11,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/data/contest.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/data/team.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/data/user.php');
 require_once ($_SERVER['DOCUMENT_ROOT'] . '/data/admin.php');
+require_once ($_SERVER['DOCUMENT_ROOT'] . '/data/submission.php');
 require_once ($_SERVER['DOCUMENT_ROOT'] . '/admin/dbtools/backend.php');
 //var_dump(User::get_user(2));
 //echo $email;
@@ -26,5 +27,9 @@ require_once ($_SERVER['DOCUMENT_ROOT'] . '/admin/dbtools/backend.php');
 //echo Admin::set_affiliate(array("affname"=> "Test1", "email"=> "Test", "phone"=>"Test", "street1"=>"Test", "street2"=>"Test", "city"=>"Test","state"=>"KS","zip"=>"Test"));
 //var_dump($_POST);
 //var_dump(User::get_affiliation_name(5));
-var_dump(Team::get_all_teams());
+//var_dump(Team::get_all_teams());
+//Submission::add_submission(10, 1, 'test3', 7);
+//var_dump(Submission::get_submissions_by_team(1));
+var_dump(Question::get_question_io(52));
+//var_dump(Question::get_question_ios(50));
 ?>

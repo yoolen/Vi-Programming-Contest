@@ -7,7 +7,7 @@
 <header>
     <div class="primaryhead">
         <div class="logobox">
-            <a href="#"><img src="/images/logo.png" class="logo" alt=""/></a>
+            <a href="http://njit1.initiateid.com/_home/"><img src="/images/logo.png" class="logo" alt=""/></a>
         </div>
         <div id="userbox">
             <div  class="container-fluid text-center">

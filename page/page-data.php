@@ -7,10 +7,15 @@ function getPage() {
     global $page;
     if (is_null($page)) {
         if (empty($_GET['page']) or strcmp($_GET["page"], "home") == 0) {
+            require_once './page/home.php';
             $page = new Home();
             return;
         }
         switch ($_GET['page']) {
+			case "prepost":
+				require_once './page/prepost-contest.php';
+                $page = new Pre_Post_Contest();
+                return;
             case "current":
                 require_once './page/current-contests.php';
                 $page = new Current_Contests();
@@ -35,6 +40,10 @@ function getPage() {
                 require_once './page/contest-manager.php';
                 $page = new contestManager();
                 return;
+            case "imaginarium":
+                require_once './page/imaginarium.php';
+                $page = new Imaginarium();
+                return;    
             default:
                 $page = new Page();
         }

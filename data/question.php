@@ -28,12 +28,19 @@ class Question{
     public static function delete_question_io($qio_PK){
         $conn = DatabaseConnection::get_connection();
         $sql = "DELETE FROM questionio WHERE qio_PK=:qio_PK";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':qio_PK', $qio_PK);
-        $status = $stmt->execute();
-        if ($status) {
+        if($stmt = $conn->prepare($sql)){
+            $stmt->bindParam(':qio_PK', $qio_PK);
+
+            try{
+                $stmt->execute();
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+            echo 'Successfully deleted';
             return true;
         } else {
+            echo $stmt->errorCode();
             return false;
         }
     }
@@ -50,6 +57,30 @@ class Question{
         $status = $stmt->execute();
 		if ($status) {
             return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static function get_answers($question_FK){
+        $conn = DatabaseConnection::get_connection();
+        $sql = "SELECT qio_PK, input, output, notes FROM questionio WHERE question_FK=:question_FK";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':question_FK', $question_FK);
+        $status = $stmt->execute();
+        if($status){
+            $stmt->bindColumn('qio_PK', $qio_PK);
+            $stmt->bindColumn('input', $input);
+            $stmt->bindColumn('output', $output);
+            $stmt->bindColumn('notes', $notes);
+
+            $answers = array();
+
+            while($rows = $stmt->fetch(PDO::FETCH_BOUND)){
+                array_push($answers, array('qio_PK'=>$qio_PK, 'input'=>$input, 'output'=>$output, 'notes'=>$notes));
+            }
+
+            return $answers;
         } else {
             return false;
         }
@@ -81,23 +112,61 @@ class Question{
         }
     }
 
-    public static function get_question_io($qio_PK){
+    public static function get_question_ios($question_FK){
         $conn = DatabaseConnection::get_connection();
-        $sql = "SELECT question_FK,input,output,notes FROM questionio WHERE qio_PK=:qio_PK";
-        $stmt = $conn->prepare($sql);
+        $sql = "SELECT qio_PK,input,output,notes FROM questionio WHERE question_FK=:question_FK";
+        if($stmt = $conn->prepare($sql)) {
 
-        $stmt->bindParam(':qio_PK', $qio_PK);
+            $stmt->bindParam(':question_FK', $question_FK);
 
-        $status = $stmt->execute();
-        if($status){
-            $stmt->bindColumn('question_FK', $question_FK);
+            try {
+                $stmt->execute();
+
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+
+            $stmt->bindColumn('qio_PK', $qio_PK);
             $stmt->bindColumn('input', $input);
             $stmt->bindColumn('output', $output);
             $stmt->bindColumn('notes', $notes);
 
-            $stmt->fetch(PDO::FETCH_BOUND);
-            return array('qioid'=>$qio_PK, 'qid'=>$question_FK, 'input'=>$input, 'output'=>$output, 'notes'=>$notes);
+            $ios = array();
+
+            while ($row = $stmt->fetch(PDO::FETCH_BOUND)) {
+                array_push($ios, array('qioid' => $qio_PK, 'qid' => $question_FK, 'input' => $input, 'output' => $output, 'notes' => $notes));
+            }
+            return $ios;
+
         } else {
+            echo $stmt->errorCode();
+            return false;
+        }
+    }
+
+    public static function get_question_io($qio_PK){
+        $conn = DatabaseConnection::get_connection();
+        $sql = "SELECT question_FK,input,output,notes FROM questionio WHERE qio_PK=:qio_PK";
+        if($stmt = $conn->prepare($sql)) {
+
+            $stmt->bindParam(':qio_PK', $qio_PK);
+
+            try {
+                $stmt->execute();
+
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+            $stmt->bindColumn('question_FK', $question_FK);
+            $stmt->bindColumn('input', $input);
+            $stmt->bindColumn('output', $output);
+            $stmt->bindColumn('notes', $notes);
+            $stmt->fetch(PDO::FETCH_BOUND);
+            return array('qioid' => $qio_PK, 'qid' => $question_FK, 'input' => $input, 'output' => $output, 'notes' => $notes);
+        } else {
+            echo $stmt->errorCode();
             return false;
         }
     }

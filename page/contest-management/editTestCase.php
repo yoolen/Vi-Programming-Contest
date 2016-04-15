@@ -4,7 +4,7 @@ require_once($_SERVER['DOCUMENT_ROOT'].'\data\question.php');
 if( isset($_POST['contestID']) == false || isset($_POST['qid']) == false || isset($_POST['qioid']) == false)
 	header("Location: ./allContests.php");
 else if(isset($_POST['input']) && isset($_POST['output'])){
-	if($_POST['input']!='' && $_POST['output']!=''){
+	if($_POST['output']!=''){
 		Question::modify_question_io($_POST['qioid'], $_POST['input'], $_POST['output'], $_POST['notes']);
 		echo 'Successful Update.<br>';
 	}
@@ -14,6 +14,7 @@ else if(isset($_POST['input']) && isset($_POST['output'])){
 	}
 }
 $testcase = Question::get_question_io($_POST['qioid']);
+
 ?>
 
 <html>

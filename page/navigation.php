@@ -42,10 +42,11 @@ function getNavigationLinks() {
                 echo '<li ><a href="../_results/">Results</a></li>';
             }
             if (isset($_GET["page"]) and strcmp($_GET["page"], "imagine") == 0) {
-                echo '<li class="active"><a href="../imaginarium.php">Code Imaginarium</a></li>';
+                echo '<li class="active"><a href="../_imaginarium/">Code Imaginarium</a></li>';
             } else {
-                echo '<li ><a href="../imaginarium.php">Code Imaginarium</a></li>';
+                echo '<li ><a href="../_imaginarium/">Code Imaginarium</a></li>';
             }
+			
             /*
             if (isset($_GET["page"]) and strcmp($_GET["page"], "settings") == 0) {
                 echo '<li class="active"><a href="../_settings/">Account Settings</a></li>';

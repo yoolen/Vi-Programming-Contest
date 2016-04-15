@@ -1,77 +1,118 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'].'/compilation/classes.php');
-//require_once ($_SERVER['DOCUMENT_ROOT'].'/data/grade.php');
-/*
-$answer_array = $_POST['answers'];
+require_once ($_SERVER['DOCUMENT_ROOT'].'/data/grade.php');
+require_once ($_SERVER['DOCUMENT_ROOT'].'/data/submission.php');
+require_once ($_SERVER['DOCUMENT_ROOT'].'/data/contest.php');
+require_once ($_SERVER['DOCUMENT_ROOT'].'/data/question.php');
+
 $contestID = $_POST['contestID'];
 $teamID = $_POST['teamID'];
 
+//echo json_encode($_POST['answers']);
 
-$result_array = array('contest_PK' => $contestID, 'team_PK' => $teamID, 'score' => 0);
+if($_POST['sent_code'] == 'single'){
+	$answer_array = array(
+		'code' => $_POST['codeAns'],
+		'language' => $_POST['language'],
+		'qid' => $_POST['qid'],
+		'seq' => $_POST['sequencenum']
+	);
+	gradeOneQuest($teamID, $contestID, $answer_array);
+	//echo $result;
+} else {
+
+	gradeMultipleQuest($teamID, $contestID, $_POST['answers']);
+	//echo $result;
+}
 	
-foreach($answer_array as $team_answer){
-	//$actual_answer_list = Grade :: get_answers($team_answer['qid']);
+function gradeOneQuest($teamID, $contestID, $answer_array){
+	$submission_stat = Submission::add_submission($answer_array['qid'], $teamID, $answer_array['code']);
+	if($submission_stat == 0)
+		return $submission_stat;
+	
+	echo $submission_stat;
+	
+	$score = 0;
+	$actual_answer_list = Question :: get_answers($answer_array['qid']);
+	$front_array = array('qid' => $answer_array['qid'], 'seq' => $answer_array['seq'], 'test_cases' => array());
 	
 	foreach($actual_answer_list as $actual_answer){
-		$compiler_result = sendToCompiler($team_answer['language'], $team_answer['code'], $actual_answer['input']);
+		if($actual_answer['input'] == 0)
+			$input = '';
+		else
+			$input = $actual_answer['input'];
+			
+		$test_case = array('expected_answer' => '', 'user_answer' => '', 'status' => '');
 		
+		$compiler_result = sendToCompiler($answer_array['language'], $answer_array['code'], $input);
 		$compiler_output = trim( $compiler_result['output'] );
 		
-		if( equal($compiler_output, $actual_answer['answer']) == 0)
-			++$result_array['score'];
-			
-	}
-	
-}
-*/
-/*
-$answer_array = array(
-	json_encode(array(
-		'code' => <<<EOF
-/***************************************
-* NJIT High School Programming Contest *
-* Java - Code Imaginarium.			   *
-****************************************
-
-public static void main(String[] args) {
-	System.out.println("Hello World");
-}
-EOF
-,
-		'language' => "java/output",
-		'qid' => "49"
-	)),
-	json_encode(array(
-		'code' => "print('Hello World')",
-		'language' => "python/output",
-		'qid' => "50"
-	))
-);
-$contestID = 1;
-$teamID = 1;
-
-$result_array = array('contest_PK' => $contestID, 'team_PK' => $teamID, 'score' => 0);
-$actual_answer_list = array(
-		array('input'=>'', 'answer' => 'Hello World')
-);
-
-foreach($answer_array as $team_answerObj){
-	$team_answer = json_decode($team_answerObj, true);
-	
-	foreach($actual_answer_list as $actual_answer){
-		$compiler_result = sendToCompiler($team_answer['language'], $team_answer['code'], $actual_answer['input']);
+		$test_case['expected_answer'] = $actual_answer['output'];
+		$test_case['user_answer'] = $compiler_output;
 		
-		$compiler_output = trim( $compiler_result['output'] );
-
-		if( equal($compiler_output, $actual_answer['answer']) == 0)
-			++$result_array['score'];
-			
+		if( equal($compiler_output, $actual_answer['output']) == 0){
+			++$score;
+			$test_case['status'] = 'Correct';
+		} else {
+			$test_case['status'] = 'Incorrect';
+		}
+		
+		$front_array['test_cases'][] = $test_case;
+		
+		$grade = Grade :: set_grade($submission_stat, $actual_answer['qio_PK'], $score);
+		
+		$score = 0;
 	}
+
+	echo json_encode($front_array);
 }
 
+function gradeMultipleQuest($teamID, $contestID, $answer_array){
+	$score = 0;
+	$front_array = array();
+	
+	$submission_array = array();
+	foreach($answer_array as $team_answer){
+		$submission_stat = Submission::add_submission($team_answer['qid'], $teamID, $team_answer['code']);
+		if($submission_stat == 0)
+			return $submission_stat;
+		$submission_array[] = $submission_stat;
+	}
+	
+	for($i = 0; $i < count($submission_array); $i++){
+		$actual_answer_list = Question :: get_answers($answer_array[$i]['qid']);
+	
+		foreach($actual_answer_list as $actual_answer){
+			if($actual_answer['input'] == 0)
+				$input = '';
+			else
+				$input = $actual_answer['input'];
+				
+			$test_case = array('expected_answer' => '', 'user_answer' => '', 'status' => '');
+			$compiler_result = sendToCompiler($answer_array[$i]['language'], $answer_array[$i]['code'], $input);
+			
+			$compiler_output = trim( $compiler_result['output'] );
+			
+			$test_case['expected_answer'] = $actual_answer['output'];
+			$test_case['user_answer'] = $compiler_output;
+			
+			if( equal($compiler_output, $actual_answer['output']) == 0){
+				++$score;
+				$test_case['status'] = 'Correct';
+			} else {
+				$test_case['status'] = 'Incorrect';
+			}
+			
+			$FA_main['test_cases'][] = $test_case;
+			$front_array[] = $FA_main;
+			
+			$grade = Grade :: set_grade($submission_stat, $actual_answer['qio_PK'], $score);
+			$score = 0;
+		}
+	}		
+	echo json_encode($front_array);
+}
 
-echo json_encode($result_array);
-*/
 function sendToCompiler($language, $code, $input){
 	$request = json_encode( new Request($language, $code, $input, '') );
 
@@ -93,28 +134,4 @@ function sendToCompiler($language, $code, $input){
 function equal($team_answer, $actual_answer){
 	return(strcmp($team_answer, $actual_answer));
 }
-
-$answer_array = $_POST['answers'];
-$contestID = $_POST['contestID'];
-$teamID = $_POST['teamID'];
-
-$result_array = array('contest_PK' => $contestID, 'team_PK' => $teamID, 'score' => 0);
-$actual_answer_list = array(
-		array('input'=>'', 'answer' => 'Hello World!')
-);
-
-foreach($answer_array as $team_answer){
-
-	foreach($actual_answer_list as $actual_answer){
-		$compiler_result = sendToCompiler($team_answer['language'], $team_answer['code'], $actual_answer['input']);
-		
-		$compiler_output = trim( $compiler_result['output'] );
-
-		if( equal($compiler_output, $actual_answer['answer']) == 0)
-			++$result_array['score'];
-			
-	}
-}
-
-echo json_encode($result_array);
 ?>

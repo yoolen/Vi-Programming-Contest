@@ -21,27 +21,30 @@
 			return false;
 		}
 	}
-	public static function get_answers($question_FK){
-		$conn = DatabaseConnection::get_connection();
-		$sql = "SELECT input, output FROM questionio WHERE question_FK=:question_FK";
-		$stmt = $conn->prepare($sql);
-		$stmt->bindParam(':question_FK', $question_FK);
-		$status = $stmt->execute();	
-		if($status){
-			$stmt->bindColumn('input', $input);
-			$stmt->bindColumn('output', $output);
-			
-			$answers = array();
-			
-			while($rows = $stmt->fetch(PDO::FETCH_BOUND)){
-				array_push($answers, array('input'=>$input, 'output'=>$output));
-			}
-			
-			return $answers;
-		} else {
-			return false;
-		}
-	}
+
+	 public static function set_grade($sub_FK, $qio_FK, $grade){
+		 /* Ulenn Terry Chern 
+		  * 
+		  */
+		 $conn = DatabaseConnection::get_connection();
+		 $sql = "INSERT INTO subgrade(sub_FK, qio_FK, grade) VALUES (:sub_FK, :qio_FK, :grade)";
+		 if($stmt = $conn->prepare($sql)){
+			 $stmt->bindParam(':sub_FK', $sub_FK);
+			 $stmt->bindParam(':qio_FK', $qio_FK);
+			 $stmt->bindParam(':grade', $grade);
+			 try{
+				 $stmt->execute();
+			 } catch (PDOException $e){
+				 echo $e->getMessage();
+				 return false;
+			 }
+			 return true;
+		 } else {
+			 echo $stmt->errorCode();
+			 return false;
+		 }
+	 }
+
 	public static function get_results($contest_FK){
 		$conn = DatabaseConnection::get_connection();
 		$sql = "SELECT * FROM teamscore INNER JOIN team ON teamscore.team_FK = team.team_PK WHERE contest_FK=:contest_FK ORDER BY score DESC";

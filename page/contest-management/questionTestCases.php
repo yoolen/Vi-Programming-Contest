@@ -9,7 +9,7 @@ if( isset($_POST['delete']) ){
 	Question::delete_question_io($_POST['qioid']);
 }
 
-$io = Question::get_all_question_io($_POST['qid'], $_POST['contestID']);
+$io = Question::get_question_ios($_POST['qid']);
 
 ?>
 <html>
