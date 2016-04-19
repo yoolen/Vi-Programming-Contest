@@ -1,125 +1,157 @@
 <h3>Edit Team</h3>
 <?php
-require_once ($_SERVER['DOCUMENT_ROOT'].'/admin/dbtools/lists.php');
-require_once ($_SERVER['DOCUMENT_ROOT'].'/admin/dbtools/backend.php');
-require_once($_SERVER['DOCUMENT_ROOT'].'/data/user.php');
-$userinfo = USER::get_user($_GET['unit']);
+require_once($_SERVER['DOCUMENT_ROOT'] . '/admin/dbtools/lists.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/admin/dbtools/backend.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/data/user.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/data/team.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/data/contest.php');
+$teaminfo = Team::get_team_info($_GET['unit']);
+$teammembers = Team::get_team_members($_GET['unit']);
+$contestid = Team::get_assigned_contests($_GET['unit']);
+//var_dump($team);
+//var_dump($teaminfo);
+echo '<br/>';
+//var_dump($teammembers);
 ?>
-<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js'></script>
 
 <?php
-
 /**
-// * Created by PhpStorm.
-// * User: yoolen
-// * Date: 2/24/2016
-// * Time: 7:03 PM
-// */
+ * // * Created by PhpStorm.
+ * // * User: yoolen
+ * // * Date: 2/24/2016
+ * // * Time: 7:03 PM
+ * // */
 
-if(isset(   $_POST['usr'], $_POST['fname'], $_POST['lname'], $_POST['aff'],$_POST['email'], $_POST['phone'],
-    $_POST['street1'], $_POST['city'], $_POST['state'], $_POST['zip'], $_POST['creds'])){
-    $usrinfo = array('usr'=>strtolower($_POST['usr']),'fname'=>$_POST['fname'],'lname'=>$_POST['lname'],'aff'=>$_POST['aff'],
-        'email'=>$_POST['email'],'phone'=>$_POST['phone'],'street1'=>$_POST['street1'],'street2'=>$_POST['street2'],'city'=>$_POST['city'],
-        'state'=>$_POST['state'],'zip'=>$_POST['zip'],'creds'=>$_POST['creds']);
-    echo 'ready';
-    var_dump($_POST);
-    User::admin_modify_user($usrinfo);
-} else {
-    echo 'not ready';
+if (isset($_POST['teamname'], $_POST['aff'], $_POST['coach'], $_POST['contact'])) {
+    if ($teamid = Team::create_team($_POST['aff'], $_POST['contact'], $_POST['coach'], $_POST['teamname'])) {
+        foreach ($_POST['contestantid'] as $contestant) {
+            Team::add_team_member($teamid, $contestant);
+        }
+        if (isset($_POST['contest'])){
+            Contest::set_contest_team($_POST['contest'],$teamid);
+        }
+        echo 'Successful team creation!';
+    } else {
+        echo 'Failed team creation!';
+    }
 }
 ?>
-<div id="userinfo">
-    <form action="_userManager_modify_<?php echo $_GET['unit']?>" method="POST">
-        <label for="usr">Username:&nbsp;</label>
-        <input type="text" name="usr" id="usr" value="<?php echo $userinfo['usr']?>" readonly="readonly"><br/>
 
-        <label for="fname">First Name:&nbsp;</label>
-        <input type="text" name="fname" id="fname" value="<?php echo $userinfo['fname']?>"><br/>
-
-        <label for="lname">Last Name:&nbsp;</label>
-        <input type="text" name="lname" id="lname" value="<?php echo $userinfo['lname']?>"><br/>
+<div id="teaminfo">
+    <form action="_teamManager_modify_<?php echo $_GET['unit']?>" method="POST">
+        <label for="teamname">Team Name:&nbsp;</label>
+        <input type="text" name="teamname" id="teamname" value="<?php echo $teaminfo['teamname']?>"><br/>
 
         <label for="aff">Affiliation:&nbsp;</label>
-        <select name = "aff" id="aff">
-            <option value = ""></option>
-            <?php
-            $affils = getaffs();
-            foreach($affils as $affil):
-                if(trim(explode('-', $affil)[0]) == $userinfo['aff']){
-                    echo '<option value="' . trim(explode('-', $affil)[0]) . '" selected="selected">' . $affil . '</option>';
-                } else {
-                    echo '<option value="' . trim(explode('-', $affil)[0]) . '">' . $affil . '</option>';
-                }
-            endforeach;
-            ?>
+        <select name="aff" id="aff"">
+        <option value=""></option>
+        <?php
+        $affils = getaffs();
+        foreach ($affils as $affil) {
+            if (trim(explode('-', $affil)[0]) == $teaminfo['aff_FK']) {
+                echo '<option value="' . trim(explode('-', $affil)[0]) . '" selected="selected">' . trim(explode('-', $affil)[1]) . '</option>';
+            } else {
+                echo '<option value="' . trim(explode('-', $affil)[0]) . '">' . trim(explode('-', $affil)[1]) . '</option>';
+            }
+        }
+        ?>
         </select><br/>
-
-        <label for="email">Email:&nbsp;</label>
-        <input type="text" name="email" id="email" value="<?php echo $userinfo['email']?>"><br/>
-
-        <label for="phone">Phone:&nbsp;</label>
-        <input type="text" name="phone" id="phone" value="<?php echo $userinfo['phone']?>"><br/>
-
-        <label for="street1">Street 1:&nbsp;</label>
-        <input type="text" name="street1" id="street1" value="<?php echo $userinfo['street1']?>"><br/>
-
-        <label for="street2">Street 2:&nbsp;</label>
-        <input type="text" name="street2" id="street2" value="<?php echo $userinfo['street2']?>"><br/>
-
-        <label for="city">City:&nbsp;</label>
-        <input type="text" name="city" id="city" value="<?php echo $userinfo['city']?>"><br/>
-
-        <label for="state">State:&nbsp;</label>
-        <select name="state" id="state">
-            <option value=""></option>
+        <label for="contact">Contact:&nbsp;</label>
+        <select name="contact" id='contact'>';
             <?php
-            foreach($states as $state):
-                if ($state == $userinfo['state']){
-                    echo '<option value="' . $state . '" selected="selected">' . $state . '</option>';
-                } else {
-                    echo '<option value="' . $state . '">' . $state . '</option>';
-                }
-            endforeach;
+            $contacts = User::get_all_users();
+            foreach ($contacts as $contact) {
+                echo '<option value="' . $contact['uid'] . '">' . $contact['fname'] . ' ' . $contact['lname'] . '</option>';
+            }
+            echo '</select>';
             ?>
 
-        </select><br/>
-
-        <label for="zip">Zip:&nbsp;</label>
-        <input type="text" name="zip" id="zip" value="<?php echo $userinfo['zip']?>"><br/>
-
-        <label for="passwd">Password:&nbsp;</label>
-        <input type="password" name="passwd" id="passwd" value="**********" disabled><br/>
-
-        <label for="ul">User Level:&nbsp;</label>
-        <select name="creds" id="creds">
-            <option value=""></option>
-
-            <?php
-            foreach($userlevels as $userlevel):
-                if ($userlevel[0] == $userinfo['creds']){
-                    echo '<option value="' . $userlevel[0] . '"selected="selected">' . $userlevel . '</option>';
-                }else {
-                    echo '<option value="' . $userlevel[0] . '">' . $userlevel . '</option>';
+            <br/>
+            <label for="coach">Coach:&nbsp;</label>
+            <select name="coach" id="coach">
+                <?php
+                $contacts = User::get_all_users();
+                foreach ($contacts as $contact) {
+                    echo '<option value="' . $contact['uid'] . '">' . $contact['fname'] . ' ' . $contact['lname'] . '</option>';
                 }
-            endforeach;
-            ?>
+                ?>
+            </select>
+            <br/>
+            <label for="contest">Contest:&nbsp;</label>
+            <select name="contest" id="contest">
+                <?php
+                $contests = Contest::get_all_contests();
+                foreach ($contests as $contest){
+                    if($contestid == $contest['cid']){
+                        echo '<option value="' . $contest['cid'] . '" selected="selected">' . $contest['name'] . '</option>';
+                    } else {
+                        echo '<option value="' . $contest['cid'] . '">' . $contest['name'] . '</option>';
+                    }
+                }
+                ?>
+            </select>
 
-        </select><br/>
-        <input type="submit" value="Update" id="submitbutton">
+
+            <div id="teammembers"></div>
+            <br/>
+            <input type="submit" value="Update Team" id="submitbutton">
     </form>
 </div>
 
 
 <script type="text/javascript" id="buttonscript">
-    $(document).ready(function (){
+    $(document).ready(function () {
         validate();
-        $(document).change(validate);
+        updateValues($('#aff').val());
+
+        $(document).bind('DOMSubtreeModified', function () {
+            validate();
+            //alert($('#teamname').val() + $('#contact').val() + $('#coach').val() + $('#aff').val());
+        })
+
+        $('#aff').on('change', function () {
+            var affID = $(this).val();
+            updateValues(affID);
+        })
     });
 
-    function validate(){
-        if ($('#usr').val() && $('#fname').val() && $('#lname').val() && $('#aff').val() && $('#email').val() &&
-            $('#phone').val() && $('#street1').val() && $('#city').val() && $('#state').val() &&
-            $('#zip').val() && $('#creds').val()) {
+    function updateValues(affID) {
+        var contact = <?php echo $teaminfo['contact_FK']; ?>;
+        var coach = <?php echo $teaminfo['coach_FK']; ?>;
+        var contestants = <?php echo json_encode($teammembers); ?>;
+        if (affID) {
+            $.post('/page/team-management/get-contacts-by-aff.php',
+                {
+                    aff: affID,
+                    creds: 5,
+                    selected: contact
+                },
+                function (result) {
+                    $('#contact').html(result)
+                });
+            $.post('/page/team-management/get-coaches-by-aff.php',
+                {
+                    aff: affID,
+                    creds: 6,
+                    selected: coach
+                },
+                function (result) {
+                    $('#coach').html(result)
+                });
+            $.post('/page/team-management/get-users-by-aff.php',
+                {
+                    aff: affID,
+                    creds: 4,
+                    selected: contestants
+                },
+                function (result) {
+                    $('#teammembers').html(result)
+                });
+        }
+    }
+
+    function validate() {
+        if ($('#teamname').val() && $('#contact').val() && $('#coach').val() && $('#aff').val()) {
             $("#submitbutton").prop("disabled", false);
         } else {
             $("#submitbutton").prop("disabled", true);

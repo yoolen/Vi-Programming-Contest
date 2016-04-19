@@ -4,6 +4,7 @@
 	if(isset($_POST['contestID'], $_POST['qtext'], $_POST['ans'])){
 		$qid = Question::insert_question($_POST['title'],$_POST['qtext'], $_POST['ans'], 1);
 	    Contest::add_question_to_contest($_POST['contestID'],$qid, Contest::get_max_seq($_POST['contestID'])+1);
+		header("location: ?msg=Success");
 	}
 	else{
 		header("location: ./");

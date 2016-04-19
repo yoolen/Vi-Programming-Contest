@@ -110,5 +110,66 @@ class Team{
 			return false;
 		}
 	}
+
+	public static function get_team_info($team_PK){
+		$conn = DatabaseConnection::get_connection();
+		$sql = "SELECT team.teamname, team.aff_FK, affiliation.affname, team.contact_FK, CONCAT(usr1.fname,' ',usr1.lname) AS contactname, team.coach_FK, CONCAT(usr2.fname,' ',usr2.lname) AS coachname 
+				FROM team 
+				INNER JOIN affiliation ON team.aff_FK = affiliation.aff_PK 
+				INNER JOIN usr AS usr1 ON team.contact_FK=usr1.usr_PK 
+				INNER JOIN usr AS usr2 ON team.coach_FK=usr2.usr_PK
+				WHERE team.team_PK=:team_PK";
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':team_PK', $team_PK);
+			try{
+				$stmt->execute();
+			} catch (PDOException $e){
+				echo $e->getMessage();
+				return false;
+			}
+
+			$stmt->bindColumn('teamname',$teamname);
+			$stmt->bindColumn('aff_FK', $aff_FK);
+			$stmt->bindColumn('affname',$aff);
+			$stmt->bindColumn('contact_FK', $contact_FK);
+			$stmt->bindColumn('contactname',$contact);
+			$stmt->bindColumn('coach_FK', $coach_FK);
+			$stmt->bindColumn('coachname',$coach);
+
+			$stmt->fetch(PDO::FETCH_BOUND);
+			return array('team_PK'=>$team_PK,'teamname'=>$teamname,'aff_FK'=>$aff_FK,'aff'=>$aff,'contact_FK'=>$contact_FK,
+				'contact'=>$contact,'coach_FK'=>$coach_FK,'coach'=>$coach);
+		} else {
+			echo $stmt->errorCode();
+			return false;
+		}
+	}
+
+	public static function get_team_members($team_FK){
+		$conn = DatabaseConnection::get_connection();
+		$sql = "SELECT teammember.usr_FK, CONCAT(usr.fname,' ',usr.lname) AS usrname
+				FROM teammember
+				INNER JOIN usr ON teammember.usr_FK=usr.usr_PK
+				WHERE team_FK=:team_FK";
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':team_FK', $team_FK);
+			try {
+				$stmt->execute();
+			} catch (PDOException $e){
+				echo $e->getMessage();
+				return false;
+			}
+			$stmt->bindColumn('usr_FK',$usr_FK);
+			$stmt->bindColumn('usrname',$usrname);
+			$teammembers = array();
+			while($stmt->fetch(PDO::FETCH_BOUND)){
+				array_push($teammembers, array('uid'=>$usr_FK,'usrname'=>$usrname));
+			}
+			return $teammembers;
+		} else {
+			echo $stmt->errorCode();
+			return false;
+		}
+	}
 }
 ?>

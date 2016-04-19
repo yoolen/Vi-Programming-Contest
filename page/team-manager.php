@@ -37,10 +37,10 @@ class Team_Manager extends Page {
 
             return <<<TEAMMANAGER
             <h2>Team Manager</h2>
-            <ul>
-                <li><a href='../_teamManager_create'>Create Team</a></li>
-                <li><a href='../_teamManager_modify'>Modify Team</a></li>
-            </ul>
+            
+			<a class="btn btn-default" href='../_teamManager_create'>Create Team</a><br/>
+			<a class="btn btn-default" href='../_teamManager_modify'>Modify Team</a>
+            
 TEAMMANAGER;
         }
     }

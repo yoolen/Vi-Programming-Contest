@@ -14,7 +14,7 @@ $teams = Team::get_all_teams();
 <h3>Modify Team</h3>
 <table class="sortable table-hover"  border="2">
     <thead>
-        <tr id="tableheaders"><th>Team Name</th><th>Affiliation</th><th>Contact</th><th>Coach</th><th>Edit</th><th>Members</th><th>Archive</th></tr>
+        <tr id="tableheaders"><th>Team Name</th><th>Affiliation</th><th>Contact</th><th>Coach</th><th>Edit</th><th>Archive</th></tr>
     </thead>
 <?php
 foreach ($teams as $team){
@@ -25,7 +25,6 @@ foreach ($teams as $team){
         echo '<td>'.$team['contact'].'</td>';
         echo '<td>'.$team['coach'].'</td>';
         echo '<td><a class="btn btn-default" href="_teamManager_editinfo_'.$team['team_PK'].'">Edit</a></td>';
-        echo '<td><a class="btn btn-default" href="_teamManager_editusers_'.$team['team_PK'].'">Add/Remove</a></td>';
         echo '<td><a class="btn btn-default" href="_teamManager_archive_'.$team['team_PK'].'">Archive</a></td>';
     echo '</tr>';
 }

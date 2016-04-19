@@ -1,0 +1,142 @@
+/**
+ * main.css
+ * Main Style Sheet for the website.
+ */
+
+body {
+    width:100%;
+    height:100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Open Sans', sans-serif !important;
+    font-size: 14pt;
+}
+
+.hide {
+  display: none;
+}
+
+div {
+    overflow: no-content;
+}
+
+.center {
+    border: 1px solid black;
+}
+
+.center:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+#timerContainer {
+    float: right;
+    padding: 5px;
+}
+
+#timer {
+    float: right;
+    padding-left: 5px;
+    font-weight: bold;
+}
+
+#hints {
+    font-family: 'Open Sans', sans-serif;
+    background-color: white;
+    float: right;
+    height:89vh;
+    width: 20%;
+    min-width: 20%;
+}
+#editorPane {
+    width:80%;
+    max-width: 80%;
+    height:89vh;
+    float: left;
+    overflow-y: hidden;
+}
+
+#editor {
+    height: 87vh;
+}
+
+#problem {
+    float: right;
+    padding: 5px;
+}
+
+#file {
+    float: right;
+    padding: 5px;
+}
+
+#icons {
+    padding: 2px;
+}
+
+#toolbar {
+    padding: 2px;
+    height: 5vh;
+    min-height: 30px;
+    max-height: 50px;
+    border: black 1px solid;
+}
+
+#dragbar{
+    background-color:black;
+    height:100%;
+    float: left;
+    width: 3px;
+    cursor: col-resize;
+}
+#ghostbar{
+    width:3px;
+    background-color:#000;
+    opacity:0.5;
+    position:absolute;
+    cursor: col-resize;
+    z-index:999;
+}
+
+.head {
+    padding: 0.5vw;
+    height: 10vh;
+    background: linear-gradient(to bottom, rgba(178,3,12,1) 1%,rgba(143,2,34,1) 91%,rgba(109,0,25,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b2030c', endColorstr='#6d0019',GradientType=0 );
+    background-size: cover;
+}
+.header {
+    width: 100%;
+    display: table;
+}
+.userbox {
+    background-color: #f8f8f8;
+    position:absolute;
+    top:0;
+    right:0;
+    width: 20vw;
+    height: 10vh;
+    padding: 5px;
+}
+.gravatar {
+    position: absolute;
+    top:0;
+    right:20vw;
+    width: 4vw;
+    height: 10vh;
+    background-color: black;
+}
+.table {
+    display: table;
+}
+.hints {
+    width: 98%;
+    float: right;
+}
+#alert {
+    display: none;
+    float: right;
+    width: 500px;
+    height: 6.25vh;
+    margin-right: 25vw;
+}

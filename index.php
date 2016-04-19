@@ -18,6 +18,7 @@ Matt Wolfman
 
 //Start Session
 session_start();
+require_once($_SERVER['DOCUMENT_ROOT'] . '\data\database-connection.php'); //Database Connection.
 include_once('page/page-data.php'); //Retrieve Page Data (Styling, Scripts, Data)
 require_once('webhead.php'); //HTML Head Information
 require_once('theme/theme-auxiliary.php'); //Auxiliary Page Data
@@ -29,6 +30,7 @@ if( isset($_SESSION['perms']) ) { //Are we logged In?
   require_once('theme/theme-content.php'); //Main Page Content
 }
 require_once('theme/theme-footer.php'); //Contains Display Footer
+DatabaseConnection::close_connection(); //Closing last reference to PDO.
 ?>
 </body>
 </html>

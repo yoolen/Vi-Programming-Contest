@@ -9,11 +9,15 @@ if (!isset($_SESSION['creds']) or $_SESSION['creds'] <= 0) {
 require_once ($_SERVER['DOCUMENT_ROOT'].'/data/contest.php');
 require_once ($_SERVER['DOCUMENT_ROOT'].'/data/user.php');
 
-	$cID = $_GET['unit'];
-	$tID_int = User::get_teamid($_SESSION['uid']);
-	$teamID = "team".(string) $tID_int;
+	$cID = $_GET['unit']; // Contest ID
+	$tID_int = User::get_teamid($_SESSION['uid']); // Team ID
+	$teamID = "team".(string) $tID_int; // Convert the Team ID to an arbitrary id, e.g. "team 1"
 	
+	/* If the team is not already set in this session, create a new session. Otherwise,
+	   edit the session that is already available.
+	*/
 	if (!isset($_SESSION[$teamID])){
+		// Generic Code
 		$code = <<<EOF
 /***************************************
 * NJIT High School Programming Contest *
@@ -23,11 +27,15 @@ public static void main(String[] args) {
 	System.out.println("Hello World!");
 }
 EOF;
-		$contestqs = Contest::get_contest_questions($cID);
-		$_SESSION['viewStatus'] = array('Viewing unsubmitted code','Not viewed yet', 'Viewed but not started yet', 'Viewed and Started', 'In Progress', 'Submitted', 'Viewing submitted code');
-		$user_answers = array();
+		$contestqs = Contest::get_contest_questions($cID); // All the contest questions for a particular contest
+		
+		// An array with different status based on the editor and actions of the team
+		$_SESSION['viewStatus'] = array('Viewing unsubmitted code','Not viewed yet', 'Viewed but not started yet', 'Viewed and Started', 'In Progress', 'Submitted', 'Viewing submitted code', 'Submission Error!');
+		
+		$user_answers = array(); // Stores the information for each questions
 		for($i = 0; $i < count($contestqs); $i++){
-			$viewStat = ($i == 0 ? $_SESSION['viewStatus'][0] : $_SESSION['viewStatus'][1]);
+			// The first question will always be viewed first, all other questions will not be viewed yet.
+			$viewStat = ($i == 0 ? $_SESSION['viewStatus'][0] : $_SESSION['viewStatus'][1]); 
 			$arr = array(
 				'code' => $code,
 				'language' => 'java/output',
@@ -38,16 +46,19 @@ EOF;
 				'qid' => $contestqs[$i]['qid'],
 				'sequencenum' => $contestqs[$i]['sequencenum'],
 				'title' => $contestqs[$i]['title'],
-				'qtext' => $contestqs[$i]['qtext']
+				'qtext' => $contestqs[$i]['qtext'],
+				'error' => ''
 			);
 			$user_answers[] = $arr;
 		}
-		$_SESSION[$teamID] = $user_answers;
+		$_SESSION[$teamID] = $user_answers; // Set the team's information into their session
 	
 	} else {
-		
+		// This code is for the previous question (or question that was viewed before going to the next chosen one)
 		if(isset($_POST['answer_id_prev'])){
 			$prev = $_POST['answer_id_prev'];
+			
+			// Set the type of submission (single submission or multiple submission)
 			if(isset($_POST['sent_code'])){
 				$_SESSION[$teamID][$prev]['answer_type'] = $_POST['sent_code'];
 			} else {
@@ -55,28 +66,43 @@ EOF;
 			}
 		}
 		
+		// This code is for the question that the team choose to go to
 		if(isset($_POST['answer_id_next'])){
 			$next = $_POST['answer_id_next'];
+			
+			// Based on it's view status that was stored before selection, if the question
+			// was submitted, then it should display "Viewing submitted question" and vice versa.
 			if($_SESSION[$teamID][$next]['viewStatus'] != $_SESSION['viewStatus'][5])
 				$_SESSION[$teamID][$next]['viewStatus'] = $_SESSION['viewStatus'][0];
 			else
 				$_SESSION[$teamID][$next]['viewStatus'] = $_SESSION['viewStatus'][6];
 		}
 		
+		// Set the view status of the previous question
 		if(isset($_POST['viewStat_next']))
 			$_SESSION[$teamID][$prev]['viewStatus'] = $_POST['viewStat_next'];
-		if(isset($_POST['codeAns']))
+		
+		if(isset($_POST['codeAns'])) // Set the code of the previous question
 			$_SESSION[$teamID][$prev]['code'] = $_POST['codeAns'];
-		if(isset($_POST['languageAns']))
+			
+		if(isset($_POST['languageAns'])) // Set the language of the code of the previous question
 			$_SESSION[$teamID][$prev]['language'] =  $_POST['languageAns'];
+		
+		// Set the flag of whether a question has been started or not
 		if(isset($_POST['questionStart']) && $_POST['questionStart'] == 'true')
 			$_SESSION[$teamID][$prev]['started'] = $_POST['questionStart'];
 		
-		if(isset($_POST['tests'])){
+		// If there was an error in the submission, set that parameter. Otherwise, set it to ''
+		if(isset($_POST['error'])){
 			$sq = $_POST['seq'];
-			$_SESSION[$teamID][$sq]['tests'] = $_POST['tests'];
+			$_SESSION[$teamID][$sq]['answer_type'] = ''; // Prevents questions from resubmitting
+			if($_POST['error'] == 'none')
+				$_SESSION[$teamID][$sq]['error'] = '';
+			else {
+				$_SESSION[$teamID][$sq]['error'] = $_POST['error'];
+				$_SESSION[$teamID][$sq]['viewStatus'] = $_SESSION['viewStatus'][0];
+			}
 		}
-		
 	}
 
 require_once "compilation/classes.php";
@@ -85,10 +111,11 @@ if (isset($_POST['code'])) {
     $code = $_POST['code'];
     $lang = $_POST['language'];
     $inputs = $_POST['inputs'];
-		$qidIndex = $_POST['qid'] - 1;
+		$qidIndex = $_POST['qid'] - 1; // Decrease the value of the qid sent to match the index value in the session array
 		$_SESSION[$teamID][$qidIndex]['code'] = $_POST['code'];
 		$_SESSION[$teamID][$qidIndex]['language'] = $_POST['language'];
 		
+		// The question should be denoted as in-progress
 		if($_SESSION[$teamID][$qidIndex]['viewStatus'] != $_SESSION['viewStatus'][6])
 			$_SESSION[$teamID][$qidIndex]['viewStatus'] = $_SESSION['viewStatus'][4];
 		$_SESSION[$teamID][$qidIndex]['started'] = 'true';
@@ -150,10 +177,10 @@ if (isset($_POST['code'])) {
                 background-color: lightgray;
                 float: right;
                 height:70vh;
-                width: 40%;
+                width: 45%;
             }
             #editor {
-                width:60%;                
+                width:55%;                
                 height:70vh;
                 float: left;
                 overflow-y: hidden;
@@ -276,7 +303,7 @@ if (isset($_POST['code'])) {
                 display: table;
             }
 			#questions{
-				width: 40%;
+				width: 45%;
 				font: inherit !important;
 				padding-left: 0px;
 				margin-bottom: 0px;
@@ -323,7 +350,7 @@ if (isset($_POST['code'])) {
 				<div id="fin_bar" style="width: 60%; float: left; margin-left: 9%; height: 20%; overflow: hidden">
 					<div id="submitOneAnswer" type = "button" onclick="submitOneAnswer()" style="border:solid; width: 15%; height: 90px; text-align: center; font-size: 20px; margin-top:5px">Submit This Answer</div>
 					<div id="clear" type = "button" onclick="clearEditor()" style="float: left; margin-left: 25%; border:solid; width: 12%; height: 56px; text-align: center; font-size: 20px; margin-top: -56px">Clear Editor</div>
-					<div id="submitAllAnswers" type = "button" onclick="submitAllAnswers()" style="border:solid; margin-left: 45%; width: 16%; height: 90px; text-align: center; font-size: 20px; margin-top:-90px">Submit All Answers</div>
+					<div id="submitAllAnswers" type = "button" data-toggle="modal" data-target="#myModal" data-backdrop="static" onclick="submitAllAnswers()" style="border:solid; margin-left: 45%; width: 16%; height: 90px; text-align: center; font-size: 20px; margin-top:-90px">Submit All Answers</div>
 				</div>
                 <div id="editor" class='editor'></div>
 				<div id="showHints" onclick="showHints(this)" type="button" style="width:5%; float: right; border: solid; text-align: center; margin-top:-20px">Help</div>
@@ -383,12 +410,31 @@ if (isset($_POST['code'])) {
                 </div>
             </div>
         </form>
+		<!--This is the modal when the submit all button is clicked or when all questions where submitted -->
+		<div class="modal fade" id="myModal" role="dialog">
+			<div class="modal-dialog modal-sm">
+
+				<!-- Modal content-->
+				<div class="modal-content" id="modal-content">
+				
+					<div class="modal-body" id ="modal-body" >
+					  <p style="text-align:center">Submissions in Progress</p>
+					  <img src="http://njit1.initiateid.com/images/loading.gif" loop=false style="width:100px;height:170px;margin-left:33%;margin-top:-10%">
+					</div>
+					<div class="modal-footer" id="modal-footer" hidden>
+					  <button type="button" class="btn btn-primary" onclick="reSubmitAll()" >Retry</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
         <script type="text/javascript">
+			// Get the array of information for each question from a team
 			var contestQuests = <?php echo json_encode($_SESSION[$teamID]); ?>;
 			
+			// Remove the extra object that is concatenated to the contestQuests
 			if(typeof contestQuests === 'object'){
 				var arr = [];
-				//contestQuests = JSON.parse(contestQuests);
 				for(var key in contestQuests){
 					if(key === "")
 						continue;
@@ -397,10 +443,9 @@ if (isset($_POST['code'])) {
 				contestQuests = arr;
 			}
 
-			var contest_length = contestQuests.length;
-			var viewStatus = <?php echo json_encode($_SESSION['viewStatus']); ?>;
+			var contest_length = contestQuests.length; // Length of the array
+			var viewStatus = <?php echo json_encode($_SESSION['viewStatus']); ?>; // Get the array of view status
 			
-            var i = 0;
             var dragging = false;
             $('.dragbar').mousedown(function (e) {
                 e.preventDefault();
@@ -439,10 +484,11 @@ if (isset($_POST['code'])) {
             var editor = ace.edit("editor");
 			var change = 0;
             editor.setTheme("ace/theme/chrome");
-            //editor.getSession().setMode("ace/mode/java");
             editor.setFontSize(16);
 			editor.$blockScrolling = Infinity;
 			
+			// Detect if there are any changes in the editor for a question. If true,
+			// change the view status to 'in-progress'
 			editor.on('change', function() {
 				change = change + 1;
 				if(change >= 2){
@@ -477,17 +523,20 @@ if (isset($_POST['code'])) {
             }
 				
 			function loadContest(){
-				//hourCheck(<?php echo $cID; ?>, 'on-time');
-				
+				// Loads the timer
+				hourCheck(<?php echo $cID; ?>, 'on-time');
+			
 				var questionsDiv = document.getElementById("questions");
-
+				
 				for(var j = 0; j < contest_length; j++){
 					var question = document.createElement('li');
 					var title = document.createElement('span');
 					var br = document.createElement('br');
 					var viewStat = document.createElement('span');
 					var viewQuest = document.createElement('span');
-					var questionText = document.createElement('span');
+					var viewError = document.createElement('span');
+					var errorText = document.createElement('span');
+					var questionText = document.createElement('p');
 					
 						question.id = contestQuests[j]['qid'];
 						question.setAttribute("type", "button");
@@ -503,6 +552,7 @@ if (isset($_POST['code'])) {
 							viewStat.innerHTML = contestQuests[j]['viewStatus'];
 							viewStat.style = "float: left; margin-left: 15px";
 							
+							// Set the language and code when they execute their code.
 							if(contestQuests[j]['viewStatus'] == viewStatus[0] || contestQuests[j]['viewStatus'] == viewStatus[4] || contestQuests[j]['viewStatus'] == viewStatus[6]){
 								var controls = document.getElementsByClassName("controls")[0].childNodes;
 								var languageSelector = document.getElementById('languageSelector');
@@ -520,7 +570,10 @@ if (isset($_POST['code'])) {
 										break;
 									}
 								}
-								if(contestQuests[j]['viewStatus'] == viewStatus[6]){
+								
+								// This disables some parts of the view (editor etc.). Only when there is an error (a question is
+								// submitted) or is already submitted will thsi be executed.
+								if(contestQuests[j]['viewStatus'] == viewStatus[6] || contestQuests[j]['error'] != ''){
 									editor.setReadOnly(true);
 									//document.getElementById("fin_bar").hidden = true;
 									document.getElementById("languageSelector").hidden = true;
@@ -528,9 +581,12 @@ if (isset($_POST['code'])) {
 								}
 							}	
 							
+							// If they submitted a code, this will execute
 							if(contestQuests[j]['viewStatus'] == viewStatus[5]){
+								
+								// This code is for a single submission.
 								if(contestQuests[j]['answer_type'] == 'single'){
-									
+									viewStat.innerHTML = 'Submission in progress';
 									$.ajax({
 										url: "http://njit1.initiateid.com/middleware/contest-grading.php",
 										method: "POST",
@@ -550,24 +606,42 @@ if (isset($_POST['code'])) {
 											console.log(obj);
 											var questions = document.getElementsByClassName("questions")[0].childNodes;
 											for(var i = 5; i < questions.length; i++){
+												
+												// Look for the question with the matching qid
 												if(questions[i].id == obj['qid']){
 													var viewStat = questions[i].childNodes[1];
-													setInterval(function(){
-														$(viewStat).css("color", "green");
-														setTimeout(function(){$(viewStat).css("color", "black");}, 500);
-														}, 1000);
 													
-													$.ajax({
-														url: "contest-front.php?unit=" + <?php echo $cID?>,
-														method: "POST",
-														data:{
-															tests: obj['test_cases'],
-															seq: obj['seq']
-														},
-														success: function(data){
-															//console.log(data);
-														}
-													});
+													// If we get an error, display an error and set the error for that 
+													// question in the session variable, else display submitted and set the error to ''
+													if(isNaN(obj['stat'])){
+														viewStat.innerHTML = viewStatus[7];
+														$(viewStat).css("color", "red");
+														
+														$.ajax({
+															url: "contest-front.php?unit=" + <?php echo $cID?>,
+															method: "POST",
+															data:{
+																seq: obj['seq'],
+																error: obj['stat']
+															}
+
+														});
+													} else {
+														viewStat.innerHTML = viewStatus[5];
+														$(viewStat).css("color", "green");
+														setTimeout(function(){$(viewStat).css("color", "black");}, 1000);
+														$.ajax({
+															url: "contest-front.php?unit=" + <?php echo $cID?>,
+															method: "POST",
+															data:{
+																seq: obj['seq'],
+																error: 'none'
+															}
+														});
+														if(allQuestSubmitted())
+															allSubmitModal();
+													
+													}
 													break;
 												}
 											}
@@ -579,8 +653,8 @@ if (isset($_POST['code'])) {
 							questionText.id = "question" + (j+1);
 							questionText.hidden = true;
 							questionText.innerHTML = contestQuests[j]['qtext'];
-							questionText.style = "float: left; margin: 20px";
-							
+							questionText.style = "margin: 20px";
+
 							viewQuest.id = j+1;
 							viewQuest.setAttribute("type", "button");
 							viewQuest.style="border:solid; float: right; margin-right: 15px";
@@ -588,11 +662,9 @@ if (isset($_POST['code'])) {
 							viewQuest.onclick = function(){
 								var qText = document.getElementById("question"+ this.id);
 								var questions = document.getElementsByClassName("questions")[0].childNodes;
-								var table = document.getElementById("table"+ this.id);
-								//console.log(table);
+
 								if(qText.hidden){
 									qText.hidden = false;
-									if(table != null) table.hidden = false;
 									this.innerHTML = "See other questions";
 									
 									for(var i = 5; i < questions.length; i++){
@@ -602,65 +674,103 @@ if (isset($_POST['code'])) {
 									
 								} else {
 									qText.hidden = true;
-									if(table != null) table.hidden = true;
 									this.innerHTML = "See full question";
 									for(var i = 5; i < questions.length; i++){
 										if (this.id != questions[i].getAttribute("value"))
 											questions[i].hidden = false;
 									}
 								}
-								/*if (!e) var e = window.event;
-									e.cancelBubble = true;
-								if (e.stopPropagation) e.stopPropagation();*/
 							};
 							viewQuest.innerHTML = "See full question";
 							
+							// If an error message is stored for a question, display a "See Error" button
+							// instead of a "See question" button
+							if(contestQuests[j]['error'] != ''){
+								errorText.id = "question" + (j+1);
+								errorText.hidden = true;
+								errorText.innerHTML = contestQuests[j]['error'];
+								errorText.style = "float: left; margin: 20px";
+								
+								viewError.id = j+1;
+								viewError.setAttribute("type", "button");
+								viewError.style="border:solid; float: right; margin-right: 15px";
+								
+								viewError.onclick = function(){
+									var eText = document.getElementById("question"+ this.id);
+									var questions = document.getElementsByClassName("questions")[0].childNodes;
+
+									if(eText.hidden){
+										eText.hidden = false;
+										this.innerHTML = "See other questions";
+										
+										for(var i = 5; i < questions.length; i++){
+											if (this.id != questions[i].getAttribute("value"))
+												questions[i].hidden = true;
+										}
+										
+									} else {
+										eText.hidden = true;
+										this.innerHTML = "See Error";
+										for(var i = 5; i < questions.length; i++){
+											if (this.id != questions[i].getAttribute("value"))
+												questions[i].hidden = false;
+										}
+									}
+								};
+								viewError.innerHTML = "See Error";
+							}
 							
 						question.appendChild(title);
 						question.appendChild(viewStat);
-						question.appendChild(viewQuest);
 						question.appendChild(br);
-						question.appendChild(questionText);
-						question.appendChild(br);
-						if(contestQuests[j]['viewStatus'] == viewStatus[6]){
-									var table = document.createElement('table');
-									var titles = ['Your Answers','Expected Answers','Incorrect/Correct'];
-									var stat = ['Correct', 'Incorrect'];
-									var tr = document.createElement('tr');
-									table.id = "table"+(j+1);
-									table.style = 'float: left; margin-left: 20px;'; 
-									table.border = "1";
-									table.hidden = true;
-									
-									for(var i = 0; i < titles.length; i++){
-										var th = document.createElement('th');
-										th.innerHTML = titles[i];
-										tr.appendChild(th);
-									}
-									table.appendChild(tr);
-									
-									for(var obj in contestQuests[j]['tests']){
-										var tr = document.createElement('tr');
-										var td = document.createElement('td');
-										td.innerHTML = contestQuests[j]['tests'][obj]['user_answer'];
-										tr.appendChild(td);
-										var td = document.createElement('td');
-										td.innerHTML = contestQuests[j]['tests'][obj]['expected_answer'];
-										tr.appendChild(td);
-										var td = document.createElement('td');
-										td.innerHTML = contestQuests[j]['tests'][obj]['status'];
-										if(contestQuests[j]['tests'][obj]['status'] == stat[0])
-											td.style = "color: green";
-										else
-											td.style = "color: red";
-										tr.appendChild(td);
-										table.appendChild(tr);
-									}
-									question.appendChild(table);
+						if(contestQuests[j]['error'] == ''){
+							question.appendChild(viewQuest);
+							question.appendChild(br);
+							question.appendChild(questionText);
+						} else {
+							question.appendChild(viewError);
+							question.appendChild(br);
+							question.appendChild(errorText);
+						}
+						if(contestQuests[j]['viewStatus'] == viewStatus[6] || contestQuests[j]['viewStatus'] == viewStatus[5]){
+							viewQuest.hidden = true;
 						}
 					questionsDiv.appendChild(question);
 				}
 				
+				if(allQuestSubmitted())
+					allSubmitModal();
+				
+			}
+			
+			// Check if all questions are submitted
+			function allQuestSubmitted(){
+				var questions = document.getElementsByClassName("questions")[0].childNodes;
+				for (var i = 5; i < questions.length; i++){
+					var viewStat = questions[i].childNodes;
+					if(viewStat[1].innerHTML != viewStatus[5] && viewStat[1].innerHTML != viewStatus[6])
+						return false;
+				}
+				return true;
+			}
+			
+			// Display an all questions submitted modal
+			function allSubmitModal(){
+				$('#myModal').modal('toggle');
+				var modal = document.getElementsByClassName("modal-body")[0].childNodes;
+				var p = document.createElement("p");
+				var i = 5;
+				modal[1].innerHTML = "All Questions Submitted Successfully!";
+				modal[3].src = "http://njit1.initiateid.com/images/green.png";
+				modal[3].style = "width:100px;height:100px;margin-left:33%;";
+				setInterval(function(){
+					if(i == 0)
+						location.replace("http://njit1.initiateid.com");
+					
+					p.innerHTML = "You wil be redirected to the home-page in " + i;
+					modal[1].appendChild(p);
+					i--;
+				}, 1000);
 			}
 			
 			function changeQuestion(div){
@@ -678,7 +788,7 @@ if (isset($_POST['code'])) {
 						break;	
 				}
 				
-				//Viewing page
+				//Viewing page (unsubmitted or submitted)
 				if(div.childNodes != viewStat){
 					switch(viewStat[1].innerHTML){
 						case viewStatus[0]:
@@ -697,15 +807,13 @@ if (isset($_POST['code'])) {
 							viewStatusString = viewStatus[5];
 							break;
 					}
-				//console.log(editorVal,controls[3].getAttribute("value"),viewStat[2].id - 1,viewStatusString,div.getAttribute("value") - 1,started);
+				
 				$.ajax({
 					url: "contest-front.php?unit=" + <?php echo $cID?>,
 					method: "POST",
 					data: {
 						codeAns: editorVal,
 						languageAns: controls[3].getAttribute("value"),
-						//input: io[1].innerHTML,
-						//output: io[3].innerHTML,
 						answer_id_prev: viewStat[2].id - 1,
 						viewStat_next: viewStatusString,
 						answer_id_next: div.getAttribute("value") - 1,
@@ -719,14 +827,10 @@ if (isset($_POST['code'])) {
 			}
 
 			function submitOneAnswer(){
-				//var sendArr = {};
-				//var QA_array = [];
 				var submit_id, get_next_id;
 				var answer = {};
 				var controls = document.getElementsByClassName("controls")[0].childNodes;
-				/*sendArr['contestID'] = <?php echo $cID; ?>;
-				sendArr['teamID'] = <?php echo $tID_int; ?>;
-				*/
+
 				for(var i = 0; i < contest_length; i++){
 					
 					if(contestQuests[i]['viewStatus'] == viewStatus[0] || contestQuests[i]['viewStatus'] == viewStatus[4]){
@@ -734,18 +838,12 @@ if (isset($_POST['code'])) {
 						answer['qid'] = contestQuests[i]['qid'];
 						answer['code'] = editor.getSession().getValue();
 						answer['language'] = controls[3].getAttribute("value");
-						//QA_array.push(answer);
-						
 						break;
-					} /*else {
-						answer['language'] = contestQuests[i]['language'];
-						answer['code'] = contestQuests[i]['code'];
-					}*/
+					}
 				}
-				//sendArr["answers"] = answer;
+
 				get_next_id = get_next_unsubmit(submit_id);
-				//console.log(submit_id, get_next_id, answer);
-				
+
 				$.ajax({
 					url: "contest-front.php?unit=" + <?php echo $cID?>,
 					method: "POST",
@@ -753,29 +851,15 @@ if (isset($_POST['code'])) {
 						codeAns: answer['code'],
 						languageAns: answer['language'],
 						qidAns: answer['qid'],
-						//input: io[1].innerHTML,
-						//output: io[3].innerHTML,
 						answer_id_prev: submit_id,
 						viewStat_next: viewStatus[5],
 						answer_id_next: get_next_id,
 						questionStart : 'true',
-						sent_code: 'single'
+						sent_code: 'single' // Signifies a single submission
 						
 					},
 					success: function(data){
 						location.replace("http://njit1.initiateid.com/contest-front.php?unit=" + <?php echo $cID?>);
-						//console.log(data);
-						//console.log(submit_id, get_next_id);
-						/*$.ajax({
-							url: "http://njit1.initiateid.com/middleware/contest-grading.php",
-							method: "POST",
-							data: sendArr,
-							success: function(data){
-								console.log(data);
-								//window.location = "http://njit1.initiateid.com/contest-front.php?unit=" + <?php echo $cID?>;
-								
-							}
-						});*/
 					}
 				});
 			}
@@ -797,7 +881,6 @@ if (isset($_POST['code'])) {
 			}
 			
 			function changeEditor(el){
-				//var select = document.getElementById("languageSelector");
 				var controls = document.getElementsByClassName("controls")[0].childNodes;
 				switch(el.value){
 					case 'java':
@@ -813,6 +896,7 @@ if (isset($_POST['code'])) {
 				
 			}
 			
+			// Get the next unsubmitted question. Return the closest submission if all are submitted
 			function get_next_unsubmit(id){
 				if(id + 1 == contest_length){
 					for(var i = 0; i < contest_length - 1; i++){ 
@@ -841,6 +925,7 @@ if (isset($_POST['code'])) {
 				
 				for(var i = 0; i < contest_length; i++){
 					var answer = {};
+					// Get the information from the viewing page. Otherwise get all unsubmitted codes.
 					if(contestQuests[i]['viewStatus'] == viewStatus[0] || contestQuests[i]['viewStatus'] == viewStatus[4]){
 						answer['qid'] = contestQuests[i]['qid'];
 						answer['code'] = editor.getSession().getValue();
@@ -855,23 +940,60 @@ if (isset($_POST['code'])) {
 					}
 				}
 				sendArr["answers"] = QA_array;
-				//console.log(sendArr);
 				
+				// If there are no unsubmitted code, display a message to redirect to the home-page.
+				// Otherwise, send the codes to the grader.
 				if(sendArr['answers'].length == 0)
-					location.replace("http://njit1.initiateid.com");
+					allSubmitModal();
 				else {
 					$.ajax({
 						url: "http://njit1.initiateid.com/middleware/contest-grading.php",
 						method: "POST",
 						data: sendArr,
 						success: function(data){
-							//location.replace("http://njit1.initiateid.com");
-							//console.log(data);
+							setTimeout(function(){
+							var obj = JSON.parse(data);
+							var modal = document.getElementsByClassName("modal-body")[0].childNodes;
+							
+							// Display an error message if one or more submission fails. Otherwise,
+							// display a success message
+							if(obj['stat'] != ''){
+								var modal_foot = document.getElementById("modal-footer");
+								modal[1].innerHTML = "Submissions Failed";
+								modal[3].src = "http://njit1.initiateid.com/images/redX.png";
+								modal[3].style = "width:100px;height:100px;margin-left:33%;";
+								modal_foot.hidden = false;
+							} else {
+								var p = document.createElement("p");
+								var i = 5;
+								modal[1].innerHTML = "Submissions Success";
+								modal[3].src = "http://njit1.initiateid.com/images/green.png";
+								modal[3].style = "width:100px;height:100px;margin-left:33%;";
+								setInterval(function(){
+									if(i == 0)
+										location.replace("http://njit1.initiateid.com");
+									
+									p.innerHTML = "You wil be redirected to the home-page in " + i;
+									modal[1].appendChild(p);
+									i--;
+								}, 1000);
+							}
+							}, 1000);
 						}
 					});
 				}
 			}
 			
+			// Function that should resubmit the codes when retry is clicked.
+			function reSubmitAll(){
+				var modal = document.getElementsByClassName("modal-body")[0].childNodes;
+				var modal_foot = document.getElementById("modal-footer");
+					modal[1].innerHTML = "Submissions in Prograss";
+					modal[3].src = "http://njit1.initiateid.com/images/loading.gif";
+					modal[3].style = "width:100px;height:170px;margin-left:33%;top:-20%";
+					modal_foot.hidden = true;
+				submitAllAnswers();
+			}
 			/*function showFin(){
 				var fin = document.getElementById("fin_bar");
 				if(fin.hidden)

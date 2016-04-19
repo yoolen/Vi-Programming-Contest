@@ -6,10 +6,10 @@
  * Time: 10:27 PM
  */
 //require_once($_SERVER['DOCUMENT_ROOT'] . '/admin/user.php');
-require_once ($_SERVER['DOCUMENT_ROOT'].'/data/question.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/data/contest.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/data/team.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/data/user.php');
+require_once ($_SERVER['DOCUMENT_ROOT'] . '/data/question.php');
+require_once ($_SERVER['DOCUMENT_ROOT'] . '/data/contest.php');
+require_once ($_SERVER['DOCUMENT_ROOT'] . '/data/team.php');
+require_once ($_SERVER['DOCUMENT_ROOT'] . '/data/user.php');
 require_once ($_SERVER['DOCUMENT_ROOT'] . '/data/admin.php');
 require_once ($_SERVER['DOCUMENT_ROOT'] . '/data/submission.php');
 require_once ($_SERVER['DOCUMENT_ROOT'] . '/admin/dbtools/backend.php');
@@ -30,6 +30,10 @@ require_once ($_SERVER['DOCUMENT_ROOT'] . '/admin/dbtools/backend.php');
 //var_dump(Team::get_all_teams());
 //Submission::add_submission(10, 1, 'test3', 7);
 //var_dump(Submission::get_submissions_by_team(1));
-var_dump(Question::get_question_io(52));
+//var_dump(Question::get_question_io(52));
 //var_dump(Question::get_question_ios(50));
+//var_dump(Team::get_team_info(1));
+//var_dump(Contest::get_contest_teams(1));
+//var_dump(Contest::get_all_contests());
+var_dump(Team::get_team_members(14));
 ?>

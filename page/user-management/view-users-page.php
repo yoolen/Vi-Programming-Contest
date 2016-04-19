@@ -9,7 +9,6 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/data/user.php');
 $users = USER::get_all_users();
 ?>
 
-<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js'></script>
 <script src="../../library/sorttable.js"></script>
 <br/>
 <table class="sortable table-hover"  border="2">

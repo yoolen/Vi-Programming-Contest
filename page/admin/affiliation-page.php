@@ -30,7 +30,7 @@ $affiliates = Admin::get_all_affiliates();
             echo '<td>'.$affiliate['city'].'</td>';
             echo '<td>'.$affiliate['state'].'</td>';
             echo '<td>'.$affiliate['zip'].'</td>';
-        echo '</tr><br>';
+        echo '</tr>';
     }
     ?>
 </table>

@@ -51,9 +51,9 @@ if(isset(   $_POST['usr'], $_POST['fname'], $_POST['lname'], $_POST['aff'],$_POS
             $affils = getaffs();
             foreach($affils as $affil):
                 if(trim(explode('-', $affil)[0]) == $userinfo['aff']){
-                    echo '<option value="' . explode(' - ', $affil)[0] . '" selected="selected">' . explode(' - ', $affil)[1] . '</option>';
+                    echo '<option value="' . trim(explode('-', $affil)[0]) . '" selected="selected">' . trim(explode('-', $affil)[1]) . '</option>';
                 } else {
-                    echo '<option value="' . explode(' - ', $affil)[0] . '">' . explode(' - ', $affil)[1] . '</option>';
+                    echo '<option value="' . trim(explode('-', $affil)[0]) . '">' . trim(explode('-', $affil)[1]) . '</option>';
                 }
             endforeach;
             ?>

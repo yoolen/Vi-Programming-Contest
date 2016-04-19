@@ -8,8 +8,18 @@ require_once ($_SERVER['DOCUMENT_ROOT'].'/data/user.php');
  */
             echo '<select name = "coach" id="coach">';
             $coaches = User::get_users_by_aff_creds($_POST['aff'],$_POST['creds']);
-            foreach($coaches as $coach):
-                echo '<option value="' . $coach['uid'] . '">' . $coach['fname'] . '</option>';
-            endforeach;
+            if(isset($_POST['selected'])){
+                foreach($coaches as $coach){
+                    if($coach['uid'] == $_POST['selected']){
+                        echo '<option value="' . $coach['uid'] . '" selected="selected">' . $coach['fname'] . ' ' . $coach['lname'] . '</option>';
+                    } else {
+                        echo '<option value="' . $coach['uid'] . '">' . $coach['fname'] . ' ' . $coach['lname'] . '</option>';
+                    }
+                }
+            } else {
+                foreach ($coaches as $coach) {
+                    echo '<option value="' . $coach['uid'] . '">' . $coach['fname'] . ' ' . $coach['lname'] . '</option>';
+                }
+            }
             echo '</select>';
 ?>

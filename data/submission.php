@@ -77,14 +77,14 @@ class Submission{
             try {
                 $stmt->execute();
             } catch (PDOException $e){
-                echo $e->getMessage();
-                return false;
+                return $e->getMessage();
+                //return false;
             }
             //echo 'Successfully submitted';
             return $conn->lastInsertId();
         } else {
-            echo $stmt->errorCode();
-            return false;
+            return $stmt->errorCode();
+            //return false;
         }
     }
 }

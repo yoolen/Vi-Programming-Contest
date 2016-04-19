@@ -1,11 +1,10 @@
 <?php
-
 /**
- * File Backend Functions
- *
- * @author Jan Chris Tacbianan
- * @author Matthew Wolfman
- * @version 1.0
+ * @author Matt Wolfman
+ * @auther Jan Chris Tacbianan
+ * @version 2.0
+ * @since 4/19/2016
+ * @see DatabaseConnection::getConnection() for information about the database connection
  */
 require_once($_SERVER['DOCUMENT_ROOT'] . '\data\database-connection.php');
 
@@ -19,10 +18,10 @@ class File_Functions {
      * @returns A boolean value noting whether the operation was a success or failure.
      */
     public static function create_file($name, $extension, $folder) {
-        $empty = "";
         $conn = DatabaseConnection::get_connection();
         $sql = "INSERT INTO file (name, extension, content,folder) VALUES (:name,:extension,:content,:folder)";
         if ($stmt = $conn->prepare($sql)) {
+			$empty = "";
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':extension', $extension);
             $stmt->bindParam(':content', $empty);
@@ -35,11 +34,11 @@ class File_Functions {
             }
             return true;
         } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
             echo $stmt->errorCode();
             return false;
         }
     }
-
     /**
      * Save File
      * @param int $fileId The file that is being updated
@@ -60,11 +59,11 @@ class File_Functions {
             }
             return true;
         } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
             echo $stmt->errorCode();
             return false;
         }
     }
-
     /**
      * Rename File
      * @param int $fileId
@@ -87,34 +86,39 @@ class File_Functions {
             }
             return true;
         } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
             echo $stmt->errorCode();
             return false;
         }
     }
-
     /**
      * Retrieve File
-     *
      * @param type $fileId
+	 * @return int the id of a specified file. If it fails it returns false
      */
     public static function retrieve_file($fileId) {
         $connection = DatabaseConnection::get_connection();
         $query = "select * from file where fileId=:fileId";
-        $statement = $connection->prepare($query);
-        $statement->bindParam(':fileId', $fileId);
-        $result = $statement->execute();
-        if ($result) {
+		if($statement = $connection->prepare($query)){
+			$statement->bindParam(':fileId', $fileId);
+            try {
+                $statement->execute();
+            } catch (PDOException $e) {
+				//Gets the error if the query fails to execute
+                echo $e->getMessage();
+                return false;
+            }
             $statement->setFetchMode(PDO::FETCH_ASSOC);
             $fileData = $statement->fetch();
             return $fileData;
         } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
+            echo $stmt->errorCode();
             return false;
         }
     }
-
     /**
      * Delete File
-     *
      * @param type $fileId
      * @return A boolean value noting whether the operation was a success or failure.
      */
@@ -131,6 +135,7 @@ class File_Functions {
             }
             return true;
         } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
             echo $stmt->errorCode();
             return false;
         }
@@ -138,7 +143,6 @@ class File_Functions {
 
     /**
      * Create Folder
-     *
      * @param int $owner The owner of the folder
      * @param bool $teamShare A boolean value denoting whether or not the folder is visible to the owner's team.
      * @param bool $contestRelated A boolean value denoting whether or not the folder is a contest entry
@@ -161,6 +165,7 @@ class File_Functions {
             }
             return true;
         } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
             echo $stmt->errorCode();
             return false;
         }
@@ -168,7 +173,6 @@ class File_Functions {
 
     /**
      * Delete Folder
-     *
      * @param type $folderId
      * @return A boolean value noting whether the operation was a success or failure.
      */
@@ -185,14 +189,13 @@ class File_Functions {
             }
             return true;
         } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
             echo $stmt->errorCode();
             return false;
         }
     }
-
     /**
      * Retrieve User Folders
-     *
      * @param type $userId
      * @return An array containing all NON CONTEST RELATED folders pertaining to a particular user. Format should be an associative array of folder ids to folder names.
      */
@@ -214,13 +217,13 @@ class File_Functions {
             }
             return $folders;
         } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
+            echo $stmt->errorCode();
             return false;
         }
     }
-
     /**
      * Retrieve User Accessible Folders
-     *
      * @param type $userId
      * @return An array containing all NON CONTEST RELATED folders pertaining to a particular user. <br>
      *          Must ALSO contain folders that teammates have denoted as team shared. <br>
@@ -262,14 +265,15 @@ class File_Functions {
 			} else {
 				return File_Functions::retrieve_user_folders($usr_FK);
 			}
-		} else {
-			return false;
-		}
+        } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
+            echo $stmt->errorCode();
+            return false;
+        }
     }
 
     /**
      * Rename Folder
-     *
      * @param type $folderId
      * @param type $folderName
      * @return A boolean value noting whether the operation was a success or failure.
@@ -288,16 +292,14 @@ class File_Functions {
             }
             return true;
         } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
             echo $stmt->errorCode();
             return false;
         }
     }
-
     /**
      * Toggle Share Folder
-     *
      * Enables or disables team sharing of a folder.
-     *
      * @param type $folderId
      * @return A boolean value noting whether the operation was a success or failure.
      */
@@ -314,68 +316,166 @@ class File_Functions {
             }
             return true;
         } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
             echo $stmt->errorCode();
             return false;
         }
     }
-    	    /**
-     *
+    /**
+     * This function gets all the files in a folder
      * @param type $folderId
      * @return An array containing fileId's and fileNames's of all files in specified folder.
      */
     public static function retrieve_folder_files($folder) {
         $conn = DatabaseConnection::get_connection();
 		$sql = "SELECT fileId, name, extension FROM file WHERE folder=:folder";
-		$stmt = $conn->prepare($sql);
-        $stmt->bindParam(':folder', $folder);
-		$status = $stmt->execute();
-		if ($status) {
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':folder', $folder);
+            try {
+                $stmt->execute();
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
 			$stmt->bindColumn('fileId', $fileId);
 			$stmt->bindColumn('name', $name);
-      $stmt->bindColumn('extension', $ext);
+			$stmt->bindColumn('extension', $ext);
 			$folders = array();
 			while ($row = $stmt->fetch(PDO::FETCH_BOUND)) {
 				array_push($folders, array('fileId' => $fileId, 'name' => $name, 'ext' => $ext));
 			}
 			return $folders;
-		} else {
-			return false;
-		}
+        } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
+            echo $stmt->errorCode();
+            return false;
+        }
     }
-
     /**
-     *
+     * This function gets the 
      * @param type $fileId
      * @return An int representing the folder that the fileId specified belongs to.
      */
     public static function get_folder_from_file($fileId) {
         $conn = DatabaseConnection::get_connection();
 		$sql = "SELECT folder FROM file WHERE fileId=:fileId";
-		$stmt = $conn->prepare($sql);
-        $stmt->bindParam(':fileId', $fileId);
-		$status = $stmt->execute();
-		if ($status) {
-			$result = $stmt->fetch(PDO::FETCH_ASSOC);
-			return $result['folder'];
-		} else {
-			return false;
-		}
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':fileId', $fileId);
+			try {
+				$stmt->execute();
+			} catch (PDOException $e) {
+				echo $e->getMessage();
+				return false;
+			}
+			return $stmt->fetch(PDO::FETCH_ASSOC)['folder'];
+	    } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
+            echo $stmt->errorCode();
+            return false;
+        }
     }
-	
+	/**
+     * This funcrion gets the folder info of the specified file
+     * @param type $fileId
+     * @return An int representing the folder that the fileId specified belongs to.
+     */
 	public static function get_folder_data_from_fileId($fileId) {
         $conn = DatabaseConnection::get_connection();
 		$sql = "SELECT * FROM folder WHERE folderId = (SELECT folder FROM file WHERE fileId=:fileId)";
-		$stmt = $conn->prepare($sql);
-        $stmt->bindParam(':fileId', $fileId);
-		$status = $stmt->execute();
-		if ($status) {
-			$result = $stmt->fetch(PDO::FETCH_ASSOC);
-			return $result;
-		} else {
-			return false;
-		}
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':fileId', $fileId);
+            try {
+                $stmt->execute();
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+			return $stmt->fetch(PDO::FETCH_ASSOC);
+        } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
+            echo $stmt->errorCode();
+            return false;
+        }
     }
-
+    /**
+     * Retrieves the contest information associated with the folder (of the file provided).
+     * @param int $fileId
+     * @return Returns an array containing the row data, or false on failure of execution.
+     */
+    public static function get_contest_data_from_folder($fileId) {
+        $conn = DatabaseConnection::get_connection();
+        $query = "select * from contestfolders where folderId = (select folder from file where fileId=:fileId)";
+        //----------
+        if ($statement = $conn->prepare($query)) {
+            $statement->bindParam(':fileId', $fileId);
+            try {
+                $statement->execute();
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+            return $statement->fetch(PDO::FETCH_ASSOC);
+        } else {
+            echo $statement->errorCode();
+            return false;
+        }
+    }
+    /**
+     * Adds an entry into the contestfolders table using the cooresponding parameters     * 
+     * 
+     * Requested by Jan. Written by Matt.
+     * @param type $teamId
+     * @param type $contestId
+     * @param type $questionId
+     * @param type $folderId
+     * @return A boolean denoting whether or not the operation was a success.
+     */
+    public static function new_folder_contest_association($teamId, $contestId, $questionId, $folderId) {
+		$conn = DatabaseConnection::get_connection();
+		$sql = "INSERT INTO contestfolders (teamId, contestId, questionId, folderId) VALUES (:teamId, :contestId, :questionId, :folderId)";
+		if ($stmt = $conn->prepare($sql)) {
+			$stmt->bindParam(':teamId', $teamId);
+            $stmt->bindParam(':contestId', $contestId);
+            $stmt->bindParam(':questionId', $questionId);
+            $stmt->bindParam(':folderId', $folderId);
+			try {
+                $stmt->execute();
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+            return true;
+        } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
+            echo $stmt->errorCode();
+            return false;
+        }
+    }
+    /**
+     * Gets the folder (belonging to the user/team) that is associated to the question.
+     * 
+     * @param type $usr_FK
+     * @param type $questionId
+     * @return An integer that cooresponds to the folder linked to the question or -1 on failure.
+     */
+    public static function get_folder_for_question($usr_FK, $questionId) {
+		$conn = DatabaseConnection::get_connection();
+        $sql = "SELECT folderId FROM contestfolders WHERE questionId=:questionId AND teamId = (SELECT team_FK FROM teammember WHERE usr_FK=:usr_FK)";
+		if ($stmt = $conn->prepare($sql)) {
+			$stmt->bindParam(':usr_FK', $usr_FK);
+            $stmt->bindParam(':questionId', $questionId);
+			try {
+                $stmt->execute();
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return "-1";
+            }
+            return $stmt->fetch(PDO::FETCH_ASSOC)['folderId'];
+        } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
+            echo $stmt->errorCode();
+            return "-1";
+        }
+    }
 }
-
 ?>

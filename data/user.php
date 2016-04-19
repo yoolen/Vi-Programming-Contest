@@ -23,6 +23,7 @@ class User
         /*  Takes 2 string variables as input and returns an associated array of the form:
          *  array( usrID => $usrID, usrlvl => $usrlvl ); where $usrID is a unique identifier
          *  and $usrlvl is an integer for which 1 - admin; 2 - judge; 3 - grader; 4 - contestant;
+         *  5 - contact; 6 - coach
          *  If an error occurs (either incorrect username or password) the following values will be returned:
          *  -1 - not found; -2 - bad username/password
          */
@@ -289,7 +290,7 @@ class User
          *  associated arrays containing users with that affiliation and their information.
          */
 		$conn = DatabaseConnection::get_connection();
-		$sql = "SELECT * FROM usr WHERE aff_FK=:aff_FK AND creds>=:creds";
+		$sql = "SELECT * FROM usr WHERE aff_FK=:aff_FK AND creds=:creds";
 		if($stmt = $conn->prepare($sql)){
 			$stmt->bindParam(':aff_FK', $aff_FK);
 			$stmt->bindParam(':creds', $creds);

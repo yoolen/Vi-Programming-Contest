@@ -60,7 +60,7 @@ TSET;
                     foreach ($files as $file) {
                         echo '<tr>';
                         echo '<td>'.$file['name'].'.'.$file['ext'].'</td>';
-                        echo '<td style="text-align: center;"><a href="http://njit1.initiateid.com/imaginarium2.0/imaginarium.php?file='.$file['fileId'].'" class="btn btn-default btn-sm">Open File <span class="glyphicon glyphicon-open"></span></a>'.'</td>';
+                        echo '<td style="text-align: center;"><a href="http://njit1.initiateid.com/imagine_'.$file['fileId'].'" class="btn btn-default btn-sm">Open File <span class="glyphicon glyphicon-open"></span></a>'.'</td>';
                         echo '<td style="text-align: center;"><a href="#" class="btn btn-default btn-sm">Rename File <span class="glyphicon glyphicon-edit"></span></a>'.'</td>';
                         echo '<td style="text-align: center;"><a href="../=download_'.$file['fileId'].'" class="btn btn-default btn-sm">Download File <span class="glyphicon glyphicon-download-alt"></span></a>'.'</td>';
                         echo '<td style="text-align: center;"><a href="#" class="btn btn-default btn-sm">Delete File <span class="glyphicon glyphicon-trash"></span></a>'.'</td>';

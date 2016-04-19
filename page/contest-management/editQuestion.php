@@ -53,10 +53,9 @@ $question = Question::get_question($_POST['qid']);
         <tr>
             <td>
                 <input type="submit" name="update" value="Update Question">
-
             </td>
         </tr>
-    </form></table>
+    </form></table><br>
 	<form method="post" action="../_contestManager_modify"><input type="hidden" name="contestID" value=<?php echo '"'.$_POST['contestID'].'"'; ?>><input type="submit" value="Back to Contest Page"></form>
 
 </body>

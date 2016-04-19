@@ -1,21 +1,29 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: yoolen
- * Date: 3/20/2016
- * Time: 7:22 PM
+ * @author Matt Wolfman
+ * @auther Terry Chern
+ * @version 2.0
+ * @since 4/19/2016
+ * @see DatabaseConnection::getConnection() for information about the database connection
  */
 require_once ($_SERVER['DOCUMENT_ROOT'].'\data\database-connection.php');
 
 class Admin {
+	/**
+     * This function returns an array of associated arrays containing all information related to an affiliate
+	 * @return array aff_PK, affname, email, phone, street1, street2, city, state, and zip. If it fails it returns false.
+     */
     public static function get_all_affiliates(){
-        /*  Ulenn Terry Chern - 20 March 2016 - 7:24PM
-         *  This function returns an array of associated arrays containing all information related to an affiliate
-         */
         $conn = DatabaseConnection::get_connection();
         $sql = 'SELECT * FROM affiliation';
-        $stmt = $conn->prepare($sql);
-        if($stmt->execute()){
+		if($stmt = $conn->prepare($sql)){
+			try {
+                $stmt->execute();
+            } catch (PDOException $e){ 
+				//Gets the error if the query fails to execute
+                echo $e->getMessage();
+                return false;
+            }
             $stmt->bindColumn('aff_PK',$aff_PK);
             $stmt->bindColumn('affname',$affname);
             $stmt->bindColumn('email',$email);
@@ -27,21 +35,21 @@ class Admin {
             $stmt->bindColumn('zip',$zip);
             $affs = array();
             while($stmt->fetch(PDO::FETCH_BOUND)){
-                array_push($affs, array('aff_PK'=>$aff_PK, 'affname'=>$affname, 'email'=>$email, 'phone'=>$phone, 'street1'=>$street1,
-                    'street2'=>$street2, 'city'=>$city, 'state'=>$state, 'zip'=>$zip));
+                array_push($affs, array('aff_PK'=>$aff_PK, 'affname'=>$affname, 'email'=>$email, 'phone'=>$phone, 'street1'=>$street1, 'street2'=>$street2, 'city'=>$city, 'state'=>$state, 'zip'=>$zip));
             }
             return $affs;
         } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
+            echo $stmt->errorCode();
             return false;
         }
     }
-
+    /**
+	 *  This function enters a new affiliation into the database. 
+	 * @param affinfo array this is affiliation name, an email address, a phone number, a street address (street 1 & 2), a city, state, and zipcode. 
+	 * @return true on successful entry and false on a failed insertion.
+	 */
     public static function set_affiliate($affinfo){
-        /*  Ulenn Terry Chern - 20 March 2016 - 8:27PM
-         *  This function takes an affiliation name, an email address, a phone number, a street address (street 1 & 2), a
-         *  city, state, and zipcode and enters a new affiliation into the database. It returns 1 on successful entry and
-         *  0 on a failed insertion.
-         */
         $conn = DatabaseConnection::get_connection();
         $sql = 'INSERT INTO affiliation (affname, email, phone, street1, street2, city, state, zip) 
                 VALUES(:affname, :email, :phone, :street1, :street2, :city, :state, :zip)';
@@ -54,19 +62,19 @@ class Admin {
             $stmt->bindParam(':city', $affinfo['city']);
             $stmt->bindParam(':state', $affinfo['state']);
             $stmt->bindParam(':zip', $affinfo['zip']);
-
-            // PDO has silent errors on insertion, cannot use $status flag to catch these errors.
             try {
                 $stmt->execute();
             } catch (PDOException $e){
+				//Gets the error if the query fails to execute
                 echo $e->getMessage();
                 return false;
             }
             return true;
         } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
             echo $stmt->errorCode();
             return false;
         }
-
     }
 }
+?>

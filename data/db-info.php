@@ -1,9 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: yoolen
- * Date: 2/22/2016
- * Time: 7:44 PM
+ * @auther Terry Chern
+ * @version 2.0
+ * @since 4/19/2016
  */
     define("SERVER", "localhost");
     define("USERNAME", "cs490");
