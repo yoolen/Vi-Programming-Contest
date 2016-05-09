@@ -7,6 +7,7 @@ require_once ($_SERVER['DOCUMENT_ROOT'].'/data/question.php');
 
 $contestID = $_POST['contestID'];
 $teamID = $_POST['teamID'];
+//echo json_encode($_POST);
 
 if($_POST['sent_code'] == 'single'){
 	$answer_array = array(
@@ -65,7 +66,7 @@ function gradeOneQuest($teamID, $contestID, $answer_array, $submission_stat){
 		
 		$front_array['test_cases'][] = $test_case;
 		
-		$grade = Grade :: set_grade($submission_stat, $actual_answer['qio_PK'], $score);
+		$grade = Grade :: set_grade($submission_stat, $actual_answer['qio_PK'], $score, $compiler_output);
 		
 		$score = 0;
 	}
@@ -102,7 +103,7 @@ function gradeMultipleQuest($teamID, $contestID, $answer_array, $submission_arra
 			$FA_main['test_cases'][] = $test_case;
 			$front_array[] = $FA_main;
 			
-			$grade = Grade :: set_grade($submission_array[$i], $actual_answer['qio_PK'], $score);
+			$grade = Grade :: set_grade($submission_array[$i], $actual_answer['qio_PK'], $score, $compiler_output);
 			$score = 0;
 		}
 	}

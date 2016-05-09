@@ -122,17 +122,17 @@ if (isset($_POST['code'])) {
 		
 	$req = new Request($lang, $code, $inputs);
     $request = json_encode($req);
-    $ch = curl_init('http://cs490.iidcct.com/comp/evaluate.php');
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    $curlRequest = curl_init('http://cs490.iidcct.com/comp/evaluate.php');
+    curl_setopt($curlRequest, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($curlRequest, CURLOPT_POSTFIELDS, $request);
+    curl_setopt($curlRequest, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curlRequest, CURLOPT_HTTPHEADER, array(
         'Content-Type: application/json',
         'Content-Length: ' . strlen($request))
     );
 
-    $result = json_decode(curl_exec($ch));
-    curl_close($ch);
+    $result = json_decode(curl_exec($curlRequest));
+    curl_close($curlRequest);
     $outBox = $result->output;
 }
 ?>
@@ -524,7 +524,7 @@ if (isset($_POST['code'])) {
 				
 			function loadContest(){
 				// Loads the timer
-				hourCheck(<?php echo $cID; ?>, 'on-time');
+				//hourCheck(<?php echo $cID; ?>, 'on-time');
 			
 				var questionsDiv = document.getElementById("questions");
 				
@@ -653,7 +653,7 @@ if (isset($_POST['code'])) {
 							questionText.id = "question" + (j+1);
 							questionText.hidden = true;
 							questionText.innerHTML = contestQuests[j]['qtext'];
-							questionText.style = "margin: 20px";
+							questionText.style = "margin: 20px; white-space: pre-wrap";
 
 							viewQuest.id = j+1;
 							viewQuest.setAttribute("type", "button");
@@ -957,6 +957,7 @@ if (isset($_POST['code'])) {
 							
 							// Display an error message if one or more submission fails. Otherwise,
 							// display a success message
+							console.log(obj);
 							if(obj['stat'] != ''){
 								var modal_foot = document.getElementById("modal-footer");
 								modal[1].innerHTML = "Submissions Failed";

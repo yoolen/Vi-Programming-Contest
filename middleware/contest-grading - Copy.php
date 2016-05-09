@@ -3,6 +3,7 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/compilation/classes.php');
 require_once ($_SERVER['DOCUMENT_ROOT'].'/data/grade.php');
 require_once ($_SERVER['DOCUMENT_ROOT'].'/data/contest.php');
 require_once ($_SERVER['DOCUMENT_ROOT'].'/data/question.php');
+require_once ($_SERVER['DOCUMENT_ROOT'].'/data/submission.php');
 /*
 $answer_array = $_POST['answers'];
 $contestID = $_POST['contestID'];
@@ -123,7 +124,33 @@ foreach($answer_array as $team_answer){
 echo json_encode($result_array);*/
 /*$actual_answer_list = Grade :: get_answers(50);
 print_r($actual_answer_list);*/
-
+/*
 $q = Question :: get_answers(61);
-print_r($q);
+print_r($q);*/
+/*
+$t = Contest::get_contest_teams(1);
+print_r($t);
+
+$contests = Contest :: get_all_contests();
+print_r($contests);*/
+/*
+$f = File_Functions :: get_folder_for_question_team(1, 61);
+//$s = File_Functions :: retrieve_folder_files($f);
+$s = File_Functions :: first_file($f);
+print_r($s);
+$q1 = Question :: get_answers(66);
+$a = Submission :: get_submissions_by_team_and_contest(14,2);
+$q = Contest :: get_contest_questions(2);
+$t = Contest :: get_contest_teams(1);
+$a2 = Submission :: get_submission(468);
+print_r($a2);*/
+
+$team_sub = Submission :: get_submission(473);
+		$answers = Question :: get_answers($team_sub[0]['question_FK']);
+		$data = 1;
+		foreach($answers as $ans){
+			$team_grade = Submission::get_answer(1, $ans['qio_PK']);
+			$data = $data * $team_grade['grade'];
+		}
+		echo $data;
 ?>

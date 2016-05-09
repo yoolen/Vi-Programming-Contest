@@ -7,11 +7,16 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/data/team.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/data/contest.php');
 $teaminfo = Team::get_team_info($_GET['unit']);
 $teammembers = Team::get_team_members($_GET['unit']);
+$teammemids = array();
+foreach ($teammembers as $teammember) {
+    $teammemids[] = $teammember['uid'];
+}
 $contestid = Team::get_assigned_contests($_GET['unit']);
-//var_dump($team);
+//var_dump($teammemids);
 //var_dump($teaminfo);
 echo '<br/>';
 //var_dump($teammembers);
+//var_dump($_POST);
 ?>
 
 <?php
@@ -23,24 +28,29 @@ echo '<br/>';
  * // */
 
 if (isset($_POST['teamname'], $_POST['aff'], $_POST['coach'], $_POST['contact'])) {
-    if ($teamid = Team::create_team($_POST['aff'], $_POST['contact'], $_POST['coach'], $_POST['teamname'])) {
-        foreach ($_POST['contestantid'] as $contestant) {
-            Team::add_team_member($teamid, $contestant);
+    if (Team::modify_team($_GET['unit'], $_POST['aff'], $_POST['contact'], $_POST['coach'], $_POST['teamname'])) {
+        $remove = array_diff($teammemids, $_POST['contestantid']);
+        $add = array_diff($_POST['contestantid'], $teammemids);
+        foreach ($remove as $r) {
+            Team::remove_team_member($_GET['unit'], $r);
         }
-        if (isset($_POST['contest'])){
-            Contest::set_contest_team($_POST['contest'],$teamid);
+        foreach ($add as $a) {
+            Team::add_team_member($_GET['unit'], $a);
         }
-        echo 'Successful team creation!';
+        if (isset($_POST['contest'])) {
+            Team::update_contest($_POST['contest'], $_GET['unit']);
+        }
+        echo 'Successfully updated!';
     } else {
-        echo 'Failed team creation!';
+        echo 'Failed update!';
     }
 }
 ?>
 
 <div id="teaminfo">
-    <form action="_teamManager_modify_<?php echo $_GET['unit']?>" method="POST">
+    <form action="_teamManager_editinfo_<?php echo $_GET['unit'] ?>" method="POST">
         <label for="teamname">Team Name:&nbsp;</label>
-        <input type="text" name="teamname" id="teamname" value="<?php echo $teaminfo['teamname']?>"><br/>
+        <input type="text" name="teamname" id="teamname" value="<?php echo $teaminfo['teamname'] ?>"><br/>
 
         <label for="aff">Affiliation:&nbsp;</label>
         <select name="aff" id="aff"">
@@ -81,8 +91,8 @@ if (isset($_POST['teamname'], $_POST['aff'], $_POST['coach'], $_POST['contact'])
             <select name="contest" id="contest">
                 <?php
                 $contests = Contest::get_all_contests();
-                foreach ($contests as $contest){
-                    if($contestid == $contest['cid']){
+                foreach ($contests as $contest) {
+                    if ($contestid == $contest['cid']) {
                         echo '<option value="' . $contest['cid'] . '" selected="selected">' . $contest['name'] . '</option>';
                     } else {
                         echo '<option value="' . $contest['cid'] . '">' . $contest['name'] . '</option>';

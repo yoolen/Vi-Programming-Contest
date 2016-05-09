@@ -2,31 +2,18 @@
 	require_once($_SERVER['DOCUMENT_ROOT'].'/data/contest.php');
 	require_once ($_SERVER['DOCUMENT_ROOT'].'/data/user.php');
 	require_once($_SERVER['DOCUMENT_ROOT'].'/data/team.php');
+	require_once ($_SERVER['DOCUMENT_ROOT'].'/data/submission.php');
 	require_once('time.php');
 	
-	$type = $_POST['type'];//'checking_in';
-	/*function c (){
-		$contest_info_arr = array(
-				array('cid' => '1',
-				'starttime' => '03/20/2016 22:25',
-				'duration' => '02:00:00',
-				'creator_FK'=> '100'),
-				array('cid' => '2',
-				'starttime' => '04/12/2016 13:45',
-				'duration' => '02:00:30',
-				'creator_FK'=> '101')
-			);
-			return $contest_info_arr;
-	}*/
-	
+	$type = $_POST['type'];
+
 	switch($type){
 		case 'checking_in':
-			$cID = $_POST['contestID'];//1;
-			$tID = $_POST['teamID'];//1;
+			$cID = $_POST['contestID'];
+			$tID = $_POST['teamID'];
 			$checking_in = Contest::get_checkin_status($cID, $tID);
 				echo json_encode($checking_in);
-			
-				//echo json_encode(0);
+
 			break;
 			
 		case 'checked_in':
@@ -34,7 +21,7 @@
 			$tID = $_POST['teamID'];//1;
 			$checked = Contest::set_checkin($cID, $tID);
 				echo json_encode($checked);
-				//echo json_encode(1);
+				
 			break;
 			
 		case 'get_team':
@@ -64,6 +51,17 @@
 		case 'get_date':
 			$cID = $_POST['contestID'];
 				echo json_encode(Contest::get_contest_sched($cID));
+			break;
+		
+		case 'submissions_complete':
+			$cID = $_POST['contestID'];
+			$tID = $_POST['teamID'];
+			$subs = Submission :: get_submissions_by_team_and_contest($cID, $tID);
+			$quests = Contest :: get_contest_questions($cID);
+			if($subs === $quests)
+				echo json_encode(1);
+			else
+				echo json_encode(0);
 			break;
 	}
 

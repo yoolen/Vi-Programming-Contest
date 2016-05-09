@@ -19,7 +19,9 @@ SCRIPT;
 
     public function getPageContent() {
         return <<<ERR
-		<div id="message">
+		<div style="text-align:center; margin-top:200px; font-size:20px">
+			<div id="message">
+			</div>
 		</div>
 ERR;
     }

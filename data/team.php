@@ -30,6 +30,54 @@ class Team{
 		}
     }
 
+	public static function modify_team($team_PK, $aff_FK, $contact_FK, $coach_FK, $teamname){
+		$conn = DatabaseConnection::get_connection();
+		$sql = "UPDATE team
+				SET aff_FK=:aff_FK, contact_FK=:contact_FK, coach_FK=:coach_FK, teamname=:teamname
+				WHERE team_PK=:team_PK";
+
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':aff_FK', $aff_FK);
+			$stmt->bindParam(':contact_FK', $contact_FK);
+			$stmt->bindParam(':coach_FK', $coach_FK);
+			$stmt->bindParam(':teamname', $teamname);
+			$stmt->bindParam(':team_PK', $team_PK);
+
+			try{
+				$stmt->execute();
+			} catch (PDOException $e){
+				echo $e->getMessage();
+				return false;
+			}
+			return true;
+		} else {
+			echo $stmt->errorCode();
+			return false;
+		}
+	}
+
+	public static function update_contest($contest_FK, $team_FK){
+		$conn = DatabaseConnection::get_connection();
+		$sql = "UPDATE contestview
+				SET contest_FK=:contest_FK
+				WHERE team_FK=:team_FK";
+
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':contest_FK',$contest_FK);
+			$stmt->bindParam(':team_FK',$team_FK);
+			try {
+				$stmt->execute();
+			} catch (PDOException $e){
+				echo $e->getMessage();
+				return false;
+			}
+			return true;
+		} else {
+			echo $stmt->errorCode();
+			return false;
+		}
+	}
+
     public static function add_team_member($team_FK, $usr_FK){
         $conn = DatabaseConnection::get_connection();
         $sql = "INSERT INTO teammember(team_FK,usr_FK) VALUES (:team_FK,:usr_FK)";
@@ -48,13 +96,18 @@ class Team{
     public static function remove_team_member($team_FK, $usr_FK){
         $conn = DatabaseConnection::get_connection();
         $sql = "DELETE FROM teammember WHERE team_FK=:team_FK AND usr_FK=:usr_FK";
-		$stmt = $conn->prepare($sql);
-        $stmt->bindParam(':team_FK', $team_FK);
-		$stmt->bindParam(':usr_FK', $usr_FK);
-        $status = $stmt->execute();
-		if($status){
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':team_FK', $team_FK);
+			$stmt->bindParam(':usr_FK', $usr_FK);
+			try{
+				$stmt->execute();
+			} catch (PDOException $e) {
+				echo $e->getMessage();
+				return false;
+			}
 			return true;
 		} else {
+			echo $stmt->errorCode();
 			return false;
 		}
     }

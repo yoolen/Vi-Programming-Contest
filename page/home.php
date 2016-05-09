@@ -52,7 +52,7 @@ HOME;
                       <br><br>
                       <b>Affiliation: </b> <?php echo $affiliation.""; ?>
                       <br><br>
-                      <a href='../_settings/' class='btn btn-default'> Click here to change account settings.</a>
+                      <!--a href='../_settings/' class='btn btn-default'> Click here to change account settings.</a-->
                   </div>
                 </div>
               </div>

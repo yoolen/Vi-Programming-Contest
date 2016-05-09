@@ -63,13 +63,13 @@ class Contest{
             } catch (PDOException $e){
 				//Gets the error if the query fails to execute
                 echo $e->getMessage();
-                return false;
+                //return false;
             }
-            return true;
+            return 1;
         } else {
 			//Fetches the SQLSTATE associated with the last operation on the database handle
             echo $stmt->errorCode();
-            return false;
+            //return false;
         }
 	}
 	/**
@@ -578,6 +578,35 @@ class Contest{
 			$stmt->fetch(PDO::FETCH_ASSOC);
 			$sched = array('starttime' => $starttime, 'duration' => $duration);
 			return $sched;
+        } else {
+			//Fetches the SQLSTATE associated with the last operation on the database handle
+            echo $stmt->errorCode();
+            return false;
+        }
+	}
+/**
+	 * This function returns the total time spent on a contest
+	 * @param contest_FK  int this is the id of the contest
+	 * @return array of times spent on each question, flase if it fails 
+	 */
+	public static function get_contest_time($contest_FK, $team_FK) {
+		$conn = DatabaseConnection::get_connection();
+		$sql = "SELECT subtime FROM submission INNER JOIN contestquestions ON submission.question_FK = contestquestions.question_FK WHERE contest_FK=:contest_FK AND team_FK=:team_FK";
+		if($stmt = $conn->prepare($sql)){
+			$stmt->bindParam(':contest_FK', $contest_FK);
+			$stmt->bindParam(':team_FK', $team_FK);
+			try {
+                $stmt->execute();
+            } catch (PDOException $e){
+                echo $e->getMessage();
+                return false;
+            }
+			$stmt->bindColumn('subtime', $subtime);
+			$contests = array();
+			while ($row = $stmt->fetch(PDO::FETCH_BOUND)) {
+				array_push($contests, $subtime);
+			}
+			return $contests;
         } else {
 			//Fetches the SQLSTATE associated with the last operation on the database handle
             echo $stmt->errorCode();

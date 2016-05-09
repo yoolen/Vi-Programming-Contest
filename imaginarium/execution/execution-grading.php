@@ -1,0 +1,44 @@
+<?php
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once $_SERVER['DOCUMENT_ROOT'] . "/data/files.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/imaginarium/execution/imaginarium-collection.php";
+
+$folder = 12;
+$runnable = 'tt.py';
+$arguments = '';
+$watch = '';
+
+$files = array();
+$folderEntries = File_Functions::retrieve_folder_files($folder);
+$folderData = "";
+foreach ($folderEntries as $f) {
+	$folderData = File_Functions::get_folder_data_from_fileId($folderEntries[0]['fileId']);
+    $fileContent = File_Functions::retrieve_file($f['fileId'])['content'];
+    $fileToAdd = new File($f['name'], $f['ext'], $fileContent);
+    $files[] = $fileToAdd;
+}
+$folderObject = new Folder($folderData['name'], $files);
+
+$request = new Request($folderObject, $runnable, $watch, $arguments);
+
+$requestJSON = json_encode($request);
+
+$curlRequest = curl_init('http://cs490.iidcct.com/491exec/execute.php');
+curl_setopt($curlRequest, CURLOPT_CUSTOMREQUEST, "POST");
+curl_setopt($curlRequest, CURLOPT_POSTFIELDS, $requestJSON);
+curl_setopt($curlRequest, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($curlRequest, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Content-Length: ' . strlen($requestJSON))
+);
+
+$result = json_decode(curl_exec($curlRequest), true);
+
+curl_close($curlRequest);
+
+print_r($result);
+?>

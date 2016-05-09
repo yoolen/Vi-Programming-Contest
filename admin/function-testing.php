@@ -33,7 +33,6 @@ require_once ($_SERVER['DOCUMENT_ROOT'] . '/admin/dbtools/backend.php');
 //var_dump(Question::get_question_io(52));
 //var_dump(Question::get_question_ios(50));
 //var_dump(Team::get_team_info(1));
-//var_dump(Contest::get_contest_teams(1));
-//var_dump(Contest::get_all_contests());
-var_dump(Team::get_team_members(14));
+//Team::remove_team_member(14,26);
+var_dump(Submission::get_answer(1,70));
 ?>

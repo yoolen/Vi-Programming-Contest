@@ -14,17 +14,17 @@ if (isset($_POST['code'])) {
     $inputs = $_POST['inputs'];
     $req = new Request($lang, $code, $inputs);
     $request = json_encode($req);
-    $ch = curl_init('http://cs490.iidcct.com/comp/evaluate.php');
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    $curlRequest = curl_init('http://cs490.iidcct.com/comp/evaluate.php');
+    curl_setopt($curlRequest, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($curlRequest, CURLOPT_POSTFIELDS, $request);
+    curl_setopt($curlRequest, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curlRequest, CURLOPT_HTTPHEADER, array(
         'Content-Type: application/json',
         'Content-Length: ' . strlen($request))
     );
 
-    $result = json_decode(curl_exec($ch));
-    curl_close($ch);
+    $result = json_decode(curl_exec($curlRequest));
+    curl_close($curlRequest);
     $outBox = $result->output;
     //print_r($result);
 }

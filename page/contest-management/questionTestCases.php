@@ -21,14 +21,14 @@ $io = Question::get_question_ios($_POST['qid']);
 <body>
 <h1>Test Cases</h1>
 <h2>Test Cases: <?php echo 'Contest '.$_POST['contestID'].' Question '.$_POST['qid'];?></h2>
-<table border="1">
+<table border="1" width=100%>
 <tr><th>Inputs</th><th>Outputs</th><th>Notes</th><th colspan="2">Operations</th></tr>
 <?php 
 	$x = 0;
 	foreach ($io as $i => $value) {
 		$x++;
 		echo '<tr>
-			   	  <td>'.$value['input'].'</td> <td>'.$value['output'].'</td><td>'.$value['notes'].'</td>
+			   	  <td style="white-space: pre-wrap;">'.$value['input'].'</td> <td style="white-space: pre-wrap">'.$value['output'].'</td><td style="white-space: pre-wrap">'.$value['notes'].'</td>
 				  <td><form method="post" action="../_contestManager_modify_etc" style="display:inline;"><input type="hidden" name="contestID" value="'.$_POST['contestID'].'"><input type="hidden" name="qid" value="'.$value['qid'].'"><input type="hidden" name="qioid" value="'.$value['qioid'].'"><input type="submit" value="Edit" name="Edit"></form></td>
 				  <td><form method="post" action="../_contestManager_modify_qtc" style="display:inline;"><input type="hidden" name="contestID" value="'.$_POST['contestID'].'"><input type="hidden" name="qid" value="'.$value['qid'].'"><input type="hidden" name="qioid" value="'.$value['qioid'].'"><input type="submit" value="X" name="delete"></form></td></tr>';
 	}

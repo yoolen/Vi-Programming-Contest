@@ -12,8 +12,12 @@ function getPage() {
             return;
         }
         switch ($_GET['page']) {
-			case "prepost":
-				require_once './page/prepost-contest.php';
+            case "complete":
+                require_once './page/complete.php';
+                $page = new Complete();
+                return;
+            case "prepost":
+                require_once './page/prepost-contest.php';
                 $page = new Pre_Post_Contest();
                 return;
             case "current":
@@ -43,7 +47,11 @@ function getPage() {
             case "imaginarium":
                 require_once './page/imaginarium.php';
                 $page = new Imaginarium();
-                return;    
+                return;
+            case "scoreManager":
+                require_once './page/score-manager.php';
+                $page = new scoreManager();
+                return;
             default:
                 $page = new Page();
         }
@@ -52,9 +60,9 @@ function getPage() {
 }
 
 function onLoad() {
-  global $page;
-  getPage();
-  echo $page->onLoad();
+    global $page;
+    getPage();
+    echo $page->onLoad();
 }
 
 function getPageImports() {
@@ -78,7 +86,7 @@ function getPageContent() {
 }
 
 function getWarnData() {
-
+    
 }
 
 function getPageTitle() {

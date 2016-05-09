@@ -17,23 +17,17 @@ class Results extends Page {
         $grade = new Grade();
         $contestNumber = Results::get_last_finished_contest();
         $results = $grade->get_results($contestNumber);
-        echo '<!--img src="/images/jollidude.png" style="float:right;"-->';
-        $contestName = $contest->get_contest_name($contestNumber); 
-        echo "<div style='border-style:solid; margin-top:10px;'><h2 style='text-align:center; font-weight:bold;'>Results of " . $contestName . "</h2>";
+		$contestName = $contest->get_contest_name($contestNumber); 
+        echo "<div style='border-style:solid; margin-top:10px; overflow:scroll; overflow-x:hidden;'><h2 style='text-align:center; font-weight:bold;'>Results of " . $contestName . "</h2>";
         echo '<div id="results" style="text-align:center">';
         for ($i = 0; $i < count($results); $i++) {
-            $newI = $i + 11;
-            if (intval(substr(strval($newI), -1)) === 1) {
-                echo nl2br("<h3> " . strval($i + 1) . "st Place </h3>");
-            } elseif (intval(substr(strval($newI), -1)) === 2) {
-                echo nl2br("<h3> " . strval($i + 1) . "nd Place </h3>");
-            } elseif (intval(substr(strval($newI), -1)) === 3) {
-                echo nl2br("<h3> " . strval($i + 1) . "rd Place </h3>");
-            } else {
-                echo nl2br("<h3> " . strval($i + 1) . "th Place </h3>");
-            }
-			echo nl2br("<h4>" . $results[$i]['teamname'] . "</h4>");
+			echo "<h3><b>" .Results::ordinal($i+1)." Place:</b> <i>". $results[$i]['teamname'] . "</i></h3>";
         }
+		/*
+		for ($i = 0; $i < count($results); $i++) {
+			var_dump($results[$i]); echo '<br/>';
+        }
+		*/
         echo '</div></div>';
     }
 
@@ -66,6 +60,34 @@ class Results extends Page {
         }
         return $tempId;
     }
+	//Gets the total time of the 
+    public static function get_total_time($contest_FK, $team_FK) {
+        require_once($_SERVER['DOCUMENT_ROOT'] . '/data/contest.php');
+        $contest = new Contest();
+        $contestTimes = $contest->get_contest_time($contest_FK, $team_FK);
+		$starttime = $contest->get_contest_sched($contest_FK)['starttime'];
+		$totalTime = 0;
+        for ($i = 0; $i < count($contestTimes); $i++) {
+            $st = explode(" ", $starttime);
+            $time = explode(" ", $contestTimes[$i]);
+			$begin = new DateTime($st[1]);
+			$end = new DateTime($time[1]);
+			$interval = $begin->diff($end);
+			$totalTime += ((int)($interval->format("%H")*3600) + (int)($interval->format("%I")*60) + (int)$interval->format("%S"))/60;
+        }
+        return $totalTime;
+    }
+	public static function ordinal($number) {
+		$ends = array('th','st','nd','rd','th','th','th','th','th','th');
+		if ((($number % 100) >= 11) && (($number%100) <= 13))
+			return $number. 'th';
+		else
+			return $number. $ends[$number % 10];
+	}
+	
+	public static function resort($arr){
+		
+	}
 
 }
 
